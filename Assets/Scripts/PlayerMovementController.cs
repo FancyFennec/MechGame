@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FSPControlls : MonoBehaviour
+public class PlayerMovementController : MonoBehaviour
 {
     [Header("Input Settings")]
     public string MouseXInput;
