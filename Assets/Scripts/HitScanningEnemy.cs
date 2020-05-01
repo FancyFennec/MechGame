@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyController: Enemy
+public class HitScanningEnemy: Enemy
 {
 
     [SerializeField]
@@ -29,6 +29,9 @@ public class EnemyController: Enemy
             case EnemyState.IDLE:
                 LookForPlayer();
                 break;
+            case EnemyState.STOPPED:
+                Stop();
+                break;
             case EnemyState.ATTACKING:
                 AttackPlayer();
                 break;
@@ -50,13 +53,14 @@ public class EnemyController: Enemy
             switch (NextState)
             {
                 case EnemyState.DEAD:
+                    navMeshAgent.isStopped = true;
                     Destroy(this.gameObject);
                     break;
                 case EnemyState.IDLE:
-                    navMeshAgent.isStopped = false;
+                    navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
-                    navMeshAgent.isStopped = false;
+                    navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
@@ -72,6 +76,19 @@ public class EnemyController: Enemy
         RotateTowardsPlayer();
         ShootAtPlayer();
         CheckIfPlayerVisible();
+    }
+
+    private void Stop()
+    {
+        if (stoppedTimer == StoppedCooldown)
+        {
+            stoppedTimer = 0f;
+            NextState = EnemyState.SEARCHING;
+        }
+        else
+        {
+            stoppedTimer = Mathf.Clamp(stoppedTimer + Time.deltaTime, 0f, StoppedCooldown);
+        }
     }
 
     public override void SearchPlayer()
@@ -119,6 +136,7 @@ public class EnemyController: Enemy
         {
             Debug.Log("Peng!");
             attackTimer = AttackCooldown;
+            NextState = EnemyState.STOPPED;
         } else
         {
             attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
