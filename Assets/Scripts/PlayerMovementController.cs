@@ -28,8 +28,6 @@ public class PlayerMovementController : MonoBehaviour
     bool isJumping = false;
     float jumpMomentum = 0f;
 
-    public GameObject blood;
-
     void Start()
     {
         Application.targetFrameRate = 120;
@@ -45,26 +43,6 @@ public class PlayerMovementController : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) && characterController.isGrounded)
         {
             isJumping = true;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (Physics.Raycast(
-                Camera.main.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)), 
-                out RaycastHit hit,
-                Mathf.Infinity,
-                LayerMask.GetMask("Enemy")
-                ))
-            {
-                Vector3 incomingVec = (hit.point - transform.position).normalized;
-                Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-
-                try
-                {
-                    hit.transform.GetComponent<Rigidbody>().AddForce(transform.forward * 20f);
-                }
-                catch(MissingComponentException e) { }
-                Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
-            }
         }
         RotateCamera();
         MovePlayer();

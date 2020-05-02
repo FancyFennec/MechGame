@@ -13,15 +13,20 @@ public class Enemy: MonoBehaviour
         SEARCHING,
         ATTACKING
     }
-
+    [Header("Health")]
+    public int MaxHealth = 100;
     [System.NonSerialized]
-    public readonly float AttackCooldown = 2f;
+    public int CurrentHealth = 100;
+    [Header("Cooldowns")]
+    public float AttackCooldown = 2f;
     [System.NonSerialized]
     public float attackTimer = 0f;
-    [System.NonSerialized]
-    public readonly float StoppedCooldown = 1f;
+    public float StoppedCooldown = 1f;
     [System.NonSerialized]
     public float stoppedTimer = 0f;
+    [Header("Splatter Particle")]
+    public GameObject splatter;
+
     public EnemyState NextState { get; set; } = EnemyState.IDLE;
     public EnemyState CurrentState { get; set; } = EnemyState.IDLE;
 
@@ -32,4 +37,12 @@ public class Enemy: MonoBehaviour
     public virtual void RotateTowardsPlayer() { }
     public virtual bool IsPlayerVisible() { return true; }
     public virtual void UpdateState() { }
+    public void TakeDamage(int damage) {
+        CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0, MaxHealth);
+        if(CurrentHealth == 0)
+        {
+            NextState = EnemyState.DEAD;
+            Destroy(Instantiate(splatter, transform.position, Quaternion.LookRotation(Vector3.up)), 2f);
+        }
+    }
 }

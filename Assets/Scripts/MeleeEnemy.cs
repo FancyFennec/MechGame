@@ -8,6 +8,7 @@ using UnityEngine.AI;
 public class MeleeEnemy: Enemy
 {
 
+    [Header("Ray Casting Input")]
     [SerializeField]
     private Transform player;
     public Transform head;

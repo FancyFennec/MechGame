@@ -6,12 +6,13 @@ using UnityEngine.AI;
 
 public class HitScanningEnemy: Enemy
 {
-
+    [Header("Ray Casting Input")]
     [SerializeField]
     private Transform player;
-    public Transform head;
-    private NavMeshAgent navMeshAgent;
+    [SerializeField]
+    private Transform head;
 
+    private NavMeshAgent navMeshAgent;
     private Vector3 targetDirection = Vector3.zero;
 
     void Start()
