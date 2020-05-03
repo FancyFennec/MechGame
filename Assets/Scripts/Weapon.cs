@@ -25,10 +25,15 @@ public class Weapon
 	private float cooldownTimer = 0f;
 	private float cooldown;
 
+	protected List<Vector2> recoilPattern = new List<Vector2>();
+	private int recoilIndex = 0;
+
 	public Weapon(Type type, int damage, int clipsize, float rpm)
 	{
+		this.damage = damage;
 		this.ammo = clipsize;
 		this.clipSize = clipSize;
+		this.clipCount = 1;
 		this.type = type;
 		this.rpm = rpm;
 		this.cooldown = 1f / rpm;
@@ -44,9 +49,19 @@ public class Weapon
 		return cooldownTimer != 0f;
 	}
 
-	public void Shoot()
+	public Vector2 Shoot()
 	{
-		cooldownTimer = cooldown;
+		if (!OnCooldown() && recoilIndex < recoilPattern.Count)
+		{
+			cooldownTimer = cooldown;
+			return recoilPattern[recoilIndex++];
+		}
+		return Vector2.zero;
 	}
 
+	public void ResetRecoil()
+	{
+		cooldownTimer = 0f;
+		recoilIndex = 0;
+	}
 }

@@ -7,6 +7,7 @@ public class PlayerShootingController : MonoBehaviour
 {
     [Header("Blood Particle")]
     public GameObject blood;
+    private Weapon weapon = new AssaultRifle();
 
     private PlayerMovementController movementController;
     void Start() {
@@ -15,7 +16,7 @@ public class PlayerShootingController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && !weapon.OnCooldown())
         {
             if (Physics.Raycast(
                 Camera.main.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)),
@@ -51,7 +52,21 @@ public class PlayerShootingController : MonoBehaviour
                 }
                 Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
             }
-            movementController.recoil += Vector2.right * 5f + Vector2.up * 1f;
+            Vector2 recoil = weapon.Shoot();
+            movementController.recoil += recoil;
         }
+        if (!Input.GetMouseButton(0))
+        {
+            if (movementController.recoil.magnitude < 0.1f)
+            {
+                weapon.ResetRecoil();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            weapon.ResetRecoil();
+        }
+        weapon.UpdateTimer(Time.deltaTime);
     }
 }
