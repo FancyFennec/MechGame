@@ -7,9 +7,10 @@ public class PlayerShootingController : MonoBehaviour
 {
     [Header("Blood Particle")]
     public GameObject blood;
-    void Start()
-    {
-        
+
+    private PlayerMovementController movementController;
+    void Start() {
+        movementController = GetComponent<PlayerMovementController>();
     }
 
     void Update()
@@ -28,12 +29,11 @@ public class PlayerShootingController : MonoBehaviour
 
                 try
                 {
-                    //hit.transform.GetComponent<Rigidbody>().AddForce(transform.forward * 20f);
                     Enemy enemy = hit.transform.GetComponent<Enemy>();
                     if (enemy != null)
                     {
                         enemy.TakeDamage(20);
-                        Debug.Log("Current Health: " + enemy.CurrentHealth);
+                        //Debug.Log("Current Health: " + enemy.CurrentHealth);
                     }
                     else
                     {
@@ -41,16 +41,17 @@ public class PlayerShootingController : MonoBehaviour
                         if (parentEnemy != null)
                         {
                             parentEnemy.TakeDamage(20);
-                            Debug.Log("Current Health: " + parentEnemy.CurrentHealth);
+                            //Debug.Log("Current Health: " + parentEnemy.CurrentHealth);
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("Exception thrown: " + e.Message);
+                    Debug.Log("Something went wrong: " + e.Message);
                 }
                 Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
             }
+            movementController.recoil += Vector2.right * 5f + Vector2.up * 1f;
         }
     }
 }

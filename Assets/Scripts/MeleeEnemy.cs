@@ -163,7 +163,7 @@ public class MeleeEnemy: Enemy
 
     public override bool IsPlayerVisible()
     {
-        return Vector3.Dot(targetDirection, transform.forward) > 0.3f &&
+        return Vector3.Dot(targetDirection, transform.forward) > -0.3f &&
                                 Physics.Raycast(head.position, targetDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";
     }

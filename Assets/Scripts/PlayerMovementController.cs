@@ -23,8 +23,11 @@ public class PlayerMovementController : MonoBehaviour
     public const float gravity = 50f;
 
     CharacterController characterController;
-    Transform FPSController;
-    float xClamp;
+    Transform parentTransform;
+    private float xClamp = 0f;
+    private float yClamp = 0f;
+    [System.NonSerialized]
+    public Vector2 recoil = Vector2.zero;
     bool isJumping = false;
     float jumpMomentum = 0f;
 
@@ -33,9 +36,8 @@ public class PlayerMovementController : MonoBehaviour
         Application.targetFrameRate = 120;
 
         Cursor.lockState = CursorLockMode.Locked;
-        xClamp = 0;
         characterController = GetComponentInParent<CharacterController>();
-        FPSController = characterController.transform;
+        parentTransform = characterController.transform;
     }
 
     void Update()
@@ -48,17 +50,28 @@ public class PlayerMovementController : MonoBehaviour
         MovePlayer();
     }
 
+    void LateUpdate()
+    {
+        recoil.x = Mathf.Clamp(recoil.x - recoil.normalized.x * Time.deltaTime * 20f, 0f, 20f);
+        recoil.y = Mathf.Clamp(recoil.y - recoil.normalized.y * Time.deltaTime * 20f, 0f, 360f);
+    }
+
     void RotateCamera()
     {
-        Vector3 eulerRotation = transform.eulerAngles;
         float mouseX = Input.GetAxis(MouseXInput) * (mouseSensitivity * Time.smoothDeltaTime);
         float mouseY = Input.GetAxis(MouseYInput) * (mouseSensitivity * Time.smoothDeltaTime);
 
+        Vector3 eulerRotation = transform.eulerAngles;
         xClamp = Mathf.Clamp(xClamp + mouseY, FPS_MinMaxAngles.x, FPS_MinMaxAngles.y);
-
-        eulerRotation.x = -xClamp;
+        float newXRotation = Mathf.Clamp(xClamp + recoil.x, FPS_MinMaxAngles.x, FPS_MinMaxAngles.y);
+        eulerRotation.x = -newXRotation;
         transform.eulerAngles = eulerRotation;
-        FPSController.Rotate(Vector3.up * mouseX);
+
+        Vector3 parentEulerRotation = parentTransform.eulerAngles;
+        yClamp += mouseX;
+        float newYRotation = yClamp + recoil.y;
+        parentEulerRotation.y = newYRotation;
+        parentTransform.eulerAngles = parentEulerRotation;
     }
 
     void MovePlayer()
@@ -68,7 +81,7 @@ public class PlayerMovementController : MonoBehaviour
         float hInput = Input.GetAxisRaw(HorizontalInput);
         float vInput = Input.GetAxisRaw(VerticalInput);
 
-        movementVector += (FPSController.forward * vInput + FPSController.right * hInput).normalized;
+        movementVector += (parentTransform.forward * vInput + parentTransform.right * hInput).normalized;
         movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSpeed;
 
         if (characterController.isGrounded)
