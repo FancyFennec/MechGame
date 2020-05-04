@@ -53,8 +53,14 @@ public class PlayerMovementController : MonoBehaviour
     void LateUpdate()
     {
         Vector2 recoilDirection = recoil.normalized;
-        recoil.x = Mathf.Clamp(recoil.x - recoilDirection.x * Time.deltaTime * 20f, 0f, 20f);
-        recoil.y = Mathf.Clamp(recoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f);
+        if(recoil.magnitude < 0.1f)
+        {
+            recoil = Vector2.zero;
+        } else
+        {
+            recoil.x = Mathf.Clamp(recoil.x - recoilDirection.x * Time.deltaTime * 20f, 0f, 20f);
+            recoil.y = Mathf.Clamp(recoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f);
+        }
     }
 
     void RotateCamera()

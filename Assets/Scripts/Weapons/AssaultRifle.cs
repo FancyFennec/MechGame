@@ -13,12 +13,6 @@ public class AssaultRifle : Weapon
 		CreateRecoilPattern();
 	}
 
-	public AssaultRifle(Type type, int damage, int clipsize, float rpm) : 
-		base(type, damage, clipsize, rpm)
-	{
-		CreateRecoilPattern();
-	}
-
 	private void CreateRecoilPattern()
 	{
 		recoilPattern.Add(new Vector2(1f, 0f));
