@@ -51,17 +51,19 @@ public class Rocket : MonoBehaviour
 			{
 				collider.GetComponent<Enemy>().TakeDamage(damagefactor * ExplosionDamage);
 			}
-			catch (Exception) {}
-			try
-			{
-				collider.GetComponentInChildren<Enemy>().TakeDamage(ExplosionDamage);
+			catch (Exception) {
+				try
+				{
+					collider.GetComponentInChildren<Enemy>().TakeDamage(damagefactor * ExplosionDamage);
+				}
+				catch (Exception) {
+					try
+					{
+						collider.GetComponentInParent<Enemy>().TakeDamage(damagefactor * ExplosionDamage);
+					}
+					catch (Exception) { }
+				}
 			}
-			catch (Exception) { }
-			try
-			{
-				collider.GetComponentInParent<Enemy>().TakeDamage(ExplosionDamage);
-			}
-			catch (Exception) {}
 			try
 			{
 				collider.GetComponent<Rigidbody>().AddExplosionForce(ExplosionForce, pos, 6);
