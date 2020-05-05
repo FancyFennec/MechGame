@@ -6,11 +6,12 @@ using System.Linq;
 
 public class PlayerShootingController : MonoBehaviour
 {
-    [Header("Blood Particle")]
-    public GameObject blood;
+    private GameObject blood;
+    private GameObject rocket;
     private List<Weapon> weapons = new List<Weapon> { 
         new Pistol(), 
-        new AssaultRifle()
+        new AssaultRifle(),
+        new RocketLauncher()
     };
     private Weapon currentWeapon = new Pistol();
 
@@ -18,6 +19,8 @@ public class PlayerShootingController : MonoBehaviour
     private PlayerMovementController movementController;
     void Start() {
         movementController = GetComponent<PlayerMovementController>();
+        blood = Resources.Load<GameObject>("Blood");
+        rocket = Resources.Load<GameObject>("Rocket");
     }
 
 
@@ -25,13 +28,23 @@ public class PlayerShootingController : MonoBehaviour
     {
         if (IsShooting() && !currentWeapon.OnCooldown())
         {
-            if (IsEnemyHit(out RaycastHit hit))
+            if (Weapon.Type.SINGLE_SHOT.Equals(currentWeapon.type))
             {
-                DamageEnemy(hit);
+                Instantiate(
+                    rocket, 
+                    transform.position + transform.forward * 1.5f, 
+                    Quaternion.LookRotation(transform.forward, transform.up)
+                    );
+            } else
+            {
+                if (IsEnemyHit(out RaycastHit hit))
+                {
+                    DamageEnemy(hit);
 
-                Vector3 incomingVec = (hit.point - transform.position).normalized;
-                Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-                Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
+                    Vector3 incomingVec = (hit.point - transform.position).normalized;
+                    Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
+                    Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
+                }
             }
             movementController.recoil += currentWeapon.Shoot();
         }

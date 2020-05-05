@@ -16,7 +16,7 @@ public class Enemy: MonoBehaviour
     [Header("Health")]
     public int MaxHealth = 100;
     [System.NonSerialized]
-    public int CurrentHealth = 100;
+    public float CurrentHealth = 100;
     [Header("Cooldowns")]
     public float AttackCooldown = 2f;
     [System.NonSerialized]
@@ -37,9 +37,9 @@ public class Enemy: MonoBehaviour
     public virtual void RotateTowardsPlayer() { }
     public virtual bool IsPlayerVisible() { return true; }
     public virtual void UpdateState() { }
-    public void TakeDamage(int damage) {
-        CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0, MaxHealth);
-        if(CurrentHealth == 0)
+    public void TakeDamage(float damage) {
+        CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth);
+        if(CurrentHealth == 0f)
         {
             NextState = EnemyState.DEAD;
             Destroy(Instantiate(splatter, transform.position, Quaternion.LookRotation(Vector3.up)), 2f);
