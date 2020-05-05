@@ -53,7 +53,7 @@ public class PlayerMovementController : MonoBehaviour
     void LateUpdate()
     {
         Vector2 recoilDirection = recoil.normalized;
-        if(recoil.magnitude < 0.1f)
+        if(recoil.magnitude < 0.01f)
         {
             recoil = Vector2.zero;
         } else

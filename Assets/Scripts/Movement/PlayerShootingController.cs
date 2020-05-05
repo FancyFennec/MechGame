@@ -8,7 +8,10 @@ public class PlayerShootingController : MonoBehaviour
 {
     [Header("Blood Particle")]
     public GameObject blood;
-    private List<Weapon> weapons = new List<Weapon> { new Pistol(), new AssaultRifle()};
+    private List<Weapon> weapons = new List<Weapon> { 
+        new Pistol(), 
+        new AssaultRifle()
+    };
     private Weapon currentWeapon = new Pistol();
 
     private List<int> numKeys = Enumerable.Range(1, 9).ToArray().ToList();
@@ -20,7 +23,7 @@ public class PlayerShootingController : MonoBehaviour
 
     void Update()
     {
-        if (IsSooting() && !currentWeapon.OnCooldown())
+        if (IsShooting() && !currentWeapon.OnCooldown())
         {
             if (IsEnemyHit(out RaycastHit hit))
             {
@@ -30,8 +33,7 @@ public class PlayerShootingController : MonoBehaviour
                 Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
                 Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
             }
-            Vector2 recoil = currentWeapon.Shoot();
-            movementController.recoil += recoil;
+            movementController.recoil += currentWeapon.Shoot();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -91,7 +93,7 @@ public class PlayerShootingController : MonoBehaviour
                         );
     }
 
-    private bool IsSooting()
+    private bool IsShooting()
     {
         switch (currentWeapon.type)
         {

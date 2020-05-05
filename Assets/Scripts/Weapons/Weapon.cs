@@ -16,7 +16,7 @@ public class Weapon
 
 	public Type type { get; private set; }
 	public int damage { get; private set; }
-	public float rpm { get; private set; }
+	public float rps { get; private set; }
 	public int ammo { get; set; }
 	public int clipSize { get; private set; }
 	public int clipCount { get; set; }
@@ -28,20 +28,20 @@ public class Weapon
 	protected List<Vector2> recoilPattern = new List<Vector2>();
 	private int recoilIndex = 0;
 
-	public Weapon(Type type, int damage, int clipsize, float rpm)
+	public Weapon(Type type, int damage, int clipsize, float rps)
 	{
 		this.damage = damage;
 		this.ammo = clipsize;
 		this.clipSize = clipSize;
 		this.clipCount = 1;
 		this.type = type;
-		this.rpm = rpm;
-		this.cooldown = 1f / rpm;
+		this.rps = rps;
+		this.cooldown = 1f / rps;
 	}
 
 	public void UpdateTimer(float delta)
 	{
-		cooldownTimer = Mathf.Clamp(cooldownTimer - delta, 0f, 1f / rpm);
+		cooldownTimer = Mathf.Clamp(cooldownTimer - delta, 0f, 1f / rps);
 	}
 
 	public bool OnCooldown()
@@ -49,7 +49,7 @@ public class Weapon
 		return cooldownTimer != 0f;
 	}
 
-	public Vector2 Shoot()
+	public virtual Vector2 Shoot()
 	{
 		if (!OnCooldown() && recoilIndex < recoilPattern.Count)
 		{

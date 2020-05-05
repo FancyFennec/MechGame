@@ -15,10 +15,10 @@ public class AssaultRifle : Weapon
 
 	private void CreateRecoilPattern()
 	{
-		recoilPattern.Add(new Vector2(1f, 0f));
-		recoilPattern.Add(new Vector2(2f, 0.1f));
-		recoilPattern.Add(new Vector2(3f, 0.3f));
-		recoilPattern.Add(new Vector2(4f, 0.7f));
+		recoilPattern.Add(new Vector2(3f, 0f));
+		recoilPattern.Add(new Vector2(3f, 0.1f));
+		recoilPattern.Add(new Vector2(4f, 0.3f));
+		recoilPattern.Add(new Vector2(5f, 0.7f));
 		recoilPattern.Add(new Vector2(5f, 1.3f));
 		recoilPattern.Add(new Vector2(5f, 2f));
 		recoilPattern.Add(new Vector2(5f, 2f));
