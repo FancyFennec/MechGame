@@ -144,7 +144,7 @@ public class HitScanningEnemy: Enemy
                 if(UnityEngine.Random.Range(0, 10) > 3)
                 {
                     Debug.Log("Shooting at player");
-                    player.parent.GetComponentInChildren<PlayerMovementController>().TakeDamage(5);
+                    player.parent.GetComponentInChildren<Health>().TakeDamage(5);
                 } else
                 {
                     Debug.Log("Missed player");

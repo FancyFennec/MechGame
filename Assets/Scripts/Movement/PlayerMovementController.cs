@@ -31,9 +31,6 @@ public class PlayerMovementController : MonoBehaviour
     bool isJumping = false;
     float jumpMomentum = 0f;
 
-    public int MaxHealth = 100;
-    [System.NonSerialized]
-    public float CurrentHealth = 100;
 
     void Start()
     {
@@ -113,15 +110,5 @@ public class PlayerMovementController : MonoBehaviour
         }
         
         characterController.Move(movementVector * Time.smoothDeltaTime);
-    }
-
-    public void TakeDamage(float damage)
-    {
-        this.recoil += new Vector2(15, 0);
-        CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth);
-        if (CurrentHealth == 0f)
-        {
-            this.enabled = false;
-        }
     }
 }

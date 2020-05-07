@@ -143,7 +143,7 @@ public class MeleeEnemy: Enemy
                 try
                 {
                     Debug.Log("Punching player");
-                    player.parent.GetComponentInChildren<PlayerMovementController>().TakeDamage(20);
+                    player.parent.GetComponentInChildren<Health>().TakeDamage(20);
                     //TODO: Some sort of visual feedback for being hit
                 }
                 catch (Exception) {

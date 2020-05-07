@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using TMPro;
 
 public class PlayerShootingController : MonoBehaviour
 {
+    public TextMeshProUGUI AmmoCountText;
+
     private GameObject blood;
     private GameObject rocket;
     private ParticleSystem bulletTrails;
@@ -78,6 +81,7 @@ public class PlayerShootingController : MonoBehaviour
                 currentWeapon = weapons[i];
             }
         });
+        AmmoCountText.text = currentWeapon.ammo.ToString();
     }
 
     private void DamageEnemy(RaycastHit hit)
