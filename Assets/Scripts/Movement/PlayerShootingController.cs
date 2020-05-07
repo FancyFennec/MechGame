@@ -8,7 +8,8 @@ public class PlayerShootingController : MonoBehaviour
 {
     private GameObject blood;
     private GameObject rocket;
-    private List<Weapon> weapons = new List<Weapon> { 
+    private ParticleSystem bulletTrails;
+    private readonly List<Weapon> weapons = new List<Weapon> { 
         new Pistol(), 
         new AssaultRifle(),
         new RocketLauncher()
@@ -21,6 +22,7 @@ public class PlayerShootingController : MonoBehaviour
         movementController = GetComponent<PlayerMovementController>();
         blood = Resources.Load<GameObject>("Blood");
         rocket = Resources.Load<GameObject>("Rocket");
+        bulletTrails = GetComponentInChildren<ParticleSystem>();
     }
 
 
@@ -28,7 +30,7 @@ public class PlayerShootingController : MonoBehaviour
     {
         if (IsShooting() && !currentWeapon.OnCooldown())
         {
-            if (Weapon.Type.SINGLE_SHOT.Equals(currentWeapon.type))
+            if (Weapon.Type.ROCKET.Equals(currentWeapon.type))
             {
                 Instantiate(
                     rocket, 
@@ -37,6 +39,7 @@ public class PlayerShootingController : MonoBehaviour
                     );
             } else
             {
+                bulletTrails.Emit(1);
                 if (IsEnemyHit(out RaycastHit hit))
                 {
                     DamageEnemy(hit);
@@ -47,13 +50,18 @@ public class PlayerShootingController : MonoBehaviour
                 }
             }
             movementController.recoil += currentWeapon.Shoot();
+        } else
+        {
+            Debug.Log("Ammo " + currentWeapon.ammo);
+            Debug.Log("Clipsize " + currentWeapon.clipSize);
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKey(KeyCode.R))
         {
-            currentWeapon.ResetRecoil();
+            Debug.Log("Reloading");
+            currentWeapon.Reload();
         }
-        currentWeapon.UpdateTimer(Time.deltaTime);
+        weapons.ForEach(weapon => weapon.UpdateTimer(Time.deltaTime));
     }
 
     public void LateUpdate()
@@ -114,7 +122,7 @@ public class PlayerShootingController : MonoBehaviour
                 return Input.GetMouseButtonDown(0);
             case Weapon.Type.AUTOMATIC:
                 return Input.GetMouseButton(0);
-            case Weapon.Type.SINGLE_SHOT:
+            case Weapon.Type.ROCKET:
                 return Input.GetMouseButtonDown(0);
             default:
                 return false;

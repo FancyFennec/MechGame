@@ -140,7 +140,16 @@ public class MeleeEnemy: Enemy
         {
             if (IsInPunchingRange())
             {
-                Debug.Log("Punch!");
+                try
+                {
+                    Debug.Log("Punching player");
+                    player.parent.GetComponentInChildren<PlayerMovementController>().TakeDamage(20);
+                    //TODO: Some sort of visual feedback for being hit
+                }
+                catch (Exception) {
+                    Debug.Log("Can't cause damage");
+                }
+                
                 attackTimer = AttackCooldown;
                 NextState = EnemyState.STOPPED;
             }

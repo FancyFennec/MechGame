@@ -9,7 +9,7 @@ using UnityEngine;
 public class RocketLauncher : Weapon
 {
 
-	public RocketLauncher() : base(Type.SINGLE_SHOT, 200, 1, 1)
+	public RocketLauncher() : base(Type.ROCKET, 200, 4, 1)
 	{
 		CreateRecoilPattern();
 	}

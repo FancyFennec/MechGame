@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,12 +12,14 @@ public class HitScanningEnemy: Enemy
     private Transform player;
     [SerializeField]
     private Transform head;
+    public ParticleSystem bulletTrails;
 
     private NavMeshAgent navMeshAgent;
     private Vector3 targetDirection = Vector3.zero;
 
     void Start()
     {
+        //bulletTrails = GetComponentInChildren<ParticleSystem>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         targetDirection = player.position - head.position;
     }
@@ -135,7 +138,22 @@ public class HitScanningEnemy: Enemy
     {
         if(attackTimer == 0)
         {
-            Debug.Log("Peng!");
+            bulletTrails.Emit(1);
+            try
+            {
+                if(UnityEngine.Random.Range(0, 10) > 3)
+                {
+                    Debug.Log("Shooting at player");
+                    player.parent.GetComponentInChildren<PlayerMovementController>().TakeDamage(5);
+                } else
+                {
+                    Debug.Log("Missed player");
+                    //TODO: cast a bullet trail
+                }
+            }
+            catch (Exception) {
+                Debug.Log("Can't cause damage");
+            }
             attackTimer = AttackCooldown;
             NextState = EnemyState.STOPPED;
         } else
