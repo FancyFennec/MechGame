@@ -25,6 +25,7 @@ public class PlayerShootingController : MonoBehaviour
         movementController = GetComponent<PlayerMovementController>();
         blood = Resources.Load<GameObject>("Blood");
         rocket = Resources.Load<GameObject>("Rocket");
+        rocket.layer = this.gameObject.layer;
         bulletTrails = GetComponentInChildren<ParticleSystem>();
     }
 
@@ -53,12 +54,7 @@ public class PlayerShootingController : MonoBehaviour
                 }
             }
             movementController.recoil += currentWeapon.Shoot();
-        } else
-        {
-            Debug.Log("Ammo " + currentWeapon.ammo);
-            Debug.Log("Clipsize " + currentWeapon.clipSize);
         }
-
         if (Input.GetKey(KeyCode.R))
         {
             Debug.Log("Reloading");

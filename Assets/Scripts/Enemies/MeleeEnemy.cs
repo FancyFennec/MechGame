@@ -13,18 +13,23 @@ public class MeleeEnemy: Enemy
     private Transform player;
     public Transform head;
     private NavMeshAgent navMeshAgent;
+    private List<ParticleSystem> explosions;
 
     private Vector3 targetDirection = Vector3.zero;
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        targetDirection = player.position - head.position;
+        targetDirection = Vector3.forward;
+        GameObject explosion = Instantiate(Resources.Load<GameObject>("Explosion"), transform);
+        explosion.transform.parent = transform;
+        explosions = explosion.GetComponentsInChildren<ParticleSystem>().ToList();
+        explosions.ForEach(expl => expl.Stop());
     }
 
     void Update()
     {
-        targetDirection = player.position - head.position;
+        targetDirection = (navMeshAgent.destination - head.position).normalized;
         switch (CurrentState) {
             case EnemyState.DEAD:
                 break;
@@ -33,6 +38,9 @@ public class MeleeEnemy: Enemy
                 break;
             case EnemyState.STOPPED:
                 Stop();
+                break;
+            case EnemyState.BACKUP:
+                BackUp();
                 break;
             case EnemyState.ATTACKING:
                 AttackPlayer();
@@ -52,6 +60,7 @@ public class MeleeEnemy: Enemy
     {
         if (CurrentState != NextState)
         {
+            Debug.Log("Changing State to: " + NextState);
             switch (NextState)
             {
                 case EnemyState.DEAD:
@@ -59,6 +68,9 @@ public class MeleeEnemy: Enemy
                     Destroy(this.gameObject);
                     break;
                 case EnemyState.IDLE:
+                    navMeshAgent.isStopped = true;
+                    break;
+                case EnemyState.STOPPED:
                     navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
@@ -69,8 +81,17 @@ public class MeleeEnemy: Enemy
                     navMeshAgent.isStopped = false;
                     navMeshAgent.destination = player.position;
                     break;
+                case EnemyState.BACKUP:
+                    navMeshAgent.isStopped = false;
+                    Vector3 backupDirection = new Vector3(UnityEngine.Random.Range(0f, 1f), 0, UnityEngine.Random.Range(0f, 1f));
+                    navMeshAgent.destination = player.position + 5f * backupDirection.normalized;
+                    break;
             }
             CurrentState = NextState;
+        }
+        if(attackTimer != 0f)
+        {
+            attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
         }
     }
 
@@ -108,6 +129,20 @@ public class MeleeEnemy: Enemy
         }
     }
 
+    public void BackUp()
+    {
+        RotateTowardsDestination();
+        if (HasReachedDestination())
+        {
+            NextState = EnemyState.ATTACKING;
+        }
+    }
+
+    private bool HasReachedDestination()
+    {
+        return navMeshAgent.remainingDistance != Mathf.Infinity && navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete;
+    }
+
     public override void CheckIfPlayerVisible()
     {
         if (!IsPlayerVisible())
@@ -124,9 +159,9 @@ public class MeleeEnemy: Enemy
         }
     }
 
-    public override void RotateTowardsPlayer()
+    public void RotateTowardsDestination()
     {
-        Vector3 position = Vector3.Scale(targetDirection, new Vector3(1,0,1));
+        Vector3 position = Vector3.Scale(targetDirection, new Vector3(1, 0, 1));
         transform.rotation = Quaternion.Lerp(
             Quaternion.LookRotation(position, Vector3.up),
             transform.rotation,
@@ -136,44 +171,37 @@ public class MeleeEnemy: Enemy
     private void PunchPlayer()
     {
         navMeshAgent.destination = player.position;
-        if (attackTimer == 0)
+        if (IsAtDestination())
         {
-            if (IsInPunchingRange())
+            if (attackTimer == 0)
             {
                 try
                 {
                     Debug.Log("Punching player");
                     player.parent.GetComponentInChildren<Health>().TakeDamage(20);
-                    //TODO: Some sort of visual feedback for being hit
+                    explosions.ForEach(expl => expl.Play());
                 }
-                catch (Exception) {
+                catch (Exception)
+                {
                     Debug.Log("Can't cause damage");
                 }
-                
-                attackTimer = AttackCooldown;
-                NextState = EnemyState.STOPPED;
             }
-        }
-        else
-        {
-            if (IsInPunchingRange())
-            {
-                Debug.Log("Stopping!");
-                NextState = EnemyState.STOPPED;
-            }
-            attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
+
+            attackTimer = AttackCooldown;
+            NextState = EnemyState.BACKUP;
         }
     }
 
-    private bool IsInPunchingRange()
+    private bool IsAtDestination()
     {
         return (transform.position - navMeshAgent.destination).sqrMagnitude < 1.5f;
     }
 
     public override bool IsPlayerVisible()
     {
-        return Vector3.Dot(targetDirection, transform.forward) > -0.3f &&
-                                Physics.Raycast(head.position, targetDirection, out RaycastHit hit)
+        Vector3 playerDirection = (player.position - head.position).normalized;
+        return Vector3.Dot(playerDirection, transform.forward) > -0.3f &&
+                                Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";
     }
 }

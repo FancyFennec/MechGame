@@ -10,6 +10,7 @@ public class Enemy: MonoBehaviour
         DEAD,
         IDLE,
         STOPPED,
+        BACKUP,
         SEARCHING,
         ATTACKING
     }
