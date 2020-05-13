@@ -16,6 +16,7 @@ public class MeleeEnemy: Enemy
     private List<ParticleSystem> explosions;
 
     private Vector3 targetDirection = Vector3.zero;
+    private float playerNotSeenSinceTimer = 0f;
 
     void Start()
     {
@@ -83,23 +84,25 @@ public class MeleeEnemy: Enemy
                     break;
                 case EnemyState.BACKUP:
                     navMeshAgent.isStopped = false;
-                    Vector3 backupDirection = new Vector3(UnityEngine.Random.Range(0f, 1f), 0, UnityEngine.Random.Range(0f, 1f));
-                    navMeshAgent.destination = player.position + 5f * backupDirection.normalized;
+                    Vector3 backupDirection = new Vector3(
+                        UnityEngine.Random.Range(-1f, 1f), 
+                        0, 
+                        UnityEngine.Random.Range(-1f, 1f));
+                    navMeshAgent.destination = transform.position + 20f * backupDirection.normalized;
                     break;
             }
             CurrentState = NextState;
         }
-        if(attackTimer != 0f)
-        {
-            attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
-        }
+
+        if(attackTimer != 0f) attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
+        playerNotSeenSinceTimer = IsPlayerVisible() ? 0f : playerNotSeenSinceTimer + Time.deltaTime;
     }
 
     public override void AttackPlayer()
     {
-        RotateTowardsPlayer();
+        RotateTowardsDestination();
         PunchPlayer();
-        CheckIfPlayerVisible();
+        CheckIfPlayerLost();
     }
 
     private void Stop()
@@ -132,7 +135,7 @@ public class MeleeEnemy: Enemy
     public void BackUp()
     {
         RotateTowardsDestination();
-        if (HasReachedDestination())
+        if (IsAtDestination())
         {
             NextState = EnemyState.ATTACKING;
         }
@@ -143,9 +146,9 @@ public class MeleeEnemy: Enemy
         return navMeshAgent.remainingDistance != Mathf.Infinity && navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete;
     }
 
-    public override void CheckIfPlayerVisible()
+    public override void CheckIfPlayerLost()
     {
-        if (!IsPlayerVisible())
+        if (playerNotSeenSinceTimer > 3f)
         {
             NextState = EnemyState.SEARCHING;
         }
@@ -185,16 +188,15 @@ public class MeleeEnemy: Enemy
                 {
                     Debug.Log("Can't cause damage");
                 }
+                attackTimer = AttackCooldown;
+                NextState = EnemyState.BACKUP;
             }
-
-            attackTimer = AttackCooldown;
-            NextState = EnemyState.BACKUP;
         }
     }
 
     private bool IsAtDestination()
     {
-        return (transform.position - navMeshAgent.destination).sqrMagnitude < 1.5f;
+        return navMeshAgent.remainingDistance < 1.0f;
     }
 
     public override bool IsPlayerVisible()

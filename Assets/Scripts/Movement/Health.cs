@@ -15,6 +15,7 @@ public class Health : MonoBehaviour
 
     void Start()
     {
+        CurrentHealth = MaxHealth;
         HealthText.text = CurrentHealth.ToString();
         PlayerMovementController = transform.parent.GetComponentInChildren<PlayerMovementController>();
         PlayerShootingController = transform.parent.GetComponentInChildren<PlayerShootingController>();

@@ -19,7 +19,7 @@ public class Enemy: MonoBehaviour
     [System.NonSerialized]
     public float CurrentHealth = 100;
     [Header("Cooldowns")]
-    public float AttackCooldown = 2f;
+    public float AttackCooldown = 1f;
     [System.NonSerialized]
     public float attackTimer = 0f;
     public float StoppedCooldown = 1f;
@@ -33,7 +33,7 @@ public class Enemy: MonoBehaviour
 
     public virtual void AttackPlayer() { }
     public virtual void SearchPlayer() { }
-    public virtual void CheckIfPlayerVisible() { }
+    public virtual void CheckIfPlayerLost() { }
     public virtual void LookForPlayer() { }
     public virtual void RotateTowardsPlayer() { }
     public virtual bool IsPlayerVisible() { return true; }

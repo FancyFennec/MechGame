@@ -79,7 +79,7 @@ public class HitScanningEnemy: Enemy
     {
         RotateTowardsPlayer();
         ShootAtPlayer();
-        CheckIfPlayerVisible();
+        CheckIfPlayerLost();
     }
 
     private void Stop()
@@ -109,7 +109,7 @@ public class HitScanningEnemy: Enemy
         }
     }
 
-    public override void CheckIfPlayerVisible()
+    public override void CheckIfPlayerLost()
     {
         if (!IsPlayerVisible())
         {
