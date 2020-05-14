@@ -7,15 +7,7 @@ using UnityEngine.AI;
 
 public class HitScanningEnemy: Enemy
 {
-    [Header("Ray Casting Input")]
-    [SerializeField]
-    private Transform player;
-    [SerializeField]
-    private Transform head;
     public ParticleSystem bulletTrails;
-
-    private NavMeshAgent navMeshAgent;
-    private Vector3 targetDirection = Vector3.zero;
 
     void Start()
     {
@@ -26,7 +18,7 @@ public class HitScanningEnemy: Enemy
 
     void Update()
     {
-        targetDirection = player.position - head.position;
+        UpdateTargetDirection();
         switch (CurrentState) {
             case EnemyState.DEAD:
                 break;
@@ -35,6 +27,9 @@ public class HitScanningEnemy: Enemy
                 break;
             case EnemyState.STOPPED:
                 Stop();
+                break;
+            case EnemyState.BACKUP:
+                BackUp();
                 break;
             case EnemyState.ATTACKING:
                 AttackPlayer();
@@ -65,6 +60,15 @@ public class HitScanningEnemy: Enemy
                     break;
                 case EnemyState.ATTACKING:
                     navMeshAgent.isStopped = true;
+                    AttackTimer = 0f;
+                    break;
+                case EnemyState.BACKUP:
+                    navMeshAgent.isStopped = false;
+                    Vector3 backupDirection = new Vector3(
+                        UnityEngine.Random.Range(-1f, 1f),
+                        0,
+                        UnityEngine.Random.Range(-1f, 1f));
+                    navMeshAgent.destination = transform.position + 10f * backupDirection.normalized;
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
@@ -134,9 +138,18 @@ public class HitScanningEnemy: Enemy
             0.95f);
     }
 
+    public override void BackUp()
+    {
+        RotateTowardsDestination();
+        if (IsAtDestination())
+        {
+            NextState = EnemyState.ATTACKING;
+        }
+    }
+
     private void ShootAtPlayer()
     {
-        if(attackTimer == 0)
+        if(AttackTimer == AttackCooldown)
         {
             bulletTrails.Emit(1);
             try
@@ -154,18 +167,11 @@ public class HitScanningEnemy: Enemy
             catch (Exception) {
                 Debug.Log("Can't cause damage");
             }
-            attackTimer = AttackCooldown;
-            NextState = EnemyState.STOPPED;
+            AttackTimer = 0f;
+            NextState = EnemyState.BACKUP;
         } else
         {
-            attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
+            AttackTimer = Mathf.Clamp(AttackTimer + Time.deltaTime, 0f, AttackCooldown);
         }
-    }
-
-    public override bool IsPlayerVisible()
-    {
-        return Vector3.Dot(targetDirection, transform.forward) > 0 &&
-                                Physics.Raycast(head.position, targetDirection, out RaycastHit hit)
-                                && hit.transform.name == "Player";
     }
 }

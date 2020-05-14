@@ -8,14 +8,8 @@ using UnityEngine.AI;
 public class MeleeEnemy: Enemy
 {
 
-    [Header("Ray Casting Input")]
-    [SerializeField]
-    private Transform player;
-    public Transform head;
-    private NavMeshAgent navMeshAgent;
     private List<ParticleSystem> explosions;
-
-    private Vector3 targetDirection = Vector3.zero;
+    
     private float playerNotSeenSinceTimer = 0f;
 
     void Start()
@@ -30,8 +24,9 @@ public class MeleeEnemy: Enemy
 
     void Update()
     {
-        targetDirection = (navMeshAgent.destination - head.position).normalized;
-        switch (CurrentState) {
+        UpdateTargetDirection();
+        switch (CurrentState)
+        {
             case EnemyState.DEAD:
                 break;
             case EnemyState.IDLE:
@@ -94,7 +89,7 @@ public class MeleeEnemy: Enemy
             CurrentState = NextState;
         }
 
-        if(attackTimer != 0f) attackTimer = Mathf.Clamp(attackTimer - Time.deltaTime, 0f, AttackCooldown);
+        if(AttackTimer != 0f) AttackTimer = Mathf.Clamp(AttackTimer - Time.deltaTime, 0f, AttackCooldown);
         playerNotSeenSinceTimer = IsPlayerVisible() ? 0f : playerNotSeenSinceTimer + Time.deltaTime;
     }
 
@@ -132,18 +127,13 @@ public class MeleeEnemy: Enemy
         }
     }
 
-    public void BackUp()
+    public override void BackUp()
     {
         RotateTowardsDestination();
         if (IsAtDestination())
         {
             NextState = EnemyState.ATTACKING;
         }
-    }
-
-    private bool HasReachedDestination()
-    {
-        return navMeshAgent.remainingDistance != Mathf.Infinity && navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete;
     }
 
     public override void CheckIfPlayerLost()
@@ -162,48 +152,27 @@ public class MeleeEnemy: Enemy
         }
     }
 
-    public void RotateTowardsDestination()
-    {
-        Vector3 position = Vector3.Scale(targetDirection, new Vector3(1, 0, 1));
-        transform.rotation = Quaternion.Lerp(
-            Quaternion.LookRotation(position, Vector3.up),
-            transform.rotation,
-            0.95f);
-    }
-
     private void PunchPlayer()
     {
         navMeshAgent.destination = player.position;
         if (IsAtDestination())
         {
-            if (attackTimer == 0)
+            if (AttackTimer == 0)
             {
                 try
                 {
                     Debug.Log("Punching player");
-                    player.parent.GetComponentInChildren<Health>().TakeDamage(20);
+                    float damagefactor = 1.5f - navMeshAgent.remainingDistance;
+                    player.parent.GetComponentInChildren<Health>().TakeDamage(40 * damagefactor);
                     explosions.ForEach(expl => expl.Play());
                 }
                 catch (Exception)
                 {
                     Debug.Log("Can't cause damage");
                 }
-                attackTimer = AttackCooldown;
+                AttackTimer = AttackCooldown;
                 NextState = EnemyState.BACKUP;
             }
         }
-    }
-
-    private bool IsAtDestination()
-    {
-        return navMeshAgent.remainingDistance < 1.0f;
-    }
-
-    public override bool IsPlayerVisible()
-    {
-        Vector3 playerDirection = (player.position - head.position).normalized;
-        return Vector3.Dot(playerDirection, transform.forward) > -0.3f &&
-                                Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
-                                && hit.transform.name == "Player";
     }
 }
