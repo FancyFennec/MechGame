@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy: MonoBehaviour
+public class Enemy: MonoBehaviour, ISubscriber
 {
     public enum EnemyState
     {
@@ -91,5 +91,10 @@ public class Enemy: MonoBehaviour
         return Vector3.Dot(playerDirection, transform.forward) > -0.3f &&
                                 Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";
+    }
+
+    public void Notify()
+    {
+        NextState = EnemyState.ATTACKING;
     }
 }

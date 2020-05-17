@@ -4,23 +4,8 @@ using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour
 {
-    [Header("Input Settings")]
-    public string MouseXInput;
-    public string MouseYInput;
-    public string HorizontalInput = "Horizontal";
-    public string VerticalInput = "Vertical";
-
-    [Header("Common Settings")]
-    public float mouseSensitivity;
-    public float movementSpeed;
-
-    [Header("FPS Camera Settings")]
-    public Vector3 FPS_CameraOffset;
-    public Vector2 FPS_MinMaxAngles;
-
-    [Header("Movement Settings")]
-    public const float initialJumpMomentum = 20f;
-    public const float gravity = 50f;
+    [SerializeField]
+    private PlayerMovementSettings movementSettings;
 
     CharacterController characterController;
     Transform parentTransform;
@@ -66,12 +51,12 @@ public class PlayerMovementController : MonoBehaviour
 
     void RotateCamera()
     {
-        float mouseX = Input.GetAxis(MouseXInput) * (mouseSensitivity * Time.smoothDeltaTime);
-        float mouseY = Input.GetAxis(MouseYInput) * (mouseSensitivity * Time.smoothDeltaTime);
+        float mouseX = Input.GetAxis(movementSettings.MouseXInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
+        float mouseY = Input.GetAxis(movementSettings.MouseYInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
 
         Vector3 eulerRotation = transform.eulerAngles;
-        xClamp = Mathf.Clamp(xClamp + mouseY, FPS_MinMaxAngles.x, FPS_MinMaxAngles.y);
-        float newXRotation = Mathf.Clamp(xClamp + recoil.x, FPS_MinMaxAngles.x, FPS_MinMaxAngles.y);
+        xClamp = Mathf.Clamp(xClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
+        float newXRotation = Mathf.Clamp(xClamp + recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
         eulerRotation.x = -newXRotation;
         transform.eulerAngles = eulerRotation;
 
@@ -86,18 +71,18 @@ public class PlayerMovementController : MonoBehaviour
     {
         Vector3 movementVector = Vector3.zero;
 
-        float hInput = Input.GetAxisRaw(HorizontalInput);
-        float vInput = Input.GetAxisRaw(VerticalInput);
+        float hInput = Input.GetAxisRaw(movementSettings.HorizontalInput);
+        float vInput = Input.GetAxisRaw(movementSettings.VerticalInput);
 
         movementVector += (parentTransform.forward * vInput + parentTransform.right * hInput).normalized;
-        movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSpeed;
+        movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSettings.MovementSpeed;
 
         if (characterController.isGrounded)
         {
             if (isJumping)
             {
                 isJumping = false;
-                jumpMomentum = initialJumpMomentum;
+                jumpMomentum = movementSettings.JumpMomentum;
             } else
             {
                 jumpMomentum = 0f;
@@ -106,7 +91,7 @@ public class PlayerMovementController : MonoBehaviour
         else
         {
             movementVector += Vector3.up * jumpMomentum;
-            jumpMomentum -= gravity * Time.smoothDeltaTime;
+            jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
         }
         
         characterController.Move(movementVector * Time.smoothDeltaTime);

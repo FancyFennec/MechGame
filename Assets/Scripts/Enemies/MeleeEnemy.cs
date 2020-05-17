@@ -155,7 +155,7 @@ public class MeleeEnemy: Enemy
     private void PunchPlayer()
     {
         navMeshAgent.destination = player.position;
-        if (IsAtDestination())
+        if (IsAtDestination() && (player.position - transform.position).magnitude < 1.5f)
         {
             if (AttackTimer == 0)
             {

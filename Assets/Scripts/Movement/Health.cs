@@ -7,7 +7,7 @@ public class Health : MonoBehaviour
 {
     public int MaxHealth = 100;
     [System.NonSerialized]
-    public float CurrentHealth = 100;
+    public int CurrentHealth = 100;
     public TextMeshProUGUI HealthText;
 
     private PlayerMovementController PlayerMovementController;
@@ -30,7 +30,7 @@ public class Health : MonoBehaviour
     public void TakeDamage(float damage)
     {
         PlayerMovementController.recoil += new Vector2(15, 0);
-        CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth);
+        CurrentHealth = Mathf.FloorToInt(Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth));
         HealthText.text = CurrentHealth.ToString();
         HealthText.color = Color.Lerp(Color.red, Color.green, CurrentHealth / MaxHealth);
         if (CurrentHealth == 0f)

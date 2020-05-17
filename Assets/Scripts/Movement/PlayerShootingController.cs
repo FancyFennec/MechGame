@@ -17,11 +17,16 @@ public class PlayerShootingController : MonoBehaviour
         new AssaultRifle(),
         new RocketLauncher()
     };
-    private Weapon currentWeapon = new Pistol();
+    private Weapon currentWeapon;
 
-    private List<int> numKeys = Enumerable.Range(1, 9).ToArray().ToList();
-    private PlayerMovementController movementController;
+    private readonly List<int> numKeys = Enumerable.Range(1, 9).ToArray().ToList();
+    public PlayerMovementController movementController;
+
+    PlayerShotSignal shootSignal = new PlayerShotSignal();
     void Start() {
+        FindObjectsOfType<Enemy>().ToList()
+            .ForEach(enemy => shootSignal.Subscribe(enemy));
+        currentWeapon = weapons[0];
         movementController = GetComponent<PlayerMovementController>();
         blood = Resources.Load<GameObject>("Blood");
         rocket = Resources.Load<GameObject>("Rocket");
@@ -29,11 +34,11 @@ public class PlayerShootingController : MonoBehaviour
         bulletTrails = GetComponentInChildren<ParticleSystem>();
     }
 
-
     void Update()
     {
         if (IsShooting() && !currentWeapon.OnCooldown())
         {
+            shootSignal.Emmit();
             if (Weapon.Type.ROCKET.Equals(currentWeapon.type))
             {
                 Instantiate(
