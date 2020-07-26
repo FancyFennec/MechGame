@@ -39,7 +39,7 @@ public class Weapon
 		this.cooldown = 1f / rps;
 	}
 
-	public void UpdateTimer(float delta)
+	public void UpdateCooldownTimer(float delta)
 	{
 		cooldownTimer = Mathf.Clamp(cooldownTimer - delta, 0f, 1f / rps);
 	}

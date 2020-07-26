@@ -11,7 +11,7 @@ public class PlayerShootingController : MonoBehaviour
 
     private GameObject blood;
     private GameObject rocket;
-    private ParticleSystem bulletTrails;
+    private GameObject bullet;
     private readonly List<Weapon> weapons = new List<Weapon> { 
         new Pistol(), 
         new AssaultRifle(),
@@ -23,18 +23,24 @@ public class PlayerShootingController : MonoBehaviour
     public PlayerMovementController movementController;
 
     PlayerShotSignal shootSignal = new PlayerShotSignal();
-    void Start() {
-        FindObjectsOfType<Enemy>().ToList()
-            .ForEach(enemy => shootSignal.Subscribe(enemy));
-        currentWeapon = weapons[0];
-        movementController = GetComponent<PlayerMovementController>();
-        blood = Resources.Load<GameObject>("Blood");
-        rocket = Resources.Load<GameObject>("Rocket");
+    void Start()
+	{
+		subscribeToShootSignal();
+		currentWeapon = weapons[0];
+		movementController = GetComponent<PlayerMovementController>();
+		blood = Resources.Load<GameObject>("Blood");
+		rocket = Resources.Load<GameObject>("Rocket");
+        bullet = Resources.Load<GameObject>("Bullet");
         rocket.layer = this.gameObject.layer;
-        bulletTrails = GetComponentInChildren<ParticleSystem>();
-    }
+	}
 
-    void Update()
+	private void subscribeToShootSignal()
+	{
+		FindObjectsOfType<Enemy>().ToList()
+					.ForEach(enemy => shootSignal.Subscribe(enemy));
+	}
+
+	void Update()
     {
         if (IsShooting() && !currentWeapon.OnCooldown())
         {
@@ -48,15 +54,11 @@ public class PlayerShootingController : MonoBehaviour
                     );
             } else
             {
-                bulletTrails.Emit(1);
-                if (IsEnemyHit(out RaycastHit hit))
-                {
-                    DamageEnemy(hit);
-
-                    Vector3 incomingVec = (hit.point - transform.position).normalized;
-                    Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-                    Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
-                }
+                Instantiate(
+                    bullet,
+                    transform.position + transform.forward * 1.5f,
+                    Quaternion.LookRotation(transform.forward, transform.up)
+                    );
             }
             movementController.recoil += currentWeapon.Shoot();
         }
@@ -65,7 +67,7 @@ public class PlayerShootingController : MonoBehaviour
             Debug.Log("Reloading");
             currentWeapon.Reload();
         }
-        weapons.ForEach(weapon => weapon.UpdateTimer(Time.deltaTime));
+        weapons.ForEach(weapon => weapon.UpdateCooldownTimer(Time.deltaTime));
     }
 
     public void LateUpdate()
@@ -107,16 +109,6 @@ public class PlayerShootingController : MonoBehaviour
         {
             Debug.Log("Something went wrong: " + e.Message);
         }
-    }
-
-    private static bool IsEnemyHit(out RaycastHit hit)
-    {
-        return Physics.Raycast(
-                        Camera.main.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)),
-                        out hit,
-                        Mathf.Infinity,
-                        LayerMask.GetMask("Enemy")
-                        );
     }
 
     private bool IsShooting()
