@@ -35,40 +35,50 @@ public class PlayerShootingController : MonoBehaviour
 
 	void Update()
     {
-        if (DoesPlayerWantToShoot() && !currentWeapon.OnCooldown())
-        {
-            shootSignal.Emmit();
-            if (Projectile.ProjectileType.EXPLOSIVE.Equals(currentWeapon.projectileType))
-            {
-                Instantiate(
-                    rocket, 
-                    transform.position + transform.forward * 1.5f, 
-                    Quaternion.LookRotation(transform.forward, transform.up)
-                    );
-            } else
-            {
-                Instantiate(
-                    bullet,
-                    transform.position + transform.forward * 1.5f,
-                    Quaternion.LookRotation(transform.forward, transform.up)
-                    );
-            }
-            movementController.recoil += currentWeapon.Shoot();
-        }
-        if (Input.GetKey(KeyCode.R))
+        if (DoesPlayerWantToShoot() && currentWeapon.CanWeaponFire())
+		{
+			shootSignal.Emmit();
+			SpawnProjectile();
+			AddRecoil();
+		}
+		if (Input.GetKey(KeyCode.R))
         {
             currentWeapon.Reload();
         }
-        weapons.ForEach(weapon => weapon.UpdateCooldownTimer(Time.deltaTime));
+        currentWeapon.UpdateCooldownTimer(Time.deltaTime);
     }
 
-    public void LateUpdate()
+	private void AddRecoil()
+	{
+		movementController.recoil += currentWeapon.Shoot();
+	}
+
+	private void SpawnProjectile()
+	{
+		if (Projectile.ProjectileType.EXPLOSIVE.Equals(currentWeapon.projectileType))
+		{
+			Instantiate(
+				rocket,
+				transform.position + transform.forward * 1.5f,
+				Quaternion.LookRotation(transform.forward, transform.up)
+				);
+		}
+		else
+		{
+			Instantiate(
+				bullet,
+				transform.position + transform.forward * 1.5f,
+				Quaternion.LookRotation(transform.forward, transform.up)
+				);
+		}
+	}
+
+	public void LateUpdate()
 	{
 		if (movementController.recoil.sqrMagnitude < 0.01f )
 		{
 			currentWeapon.ResetRecoil();
 		}
-
 		ChangeWeaponOnKeyPress();
 	}
 

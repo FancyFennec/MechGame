@@ -23,6 +23,8 @@ public class Enemy: MonoBehaviour, ISubscriber
     public float AttackCooldown = 1f;
     [System.NonSerialized]
     public float AttackTimer = 0f;
+    protected bool isOnCooldown = false;
+
     public float StoppedCooldown = 1f;
     [System.NonSerialized]
     public float stoppedTimer = 0f;
@@ -65,6 +67,22 @@ public class Enemy: MonoBehaviour, ISubscriber
             0.95f);
     }
 
+    protected void UpdateCooldownTimer()
+    {
+        if (isOnCooldown)
+        {
+            if (AttackTimer >= AttackCooldown)
+            {
+                AttackTimer = Mathf.Clamp(AttackTimer + Time.deltaTime, 0f, AttackCooldown);
+            }
+            else
+            {
+                AttackTimer = 0f;
+                isOnCooldown = false;
+            }
+        }
+    }
+
     protected void UpdateTargetDirection()
     {
         if (CurrentState.Equals(EnemyState.ATTACKING))
@@ -89,6 +107,14 @@ public class Enemy: MonoBehaviour, ISubscriber
     {
         Vector3 playerDirection = (player.position - head.position).normalized;
         return Vector3.Dot(playerDirection, transform.forward) > -0.3f &&
+                                Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
+                                && hit.transform.name == "Player";
+    }
+
+    protected bool IsAimingAtPlayer()
+    {
+        Vector3 playerDirection = (player.position - head.position).normalized;
+        return Vector3.Dot(playerDirection, transform.forward) > 0.9f &&
                                 Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";
     }

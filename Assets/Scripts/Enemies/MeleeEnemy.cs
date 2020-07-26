@@ -24,6 +24,7 @@ public class MeleeEnemy: Enemy
 
     void Update()
     {
+        UpdateCooldownTimer();
         UpdateTargetDirection();
         switch (CurrentState)
         {
@@ -56,7 +57,6 @@ public class MeleeEnemy: Enemy
     {
         if (CurrentState != NextState)
         {
-            Debug.Log("Changing State to: " + NextState);
             switch (NextState)
             {
                 case EnemyState.DEAD:
@@ -157,11 +157,10 @@ public class MeleeEnemy: Enemy
         navMeshAgent.destination = player.position;
         if (IsAtDestination() && (player.position - transform.position).magnitude < 1.5f)
         {
-            if (AttackTimer == 0)
+            if (!isOnCooldown)
             {
                 try
                 {
-                    Debug.Log("Punching player");
                     float damagefactor = 1.5f - navMeshAgent.remainingDistance;
                     player.parent.GetComponentInChildren<Health>().TakeDamage(40 * damagefactor);
                     explosions.ForEach(expl => expl.Play());
@@ -170,7 +169,7 @@ public class MeleeEnemy: Enemy
                 {
                     Debug.Log("Can't cause damage");
                 }
-                AttackTimer = AttackCooldown;
+                isOnCooldown = true;
                 NextState = EnemyState.BACKUP;
             }
         }

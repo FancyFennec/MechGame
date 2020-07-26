@@ -5,43 +5,39 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class HitScanningEnemy: Enemy
+public class RocketEnemy : Enemy
 {
-    public ParticleSystem bulletTrails;
 
     void Start()
     {
-        bulletTrails = GetComponentInChildren<ParticleSystem>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         targetDirection = player.position - head.position;
     }
 
     void Update()
-    {
-        UpdateTargetDirection();
-        switch (CurrentState) {
-            case EnemyState.DEAD:
-                break;
-            case EnemyState.IDLE:
-                LookForPlayer();
-                break;
-            case EnemyState.STOPPED:
-                Stop();
-                break;
-            case EnemyState.BACKUP:
-                BackUp();
-                break;
-            case EnemyState.ATTACKING:
-                AttackPlayer();
-                break;
-            case EnemyState.SEARCHING:
-                SearchPlayer();
-                break;
-        }
+	{
         UpdateCooldownTimer();
-    }
+        UpdateTargetDirection();
+		switch (CurrentState)
+		{
+			case EnemyState.DEAD:
+				break;
+			case EnemyState.IDLE:
+				LookForPlayer();
+				break;
+			case EnemyState.STOPPED:
+				Stop();
+				break;
+			case EnemyState.ATTACKING:
+				AttackPlayer();
+				break;
+			case EnemyState.SEARCHING:
+				SearchPlayer();
+				break;
+		}
+	}
 
-    private void LateUpdate()
+	private void LateUpdate()
     {
         UpdateState();
     }
@@ -50,7 +46,6 @@ public class HitScanningEnemy: Enemy
     {
         if (CurrentState != NextState)
         {
-            Debug.Log("Switching State: " + NextState);
             switch (NextState)
             {
                 case EnemyState.DEAD:
@@ -61,15 +56,14 @@ public class HitScanningEnemy: Enemy
                     navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
-                    navMeshAgent.isStopped = true;
-                    break;
-                case EnemyState.BACKUP:
-                    navMeshAgent.isStopped = false;
-                    Vector3 backupDirection = new Vector3(
-                        UnityEngine.Random.Range(-1f, 1f),
-                        0,
-                        UnityEngine.Random.Range(-1f, 1f));
-                    navMeshAgent.destination = transform.position + 10f * backupDirection.normalized;
+                    if(!isOnCooldown)
+					{
+                        isOnCooldown = true;
+                        navMeshAgent.isStopped = true;
+                    } else
+					{
+                        NextState = CurrentState;
+					}
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
@@ -150,27 +144,8 @@ public class HitScanningEnemy: Enemy
 
     private void ShootAtPlayer()
     {
-        if (!isOnCooldown && IsAimingAtPlayer())
-		{
-            //TODO: shoot projectile
-            bulletTrails.Emit(1);
-            try
-            {
-                if (UnityEngine.Random.Range(0, 10) > 3)
-                {
-                    player.parent.GetComponentInChildren<Health>().TakeDamage(5);
-                }
-                else
-                {
-                    //TODO: cast a bullet trail
-                }
-            }
-            catch (Exception)
-            {
-                Debug.Log("Can't cause damage");
-            }
-            isOnCooldown = true;
-            NextState = EnemyState.BACKUP;
-        }
+        isOnCooldown = true;
+        // spawn rocket and attack player
+        NextState = EnemyState.STOPPED;
     }
 }

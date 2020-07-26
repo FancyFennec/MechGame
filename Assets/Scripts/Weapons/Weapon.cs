@@ -25,10 +25,10 @@ public class Weapon
 
 	private float weaponTimer = 0f;
 	private float weaponCooldown;
+	private bool isOnCoolDown = false;
 
 	private float reloadTimer = 0f;
 	private float reloadCooldown = 2f;
-
 	private bool isReloading = false;
 
 	protected List<Vector2> recoilPattern = new List<Vector2>();
@@ -56,19 +56,24 @@ public class Weapon
 				ammo = clipSize;
 				isReloading = false;
 			}
-		} else
+		} else if(isOnCoolDown)
 		{
 			weaponTimer = Mathf.Clamp(weaponTimer - delta, 0f, weaponCooldown);
+			if (weaponTimer <= 0f)
+			{
+				isOnCoolDown = false;
+			}
 		}
 	}
 
-	public bool OnCooldown()
+	public bool CanWeaponFire()
 	{
-		return (weaponTimer > 0f || ammo < 1 || isReloading);
+		return !(isOnCoolDown || ammo < 1 || isReloading);
 	}
 
 	public virtual Vector2 Shoot()
 	{
+		isOnCoolDown = true;
 		weaponTimer = weaponCooldown;
 		ammo--;
 		return recoilPattern[recoilIndex++];
@@ -81,7 +86,10 @@ public class Weapon
 
 	public void Reload()
 	{
-		isReloading = true;
-		reloadTimer = reloadCooldown;
+		if (!isReloading)
+		{
+			isReloading = true;
+			reloadTimer = reloadCooldown;
+		}
 	}
 }
