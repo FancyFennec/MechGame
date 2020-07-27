@@ -153,7 +153,7 @@ public class HitScanningEnemy: Enemy
         if (!isOnCooldown && IsAimingAtPlayer())
 		{
             //TODO: shoot projectile
-            bulletTrails.Emit(1);
+            //bulletTrails.Emit(1);
             try
             {
                 if (UnityEngine.Random.Range(0, 10) > 3)

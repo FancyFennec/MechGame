@@ -29,7 +29,7 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        PlayerMovementController.recoil += new Vector2(15, 0);
+        PlayerMovementController.recoil += new Vector2(5, 0);
         CurrentHealth = Mathf.FloorToInt(Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth));
         HealthText.text = CurrentHealth.ToString();
         HealthText.color = Color.Lerp(Color.red, Color.green, CurrentHealth / MaxHealth);

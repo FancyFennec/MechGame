@@ -121,6 +121,15 @@ public class Enemy: MonoBehaviour, ISubscriber
 
     public void Notify()
     {
-        NextState = EnemyState.ATTACKING;
+		switch (CurrentState)
+		{
+            case EnemyState.BACKUP:
+                break;
+            case EnemyState.ATTACKING:
+                break;
+            default:
+                NextState = EnemyState.ATTACKING;
+                break;
+        }
     }
 }
