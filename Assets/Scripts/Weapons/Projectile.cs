@@ -12,7 +12,14 @@ public class Projectile : MonoBehaviour
 		PENETRATING
 	}
 
+	public enum Association
+	{
+		HOSTILE,
+		ALLIED
+	}
+
 	public ProjectileType type;
+	public Association friendlyness;
 	private const float projectileForce = 100f;
 	public int Damage = 200;
 
@@ -42,18 +49,30 @@ public class Projectile : MonoBehaviour
 	void FixedUpdate()
 	{
 		Vector3 direction = transform.position - lastPosition;
-		if (Physics.Raycast(lastPosition, direction, out RaycastHit hit, direction.magnitude, ~LayerMask.GetMask("Player")))
+		if (Physics.Raycast(lastPosition, direction, out RaycastHit hit, direction.magnitude, GetLayerMask()))
 		{
 			if (ProjectileType.EXPLOSIVE.Equals(type))
 			{
 				ExplodeAt(hit.point);
-			} else
+			}
+			else
 			{
 				ImpactAt(hit);
 			}
 		}
 
 		lastPosition = transform.position;
+	}
+
+	private int GetLayerMask()
+	{
+		if (Association.HOSTILE.Equals(friendlyness))
+		{
+			return ~LayerMask.GetMask("Enemy");
+		} else
+		{
+			return ~LayerMask.GetMask("Player");
+		}
 	}
 
 	public void OnCollisionEnter(Collision collision)
@@ -116,6 +135,17 @@ public class Projectile : MonoBehaviour
 
 	private bool DamageHitCollider(Collider collider, float damagefactor)
 	{
+		if (Association.HOSTILE.Equals(friendlyness))
+		{
+			return DamagePlayer(collider, damagefactor);
+		} else
+		{
+			return DamageEnemy(collider, damagefactor);
+		}
+	}
+
+	private bool DamageEnemy(Collider collider, float damagefactor)
+	{
 		try
 		{
 			collider.GetComponent<Enemy>().TakeDamage(damagefactor * Damage);
@@ -132,11 +162,40 @@ public class Projectile : MonoBehaviour
 				{
 					collider.GetComponentInParent<Enemy>().TakeDamage(damagefactor * Damage);
 				}
-				catch (Exception) {
+				catch (Exception)
+				{
 					return false;
 				}
 			}
 		}
 		return true;
 	}
+
+	private bool DamagePlayer(Collider collider, float damagefactor)
+	{
+		try
+		{
+			collider.GetComponent<Health>().TakeDamage(damagefactor * Damage);
+		}
+		catch (Exception)
+		{
+			try
+			{
+				collider.GetComponentInChildren<Health>().TakeDamage(damagefactor * Damage);
+			}
+			catch (Exception)
+			{
+				try
+				{
+					collider.GetComponentInParent<Health>().TakeDamage(damagefactor * Damage);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 }

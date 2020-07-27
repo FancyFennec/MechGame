@@ -8,38 +8,14 @@ using UnityEngine.AI;
 public class RocketEnemy : Enemy
 {
 
+    private GameObject rocket;
+
     void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
         targetDirection = player.position - head.position;
-    }
 
-    void Update()
-	{
-        UpdateCooldownTimer();
-        UpdateTargetDirection();
-		switch (CurrentState)
-		{
-			case EnemyState.DEAD:
-				break;
-			case EnemyState.IDLE:
-				LookForPlayer();
-				break;
-			case EnemyState.STOPPED:
-				Stop();
-				break;
-			case EnemyState.ATTACKING:
-				AttackPlayer();
-				break;
-			case EnemyState.SEARCHING:
-				SearchPlayer();
-				break;
-		}
-	}
-
-	private void LateUpdate()
-    {
-        UpdateState();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        rocket = Resources.Load<GameObject>("EnemyRocket");
     }
 
     public override void UpdateState()
@@ -53,6 +29,9 @@ public class RocketEnemy : Enemy
                     Destroy(this.gameObject);
                     break;
                 case EnemyState.IDLE:
+                    navMeshAgent.isStopped = true;
+                    break;
+                case EnemyState.STOPPED:
                     navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
@@ -79,19 +58,6 @@ public class RocketEnemy : Enemy
         RotateTowardsPlayer();
         ShootAtPlayer();
         CheckIfPlayerLost();
-    }
-
-    private void Stop()
-    {
-        if (stoppedTimer >= StoppedCooldown)
-        {
-            stoppedTimer = 0f;
-            NextState = EnemyState.SEARCHING;
-        }
-        else
-        {
-            stoppedTimer = Mathf.Clamp(stoppedTimer + Time.deltaTime, 0f, StoppedCooldown);
-        }
     }
 
     public override void SearchPlayer()
@@ -124,6 +90,14 @@ public class RocketEnemy : Enemy
         }
     }
 
+    public override void Stop()
+    {
+        if (!isOnCooldown)
+        {
+            NextState = EnemyState.ATTACKING;
+        }
+    }
+
     public override void RotateTowardsPlayer()
     {
         Vector3 position = Vector3.Scale(targetDirection, new Vector3(1,0,1));
@@ -144,8 +118,22 @@ public class RocketEnemy : Enemy
 
     private void ShootAtPlayer()
     {
-        isOnCooldown = true;
-        // spawn rocket and attack player
-        NextState = EnemyState.STOPPED;
+        if (!isOnCooldown)
+        {
+            try
+            {
+                Instantiate(
+                rocket,
+                transform.position + transform.up * 1.5f,
+                Quaternion.LookRotation(transform.up, transform.forward)
+                );
+            }
+            catch (Exception)
+            {
+                Debug.Log("Can't cause damage");
+            }
+            isOnCooldown = true;
+            NextState = EnemyState.STOPPED;
+        }
     }
 }

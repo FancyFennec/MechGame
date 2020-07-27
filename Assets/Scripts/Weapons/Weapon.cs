@@ -19,7 +19,7 @@ public class Weapon
 	public int damage { get; private set; }
 	public float rps { get; private set; }
 	public int ammo { get; set; }
-	public int clipSize { get;  set; }
+	public int clipSize { get; set; }
 	public int clipCount { get; set; }
 	public int maxClipCount { get; private set; }
 

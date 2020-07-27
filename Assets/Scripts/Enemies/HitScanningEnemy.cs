@@ -16,36 +16,6 @@ public class HitScanningEnemy: Enemy
         targetDirection = player.position - head.position;
     }
 
-    void Update()
-    {
-        UpdateTargetDirection();
-        switch (CurrentState) {
-            case EnemyState.DEAD:
-                break;
-            case EnemyState.IDLE:
-                LookForPlayer();
-                break;
-            case EnemyState.STOPPED:
-                Stop();
-                break;
-            case EnemyState.BACKUP:
-                BackUp();
-                break;
-            case EnemyState.ATTACKING:
-                AttackPlayer();
-                break;
-            case EnemyState.SEARCHING:
-                SearchPlayer();
-                break;
-        }
-        UpdateCooldownTimer();
-    }
-
-    private void LateUpdate()
-    {
-        UpdateState();
-    }
-
     public override void UpdateState()
     {
         if (CurrentState != NextState)
@@ -85,19 +55,6 @@ public class HitScanningEnemy: Enemy
         RotateTowardsPlayer();
         ShootAtPlayer();
         CheckIfPlayerLost();
-    }
-
-    private void Stop()
-    {
-        if (stoppedTimer >= StoppedCooldown)
-        {
-            stoppedTimer = 0f;
-            NextState = EnemyState.SEARCHING;
-        }
-        else
-        {
-            stoppedTimer = Mathf.Clamp(stoppedTimer + Time.deltaTime, 0f, StoppedCooldown);
-        }
     }
 
     public override void SearchPlayer()

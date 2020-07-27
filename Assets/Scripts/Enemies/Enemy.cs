@@ -19,17 +19,16 @@ public class Enemy: MonoBehaviour, ISubscriber
     public int MaxHealth = 100;
     [System.NonSerialized]
     public float CurrentHealth = 100;
+
     [Header("Cooldowns")]
-    public float AttackCooldown = 1f;
+    public float Cooldown = 1f;
     [System.NonSerialized]
-    public float AttackTimer = 0f;
+    public float CooldownTimer = 0f;
     protected bool isOnCooldown = false;
 
-    public float StoppedCooldown = 1f;
-    [System.NonSerialized]
-    public float stoppedTimer = 0f;
     [Header("Splatter Particle")]
     public GameObject splatter;
+
     [Header("Ray Casting Input")]
     [SerializeField]
     protected Transform player;
@@ -45,10 +44,43 @@ public class Enemy: MonoBehaviour, ISubscriber
     public virtual void AttackPlayer() { }
     public virtual void SearchPlayer() { }
     public virtual void BackUp() { }
+    public virtual void Stop() { }
     public virtual void CheckIfPlayerLost() { }
     public virtual void LookForPlayer() { }
     public virtual void RotateTowardsPlayer() { }
     public virtual void UpdateState() { }
+
+    void Update()
+    {
+        UpdateTargetDirection();
+        switch (CurrentState)
+        {
+            case EnemyState.DEAD:
+                break;
+            case EnemyState.IDLE:
+                LookForPlayer();
+                break;
+            case EnemyState.STOPPED:
+                Stop();
+                break;
+            case EnemyState.BACKUP:
+                BackUp();
+                break;
+            case EnemyState.ATTACKING:
+                AttackPlayer();
+                break;
+            case EnemyState.SEARCHING:
+                SearchPlayer();
+                break;
+        }
+        UpdateCooldownTimer();
+    }
+
+    private void LateUpdate()
+    {
+        UpdateState();
+    }
+
     public void TakeDamage(float damage) {
         CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth);
         if(CurrentHealth == 0f)
@@ -71,13 +103,13 @@ public class Enemy: MonoBehaviour, ISubscriber
     {
         if (isOnCooldown)
         {
-            if (AttackTimer >= AttackCooldown)
+            if (CooldownTimer < Cooldown)
             {
-                AttackTimer = Mathf.Clamp(AttackTimer + Time.deltaTime, 0f, AttackCooldown);
+                CooldownTimer = Mathf.Clamp(CooldownTimer + Time.deltaTime, 0f, Cooldown);
             }
             else
             {
-                AttackTimer = 0f;
+                CooldownTimer = 0f;
                 isOnCooldown = false;
             }
         }

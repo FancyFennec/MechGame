@@ -22,37 +22,6 @@ public class MeleeEnemy: Enemy
         explosions.ForEach(expl => expl.Stop());
     }
 
-    void Update()
-    {
-        UpdateCooldownTimer();
-        UpdateTargetDirection();
-        switch (CurrentState)
-        {
-            case EnemyState.DEAD:
-                break;
-            case EnemyState.IDLE:
-                LookForPlayer();
-                break;
-            case EnemyState.STOPPED:
-                Stop();
-                break;
-            case EnemyState.BACKUP:
-                BackUp();
-                break;
-            case EnemyState.ATTACKING:
-                AttackPlayer();
-                break;
-            case EnemyState.SEARCHING:
-                SearchPlayer();
-                break;
-        }
-    }
-
-    private void LateUpdate()
-    {
-        UpdateState();
-    }
-
     public override void UpdateState()
     {
         if (CurrentState != NextState)
@@ -89,7 +58,7 @@ public class MeleeEnemy: Enemy
             CurrentState = NextState;
         }
 
-        if(AttackTimer != 0f) AttackTimer = Mathf.Clamp(AttackTimer - Time.deltaTime, 0f, AttackCooldown);
+        if(CooldownTimer != 0f) CooldownTimer = Mathf.Clamp(CooldownTimer - Time.deltaTime, 0f, Cooldown);
         playerNotSeenSinceTimer = IsPlayerVisible() ? 0f : playerNotSeenSinceTimer + Time.deltaTime;
     }
 
@@ -98,19 +67,6 @@ public class MeleeEnemy: Enemy
         RotateTowardsDestination();
         PunchPlayer();
         CheckIfPlayerLost();
-    }
-
-    private void Stop()
-    {
-        if (stoppedTimer == StoppedCooldown)
-        {
-            stoppedTimer = 0f;
-            NextState = EnemyState.SEARCHING;
-        }
-        else
-        {
-            stoppedTimer = Mathf.Clamp(stoppedTimer + Time.deltaTime, 0f, StoppedCooldown);
-        }
     }
 
     public override void SearchPlayer()
@@ -155,7 +111,7 @@ public class MeleeEnemy: Enemy
     private void PunchPlayer()
     {
         navMeshAgent.destination = player.position;
-        if (IsAtDestination() || (player.position - transform.position).magnitude < 1.5f)
+        if ((player.position - transform.position).magnitude < 1.5f)
         {
             if (!isOnCooldown)
             {
