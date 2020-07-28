@@ -8,7 +8,7 @@ using UnityEngine;
 public class AssaultRifle : Weapon
 {
 
-	public AssaultRifle() : base(WeaponType.AUTOMATIC, Projectile.ProjectileType.PENETRATING, 10, 30, 10)
+	public AssaultRifle() : base(WeaponType.AUTOMATIC, ProjectileType.PENETRATING, 10, 30, 10)
 	{
 		CreateRecoilPattern();
 	}

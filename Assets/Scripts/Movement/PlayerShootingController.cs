@@ -55,7 +55,7 @@ public class PlayerShootingController : MonoBehaviour
 
 	private void SpawnProjectile()
 	{
-		if (Projectile.ProjectileType.EXPLOSIVE.Equals(currentWeapon.projectileType))
+		if (Weapon.ProjectileType.EXPLOSIVE.Equals(currentWeapon.projectileType))
 		{
 			Instantiate(
 				rocket,

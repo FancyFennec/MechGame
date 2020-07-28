@@ -14,8 +14,14 @@ public class Weapon
 		AUTOMATIC
 	}
 
+	public enum ProjectileType
+	{
+		EXPLOSIVE,
+		PENETRATING
+	}
+
 	public WeaponType weaponType { get; private set; }
-	public Projectile.ProjectileType projectileType { get; private set; }
+	public ProjectileType projectileType { get; private set; }
 	public int damage { get; private set; }
 	public float rps { get; private set; }
 	public int ammo { get; set; }
@@ -34,7 +40,7 @@ public class Weapon
 	protected List<Vector2> recoilPattern = new List<Vector2>();
 	private int recoilIndex = 0;
 
-	public Weapon(WeaponType weaponType, Projectile.ProjectileType projectileType, int damage, int clipSize, float rps)
+	public Weapon(WeaponType weaponType, ProjectileType projectileType, int damage, int clipSize, float rps)
 	{
 		this.damage = damage;
 		this.ammo = clipSize;

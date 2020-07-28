@@ -9,7 +9,7 @@ using UnityEngine;
 public class AutomaticRocketLauncher : Weapon
 {
 
-	public AutomaticRocketLauncher() : base(WeaponType.AUTOMATIC, Projectile.ProjectileType.EXPLOSIVE, 50, 30, 7)
+	public AutomaticRocketLauncher() : base(WeaponType.AUTOMATIC, ProjectileType.EXPLOSIVE, 50, 30, 7)
 	{
 		CreateRecoilPattern();
 	}
