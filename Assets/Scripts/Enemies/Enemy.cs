@@ -146,7 +146,7 @@ public class Enemy: MonoBehaviour, ISubscriber
     protected bool IsAimingAtPlayer()
     {
         Vector3 playerDirection = (player.position - head.position).normalized;
-        return Vector3.Dot(playerDirection, transform.forward) > 0.9f &&
+        return Vector3.Dot(playerDirection, transform.forward) > 0.99f &&
                                 Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";
     }

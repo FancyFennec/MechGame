@@ -109,17 +109,11 @@ public class HitScanningEnemy: Enemy
     {
         if (!isOnCooldown && IsAimingAtPlayer())
 		{
-            //TODO: shoot projectile
-            //bulletTrails.Emit(1);
             try
             {
                 if (UnityEngine.Random.Range(0, 10) > 3)
                 {
                     player.parent.GetComponentInChildren<Health>().TakeDamage(5);
-                }
-                else
-                {
-                    //TODO: cast a bullet trail
                 }
             }
             catch (Exception)

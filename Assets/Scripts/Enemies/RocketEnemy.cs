@@ -22,6 +22,7 @@ public class RocketEnemy : Enemy
     {
         if (CurrentState != NextState)
         {
+            Debug.Log("Changing state to : " + NextState);
             switch (NextState)
             {
                 case EnemyState.DEAD:
@@ -35,14 +36,7 @@ public class RocketEnemy : Enemy
                     navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
-                    if(!isOnCooldown)
-					{
-                        isOnCooldown = true;
-                        navMeshAgent.isStopped = true;
-                    } else
-					{
-                        NextState = CurrentState;
-					}
+                    navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
@@ -118,14 +112,26 @@ public class RocketEnemy : Enemy
 
     private void ShootAtPlayer()
     {
-        if (!isOnCooldown)
+        if (!isOnCooldown && IsAimingAtPlayer())
         {
             try
             {
+				Vector3 rocketSpawnPosition = (transform.position + 2 * transform.up + transform.forward * 1.5f);
+				Vector3 rocketDirection = player.position - rocketSpawnPosition;
                 Instantiate(
                 rocket,
-                transform.position + transform.up * 1.5f,
-                Quaternion.LookRotation(transform.up, transform.forward)
+                rocketSpawnPosition,
+                Quaternion.LookRotation(rocketDirection.normalized, transform.up)
+                );
+                Instantiate(
+                rocket,
+                rocketSpawnPosition + transform.right * 0.2f,
+                Quaternion.LookRotation(rocketDirection.normalized + transform.right * 0.1f, transform.up)
+                );
+                Instantiate(
+                rocket,
+                rocketSpawnPosition - transform.right * 0.2f,
+                Quaternion.LookRotation(rocketDirection.normalized - transform.right * 0.1f, transform.up)
                 );
             }
             catch (Exception)
