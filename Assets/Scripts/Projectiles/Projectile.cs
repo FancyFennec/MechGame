@@ -12,8 +12,9 @@ public class Projectile : MonoBehaviour
 	}
 
 	public Association association;
-	private const float projectileForce = 100f;
+	public float projectileForce = 100f;
 	public int Damage = 200;
+	public bool useGravity = false;
 
 	private Vector3 lastPosition;
 
@@ -26,6 +27,7 @@ public class Projectile : MonoBehaviour
 		try
 		{
 			GetComponent<Rigidbody>().AddForce(transform.forward * projectileForce);
+			GetComponent<Rigidbody>().useGravity = useGravity;
 		} catch (Exception)
 		{
 			Debug.LogError("No Rigidbody attached to Rocket script!");

@@ -20,7 +20,6 @@ public class HitScanningEnemy: Enemy
     {
         if (CurrentState != NextState)
         {
-            Debug.Log("Switching State: " + NextState);
             switch (NextState)
             {
                 case EnemyState.DEAD:
@@ -33,7 +32,7 @@ public class HitScanningEnemy: Enemy
                 case EnemyState.ATTACKING:
                     navMeshAgent.isStopped = true;
                     break;
-                case EnemyState.BACKUP:
+                case EnemyState.MOVING:
                     navMeshAgent.isStopped = false;
                     Vector3 backupDirection = new Vector3(
                         UnityEngine.Random.Range(-1f, 1f),
@@ -96,7 +95,7 @@ public class HitScanningEnemy: Enemy
             0.95f);
     }
 
-    public override void BackUp()
+    public override void Move()
     {
         RotateTowardsDestination();
         if (IsAtDestination())
@@ -121,7 +120,7 @@ public class HitScanningEnemy: Enemy
                 Debug.Log("Can't cause damage");
             }
             isOnCooldown = true;
-            NextState = EnemyState.BACKUP;
+            NextState = EnemyState.MOVING;
         }
     }
 }

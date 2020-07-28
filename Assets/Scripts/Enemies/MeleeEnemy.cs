@@ -46,7 +46,7 @@ public class MeleeEnemy: Enemy
                     navMeshAgent.isStopped = false;
                     navMeshAgent.destination = player.position;
                     break;
-                case EnemyState.BACKUP:
+                case EnemyState.MOVING:
                     navMeshAgent.isStopped = false;
                     Vector3 backupDirection = new Vector3(
                         UnityEngine.Random.Range(-1f, 1f), 
@@ -83,7 +83,7 @@ public class MeleeEnemy: Enemy
         }
     }
 
-    public override void BackUp()
+    public override void Move()
     {
         RotateTowardsDestination();
         if (IsAtDestination())
@@ -126,7 +126,7 @@ public class MeleeEnemy: Enemy
                     Debug.Log("Can't cause damage");
                 }
                 isOnCooldown = true;
-                NextState = EnemyState.BACKUP;
+                NextState = EnemyState.MOVING;
             }
         }
     }

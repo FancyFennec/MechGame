@@ -11,7 +11,7 @@ public class Enemy: MonoBehaviour, ISubscriber
         DEAD,
         IDLE,
         STOPPED,
-        BACKUP,
+        MOVING,
         SEARCHING,
         ATTACKING
     }
@@ -43,7 +43,7 @@ public class Enemy: MonoBehaviour, ISubscriber
 
     public virtual void AttackPlayer() { }
     public virtual void SearchPlayer() { }
-    public virtual void BackUp() { }
+    public virtual void Move() { }
     public virtual void Stop() { }
     public virtual void CheckIfPlayerLost() { }
     public virtual void LookForPlayer() { }
@@ -63,8 +63,8 @@ public class Enemy: MonoBehaviour, ISubscriber
             case EnemyState.STOPPED:
                 Stop();
                 break;
-            case EnemyState.BACKUP:
-                BackUp();
+            case EnemyState.MOVING:
+                Move();
                 break;
             case EnemyState.ATTACKING:
                 AttackPlayer();
@@ -155,7 +155,7 @@ public class Enemy: MonoBehaviour, ISubscriber
     {
 		switch (CurrentState)
 		{
-            case EnemyState.BACKUP:
+            case EnemyState.MOVING:
                 break;
             case EnemyState.ATTACKING:
                 break;

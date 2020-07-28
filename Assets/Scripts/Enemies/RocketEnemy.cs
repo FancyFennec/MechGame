@@ -38,6 +38,11 @@ public class RocketEnemy : Enemy
                 case EnemyState.ATTACKING:
                     navMeshAgent.isStopped = true;
                     break;
+                case EnemyState.MOVING:
+                    navMeshAgent.isStopped = false;
+                    Vector3 layerDirection = player.position - transform.position;
+                    navMeshAgent.destination = transform.position + 5f * layerDirection.normalized;
+                    break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
                     navMeshAgent.destination = player.position;
@@ -52,6 +57,15 @@ public class RocketEnemy : Enemy
         RotateTowardsPlayer();
         ShootAtPlayer();
         CheckIfPlayerLost();
+    }
+
+    public override void Move()
+    {
+        RotateTowardsDestination();
+        if (IsAtDestination())
+        {
+            NextState = EnemyState.ATTACKING;
+        }
     }
 
     public override void SearchPlayer()
@@ -101,15 +115,6 @@ public class RocketEnemy : Enemy
             0.95f);
     }
 
-    public override void BackUp()
-    {
-        RotateTowardsDestination();
-        if (IsAtDestination())
-        {
-            NextState = EnemyState.ATTACKING;
-        }
-    }
-
     private void ShootAtPlayer()
     {
         if (!isOnCooldown && IsAimingAtPlayer())
@@ -139,7 +144,7 @@ public class RocketEnemy : Enemy
                 Debug.Log("Can't cause damage");
             }
             isOnCooldown = true;
-            NextState = EnemyState.STOPPED;
+            NextState = EnemyState.MOVING;
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 public class PlayerShootingController : MonoBehaviour
 {
@@ -57,9 +58,10 @@ public class PlayerShootingController : MonoBehaviour
 	{
 		if (Weapon.ProjectileType.EXPLOSIVE.Equals(currentWeapon.projectileType))
 		{
+			
 			Instantiate(
 				rocket,
-				transform.position + transform.forward * 1.5f,
+				transform.position + transform.forward * 1.5f + (AlternateFire() ? -0.5f : 0.5f) * transform.right,
 				Quaternion.LookRotation(transform.forward, transform.up)
 				);
 		}
@@ -67,10 +69,15 @@ public class PlayerShootingController : MonoBehaviour
 		{
 			Instantiate(
 				bullet,
-				transform.position + transform.forward * 1.5f,
+				transform.position + transform.forward * 1.5f + (AlternateFire() ? -0.5f : 0.5f) * transform.right,
 				Quaternion.LookRotation(transform.forward, transform.up)
 				);
 		}
+	}
+
+	private bool AlternateFire()
+	{
+		return currentWeapon.ammo % 2 == 0;
 	}
 
 	public void LateUpdate()
