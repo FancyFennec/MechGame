@@ -17,6 +17,7 @@ public class Projectile : MonoBehaviour
 	public bool useGravity = false;
 
 	private Vector3 lastPosition;
+	protected Vector3 direction;
 
 	protected bool hasHitSomething = false;
 	protected RaycastHit hit;
@@ -32,15 +33,18 @@ public class Projectile : MonoBehaviour
 		{
 			Debug.LogError("No Rigidbody attached to Rocket script!");
 		}
-		Destroy(this.gameObject, 5f);
+		Destroy(this.gameObject, 15f);
 	}
 
 	public virtual void FixedUpdate()
 	{
-		Vector3 direction = transform.position - lastPosition;
-		if (Physics.Raycast(lastPosition, direction, out hit, direction.magnitude, GetLayerMask()))
+		direction = transform.position - lastPosition;
+		if(direction != Vector3.zero)
 		{
-			hasHitSomething = true;
+			if (Physics.Raycast(lastPosition, direction, out hit, direction.magnitude, GetLayerMask()))
+			{
+				hasHitSomething = true;
+			}
 		}
 		lastPosition = transform.position;
 	}
