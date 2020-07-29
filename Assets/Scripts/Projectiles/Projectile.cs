@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour
 		Destroy(this.gameObject, 5f);
 	}
 
-	void FixedUpdate()
+	public virtual void FixedUpdate()
 	{
 		Vector3 direction = transform.position - lastPosition;
 		if (Physics.Raycast(lastPosition, direction, out hit, direction.magnitude, GetLayerMask()))

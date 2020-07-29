@@ -10,8 +10,6 @@ public class PlayerShootingController : MonoBehaviour
 {
     public TextMeshProUGUI AmmoCountText;
 
-    private GameObject rocket;
-    private GameObject bullet;
     private readonly List<Weapon> weapons = new List<Weapon> { 
         new Pistol(), 
         new AssaultRifle(),
@@ -29,9 +27,10 @@ public class PlayerShootingController : MonoBehaviour
 		SubscribeToShootSignal();
 		currentWeapon = weapons[0];
 		movementController = GetComponent<PlayerMovementController>();
-		rocket = Resources.Load<GameObject>("Rocket");
-        bullet = Resources.Load<GameObject>("Bullet");
-        rocket.layer = this.gameObject.layer;
+		foreach(Weapon weapon in weapons)
+		{
+			weapon.projectile = Resources.Load<GameObject>(weapon.projectileAssetName);
+		}
 	}
 
 	void Update()
@@ -56,23 +55,11 @@ public class PlayerShootingController : MonoBehaviour
 
 	private void SpawnProjectile()
 	{
-		if (Weapon.ProjectileType.EXPLOSIVE.Equals(currentWeapon.projectileType))
-		{
-			
-			Instantiate(
-				rocket,
+		Instantiate(
+				currentWeapon.projectile,
 				transform.position + transform.forward * 1.5f + (AlternateFire() ? -0.5f : 0.5f) * transform.right,
 				Quaternion.LookRotation(transform.forward, transform.up)
 				);
-		}
-		else
-		{
-			Instantiate(
-				bullet,
-				transform.position + transform.forward * 1.5f + (AlternateFire() ? -0.5f : 0.5f) * transform.right,
-				Quaternion.LookRotation(transform.forward, transform.up)
-				);
-		}
 	}
 
 	private bool AlternateFire()
