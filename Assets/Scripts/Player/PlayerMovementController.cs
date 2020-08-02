@@ -15,6 +15,7 @@ public class PlayerMovementController : MonoBehaviour
     public Vector2 recoil = Vector2.zero;
     bool isJumping = false;
     float jumpMomentum = 0f;
+    private float floatingTime = 0f;
 
 
     void Start()
@@ -28,9 +29,10 @@ public class PlayerMovementController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space) && characterController.isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && floatingTime < 0.2f)
         {
             isJumping = true;
+            jumpMomentum = movementSettings.JumpMomentum;
         }
         RotateCamera();
         MovePlayer();
@@ -38,6 +40,22 @@ public class PlayerMovementController : MonoBehaviour
 
     void LateUpdate()
     {
+        if (characterController.isGrounded)
+        {
+            floatingTime = 0f;
+            jumpMomentum = -0.1f;
+        }
+        else
+        {
+            floatingTime += Time.deltaTime;
+        }
+
+        if (isJumping)
+        {
+            isJumping = false;
+        }
+
+
         Vector2 recoilDirection = recoil.normalized;
         if(recoil.magnitude < 0.1f && !Input.GetMouseButton(0))
         {
@@ -77,23 +95,9 @@ public class PlayerMovementController : MonoBehaviour
         movementVector += (parentTransform.forward * vInput + parentTransform.right * hInput).normalized;
         movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSettings.MovementSpeed;
 
-        if (characterController.isGrounded)
-        {
-            if (isJumping)
-            {
-                isJumping = false;
-                jumpMomentum = movementSettings.JumpMomentum;
-            } else
-            {
-                jumpMomentum = 0f;
-            }
-        }
-        else
-        {
-            movementVector += Vector3.up * jumpMomentum;
-            jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
-        }
-        
+        movementVector += Vector3.up * jumpMomentum;
+        jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
+
         characterController.Move(movementVector * Time.smoothDeltaTime);
     }
 }
