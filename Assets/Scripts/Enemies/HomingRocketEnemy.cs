@@ -127,16 +127,6 @@ public class HomingRocketEnemy : Enemy
                 rocketSpawnPosition,
                 Quaternion.LookRotation(transform.up, transform.forward)
                 );
-				/*Instantiate(
-				rocket,
-				rocketSpawnPosition + transform.right * 0.2f,
-				Quaternion.LookRotation(transform.up + transform.right * 0.1f, transform.forward)
-				);
-				Instantiate(
-				rocket,
-				rocketSpawnPosition - transform.right * 0.2f,
-				Quaternion.LookRotation(transform.up - transform.right * 0.1f, transform.forward)
-				);*/
 			}
             catch (Exception)
             {

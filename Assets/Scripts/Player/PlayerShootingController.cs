@@ -14,8 +14,9 @@ public class PlayerShootingController : MonoBehaviour
         new Pistol(), 
         new AssaultRifle(),
         new RocketLauncher(),
-        new AutomaticRocketLauncher()
-    };
+        new AutomaticRocketLauncher(),
+		new GrenadeLauncher()
+	};
     private Weapon currentWeapon;
 
     private readonly List<String> numKeys = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9"};

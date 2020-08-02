@@ -18,10 +18,6 @@ public class Rocket: Projectile
 
 	private void LateUpdate()
 	{
-		if (hasHitSomething)
-		{
-			ExplodeAt(hit.point);
-		}
 	}
 
 	public void OnCollisionEnter(Collision collision)
@@ -29,13 +25,20 @@ public class Rocket: Projectile
 		ExplodeAt(collision.contacts[0].point);
 	}
 
+	private void OnDestroy()
+	{
+		ExplodeAt(transform.position);
+	}
+
 	private void ExplodeAt(Vector3 pos)
 	{
 		Destroy(Instantiate(explosion, pos, Quaternion.identity), 2f);
-
 		foreach (Collider collider in Physics.OverlapSphere(pos, ExplosionRadius))
 		{
-			float damagefactor = 1f - (collider.transform.position - pos).magnitude / ExplosionRadius;
+			Vector3 vector3 = collider.transform.position - pos;
+			vector3.Scale(new Vector3(1, 0, 1));
+
+			float damagefactor = Mathf.Clamp(1f - vector3.magnitude / ExplosionRadius, 0, 1);
 			DamageHitCollider(collider, damagefactor);
 			try
 			{

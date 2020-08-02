@@ -141,7 +141,7 @@ public class RocketEnemy : Enemy
             }
             catch (Exception)
             {
-                Debug.Log("Can't cause damage");
+                Debug.Log("Can't shoot");
             }
             isOnCooldown = true;
             NextState = EnemyState.MOVING;

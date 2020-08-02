@@ -13,14 +13,6 @@ public class Bullet : Projectile
 		blood = Resources.Load<GameObject>("Blood");
 	}
 
-	private void LateUpdate()
-	{
-		if (hasHitSomething)
-		{
-			ImpactAt(hit);
-		}
-	}
-
 	public void OnCollisionEnter(Collision collision)
 	{
 		ImpactAt(collision);

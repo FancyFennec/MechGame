@@ -13,13 +13,12 @@ public class Projectile : MonoBehaviour
 
 	public Association association;
 	public float projectileForce = 100f;
-	public int Damage = 200;
+	public int Damage = 100;
 	public bool useGravity = false;
 
 	private Vector3 lastPosition;
 	protected Vector3 direction;
 
-	protected bool hasHitSomething = false;
 	protected RaycastHit hit;
 
 	public virtual void Start()
@@ -39,25 +38,7 @@ public class Projectile : MonoBehaviour
 	public virtual void FixedUpdate()
 	{
 		direction = transform.position - lastPosition;
-		if(direction != Vector3.zero)
-		{
-			if (Physics.Raycast(lastPosition, direction, out hit, direction.magnitude, GetLayerMask()))
-			{
-				hasHitSomething = true;
-			}
-		}
 		lastPosition = transform.position;
-	}
-
-	private int GetLayerMask()
-	{
-		if (Association.HOSTILE.Equals(association))
-		{
-			return ~LayerMask.GetMask("Enemy");
-		} else
-		{
-			return ~LayerMask.GetMask("Player");
-		}
 	}
 
 	protected bool DamageHitCollider(Collider collider)
@@ -82,23 +63,9 @@ public class Projectile : MonoBehaviour
 		{
 			collider.GetComponent<Enemy>().TakeDamage(damagefactor * Damage);
 		}
-		catch (Exception)
+		catch (Exception e)
 		{
-			try
-			{
-				collider.GetComponentInChildren<Enemy>().TakeDamage(damagefactor * Damage);
-			}
-			catch (Exception)
-			{
-				try
-				{
-					collider.GetComponentInParent<Enemy>().TakeDamage(damagefactor * Damage);
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
+			return false;
 		}
 		return true;
 	}

@@ -26,18 +26,12 @@ public class HomingRocket: Projectile
 
 	private void LateUpdate()
 	{
-		if (hasHitSomething)
-		{
-			ExplodeAt(hit.point);
-		}
 		UpdateCooldownTimer();
 		RotateTowardsTarget();
 	}
 
 	public override void FixedUpdate()
 	{
-		base.FixedUpdate();
-
 		if (!isOnCooldown)
 		{
 			Vector3 correctionDirection = ((target.position - transform.position).normalized - transform.forward).normalized;
