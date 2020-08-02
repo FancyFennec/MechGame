@@ -39,35 +39,44 @@ public class PlayerMovementController : MonoBehaviour
     }
 
     void LateUpdate()
-    {
-        if (characterController.isGrounded)
-        {
-            floatingTime = 0f;
-            jumpMomentum = -0.1f;
-        }
-        else
-        {
-            floatingTime += Time.deltaTime;
-        }
+	{
+		ManageJumpMechanics();
+		ApplyRecoil();
+	}
 
-        if (isJumping)
-        {
-            isJumping = false;
-        }
+	private void ManageJumpMechanics()
+	{
+		if (characterController.isGrounded)
+		{
+			floatingTime = 0f;
+			jumpMomentum = -0.1f;
+		}
+		else
+		{
+			floatingTime += Time.deltaTime;
+		}
 
+		if (isJumping)
+		{
+			isJumping = false;
+		}
+	}
 
-        Vector2 recoilDirection = recoil.normalized;
-        if(recoil.magnitude < 0.1f && !Input.GetMouseButton(0))
-        {
-            recoil = Vector2.zero;
-        } else
-        {
-            recoil.x = Mathf.Clamp(recoil.x - recoilDirection.x * Time.deltaTime * 20f, -90f, 90f);
-            recoil.y = Mathf.Clamp(recoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f);
-        }
-    }
+	private void ApplyRecoil()
+	{
+		Vector2 recoilDirection = recoil.normalized;
+		if (recoil.magnitude < 0.1f && !Input.GetMouseButton(0))
+		{
+			recoil = Vector2.zero;
+		}
+		else
+		{
+			recoil.x = Mathf.Clamp(recoil.x - recoilDirection.x * Time.deltaTime * 20f, -90f, 90f);
+			recoil.y = Mathf.Clamp(recoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f);
+		}
+	}
 
-    void RotateCamera()
+	void RotateCamera()
     {
         float mouseX = Input.GetAxis(movementSettings.MouseXInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
         float mouseY = Input.GetAxis(movementSettings.MouseYInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);

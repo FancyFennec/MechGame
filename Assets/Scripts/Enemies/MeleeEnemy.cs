@@ -39,6 +39,7 @@ public class MeleeEnemy: Enemy
                     navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
+                    isOnCooldown = false;
                     navMeshAgent.isStopped = false;
                     navMeshAgent.destination = player.position;
                     break;
@@ -65,7 +66,7 @@ public class MeleeEnemy: Enemy
     public override void AttackPlayer()
     {
         RotateTowardsDestination();
-        PunchPlayer();
+        SetPlayerAsNavigationTarget();
         CheckIfPlayerLost();
     }
 
@@ -108,26 +109,34 @@ public class MeleeEnemy: Enemy
         }
     }
 
-    private void PunchPlayer()
+    private void SetPlayerAsNavigationTarget()
     {
         navMeshAgent.destination = player.position;
-        if ((player.position - transform.position).magnitude < 1.5f)
-        {
+    }
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.name == "Player")
+		{
             if (!isOnCooldown)
             {
-                try
-                {
-                    float damagefactor = 1.5f - navMeshAgent.remainingDistance;
-                    player.parent.GetComponentInChildren<Health>().TakeDamage(40 * damagefactor);
-                    explosions.ForEach(expl => expl.Play());
-                }
-                catch (Exception)
-                {
-                    Debug.Log("Can't cause damage");
-                }
-                isOnCooldown = true;
-                NextState = EnemyState.MOVING;
+                DamagePlayer();
             }
         }
-    }
+	}
+
+	private void DamagePlayer()
+	{
+		try
+		{
+			player.parent.GetComponentInChildren<Health>().TakeDamage(40);
+			explosions.ForEach(expl => expl.Play());
+		}
+		catch (Exception)
+		{
+			Debug.Log("Can't cause damage");
+		}
+		isOnCooldown = true;
+		NextState = EnemyState.MOVING;
+	}
 }
