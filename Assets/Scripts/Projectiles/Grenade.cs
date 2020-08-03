@@ -13,7 +13,7 @@ public class Grenade : Projectile
 	public override void Start()
 	{
 		base.Start();
-		explosion = Resources.Load<GameObject>("Explosion");
+		explosion = Resources.Load<GameObject>("BigExplosionEffect");
 	}
 
 	private void LateUpdate()
@@ -26,6 +26,11 @@ public class Grenade : Projectile
 		{
 			ExplodeAt(collision.contacts[0].point);
 		}
+	}
+
+	private void OnDestroy()
+	{
+		ExplodeAt(transform.position);
 	}
 
 	private void ExplodeAt(Vector3 pos)

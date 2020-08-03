@@ -114,16 +114,16 @@ public class MeleeEnemy: Enemy
         navMeshAgent.destination = player.position;
     }
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnTriggerEnter(Collider collision)
 	{
-		if (collision.gameObject.name == "Player")
-		{
+        if (collision.gameObject.name == "Player")
+        {
             if (!isOnCooldown)
             {
                 DamagePlayer();
             }
         }
-	}
+    }
 
 	private void DamagePlayer()
 	{

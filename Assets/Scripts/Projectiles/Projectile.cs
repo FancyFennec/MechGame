@@ -15,6 +15,7 @@ public class Projectile : MonoBehaviour
 	public float projectileForce = 100f;
 	public int Damage = 100;
 	public bool useGravity = false;
+	public float lifetime = 15f;
 
 	private Vector3 lastPosition;
 	protected Vector3 direction;
@@ -32,7 +33,7 @@ public class Projectile : MonoBehaviour
 		{
 			Debug.LogError("No Rigidbody attached to Rocket script!");
 		}
-		Destroy(this.gameObject, 15f);
+		Destroy(this.gameObject, lifetime);
 	}
 
 	public virtual void FixedUpdate()

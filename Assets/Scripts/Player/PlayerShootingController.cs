@@ -17,12 +17,16 @@ public class PlayerShootingController : MonoBehaviour
         new AutomaticRocketLauncher(),
 		new GrenadeLauncher()
 	};
+
     private Weapon currentWeapon;
 
-    private readonly List<String> numKeys = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    private readonly List<String> weaponKeys = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9"};
     public PlayerMovementController movementController;
 
-    PlayerShotSignal shootSignal = new PlayerShotSignal();
+	private float standardFov;
+	private float zoomedFov;
+
+	PlayerShotSignal shootSignal = new PlayerShotSignal();
     void Start()
 	{
 		SubscribeToShootSignal();
@@ -32,6 +36,8 @@ public class PlayerShootingController : MonoBehaviour
 		{
 			weapon.projectile = Resources.Load<GameObject>(weapon.projectileAssetName);
 		}
+		standardFov = Camera.main.fieldOfView;
+		zoomedFov = standardFov * 0.5f;
 	}
 
 	void Update()
@@ -42,11 +48,18 @@ public class PlayerShootingController : MonoBehaviour
 			SpawnProjectile();
 			AddRecoil();
 		}
+		currentWeapon.UpdateCooldownTimer(Time.deltaTime);
+		if (typeof(Pistol).IsInstanceOfType(currentWeapon) && Input.GetMouseButton(1))
+		{
+			Camera.main.fieldOfView = zoomedFov;
+		} else
+		{
+			Camera.main.fieldOfView = standardFov;
+		}
 		if (Input.GetKey(KeyCode.R))
         {
             currentWeapon.Reload();
         }
-        currentWeapon.UpdateCooldownTimer(Time.deltaTime);
     }
 
 	private void AddRecoil()
@@ -79,9 +92,9 @@ public class PlayerShootingController : MonoBehaviour
 
 	private void ChangeWeaponOnKeyPress()
 	{
-		numKeys.ForEach((i) =>
+		weaponKeys.ForEach((i) =>
 		{
-			int index = numKeys.IndexOf(i);
+			int index = weaponKeys.IndexOf(i);
 			if (Input.GetKeyDown(i) && index < weapons.Count)
 			{
 				currentWeapon = weapons[index];

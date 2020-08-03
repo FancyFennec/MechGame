@@ -13,7 +13,7 @@ public class Rocket: Projectile
 	public override void Start()
 	{
 		base.Start();
-		explosion = Resources.Load<GameObject>("Explosion");
+		explosion = Resources.Load<GameObject>("BigExplosionEffect");
 	}
 
 	private void LateUpdate()

@@ -20,7 +20,7 @@ public class HomingRocket: Projectile
 	public override void Start()
 	{
 		base.Start();
-		explosion = Resources.Load<GameObject>("Explosion");
+		explosion = Resources.Load<GameObject>("BigExplosionEffect");
 		target = GameObject.FindObjectsOfType<CharacterController>()[0].transform;
 	}
 

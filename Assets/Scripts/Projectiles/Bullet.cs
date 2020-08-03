@@ -30,16 +30,4 @@ public class Bullet : Projectile
 
 		Destroy(this.gameObject);
 	}
-
-	private void ImpactAt(RaycastHit hit)
-	{
-		if (DamageHitCollider(hit.collider))
-		{
-			Vector3 incomingVec = (hit.point - transform.position).normalized;
-			Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-			Destroy(Instantiate(blood, hit.point, Quaternion.LookRotation(reflectVec)), 1f);
-		}
-
-		Destroy(this.gameObject);
-	}
 }
