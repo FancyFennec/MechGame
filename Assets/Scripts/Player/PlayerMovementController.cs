@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour
 {
-    [SerializeField]
+	[SerializeField]
     private PlayerMovementSettings movementSettings;
 
     CharacterController characterController;
@@ -16,6 +16,13 @@ public class PlayerMovementController : MonoBehaviour
     bool isJumping = false;
     float jumpMomentum = 0f;
     private float floatingTime = 0f;
+    private const float floatingThreshold = 0.2f;
+    bool isBoosting = false;
+    private float boostingTime = 0f;
+    private const float boostingThreshold = 2.0f;
+    bool isBoostingOnCooldown = false;
+    private float boostingCooldownTimer = 0f;
+    private const float boostingCooldown = 2.0f;
 
 
     void Start()
@@ -29,11 +36,14 @@ public class PlayerMovementController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && floatingTime < 0.2f)
+        if (Input.GetKeyDown(KeyCode.Space) && floatingTime < floatingThreshold)
         {
             isJumping = true;
             jumpMomentum = movementSettings.JumpMomentum;
         }
+
+        isBoosting = Input.GetKey(KeyCode.Space) && !isBoostingOnCooldown && floatingTime > floatingThreshold;
+
         RotateCamera();
         MovePlayer();
     }
@@ -50,11 +60,36 @@ public class PlayerMovementController : MonoBehaviour
 		{
 			floatingTime = 0f;
 			jumpMomentum = -0.1f;
-		}
+        }
 		else
 		{
 			floatingTime += Time.deltaTime;
-		}
+
+            if(isBoosting)
+			{
+                boostingTime += Time.deltaTime;
+            } else
+			{
+                boostingTime = Mathf.Clamp(boostingTime - Time.deltaTime * 0.5f, 0f, boostingThreshold);
+            }
+
+			if (!isBoostingOnCooldown)
+			{
+                if (boostingTime >= boostingThreshold)
+                {
+                    isBoostingOnCooldown = true;
+                }
+            } else
+			{
+                boostingCooldownTimer += Time.deltaTime;
+                if (boostingCooldownTimer >= boostingCooldown)
+                {
+                    isBoostingOnCooldown = false;
+                    boostingCooldownTimer = 0f;
+                    boostingTime = 0f;
+                }
+            }
+        }
 
 		if (isJumping)
 		{
@@ -105,7 +140,15 @@ public class PlayerMovementController : MonoBehaviour
         movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSettings.MovementSpeed;
 
         movementVector += Vector3.up * jumpMomentum;
-        jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
+
+        if (isBoosting)
+        {
+            jumpMomentum -= movementSettings.Gravity * 0.2f * Time.smoothDeltaTime;
+        } else
+		{
+            jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
+        }
+        
 
         characterController.Move(movementVector * Time.smoothDeltaTime);
     }
