@@ -64,7 +64,7 @@ public class Projectile : MonoBehaviour
 		{
 			collider.GetComponent<Enemy>().TakeDamage(damagefactor * Damage);
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
 			return false;
 		}
