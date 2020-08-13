@@ -25,14 +25,17 @@ public class Projectile : MonoBehaviour
 	public virtual void Start()
 	{
 		lastPosition = transform.position;
-		try
+
+		Rigidbody rigidbody = GetComponent<Rigidbody>();
+		if(rigidbody != null)
 		{
-			GetComponent<Rigidbody>().AddForce(transform.forward * projectileForce);
+			rigidbody.AddForce(transform.forward * projectileForce);
 			GetComponent<Rigidbody>().useGravity = useGravity;
-		} catch (Exception)
+		} else
 		{
 			Debug.LogError("No Rigidbody attached to Rocket script!");
 		}
+
 		Destroy(this.gameObject, lifetime);
 	}
 
@@ -60,27 +63,23 @@ public class Projectile : MonoBehaviour
 
 	private bool DamageEnemy(Collider collider, float damagefactor)
 	{
-		try
-		{
-			collider.GetComponent<Enemy>().TakeDamage(damagefactor * Damage);
-		}
-		catch (Exception)
+		Enemy enemy = collider.GetComponent<Enemy>();
+		if(enemy == null)
 		{
 			return false;
 		}
+		enemy.TakeDamage(damagefactor * Damage);
 		return true;
 	}
 
 	private bool DamagePlayer(Collider collider, float damagefactor)
 	{
-		try
-		{
-			collider.GetComponentInChildren<Health>().TakeDamage(damagefactor * Damage);
-		}
-		catch (Exception)
+		Health health = collider.GetComponentInChildren<Health>();
+		if(health == null)
 		{
 			return false;
 		}
+		health.TakeDamage(damagefactor * Damage);
 		return true;
 	}
 }

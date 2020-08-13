@@ -28,6 +28,12 @@ public class Bullet : Projectile
 			Destroy(Instantiate(blood, contacPoint.point, Quaternion.LookRotation(reflectVec)), 1f);
 		}
 
+		Rigidbody rigidbody = collision.gameObject.GetComponent<Rigidbody>();
+		if(rigidbody != null)
+		{
+			rigidbody.AddForce(direction.normalized * 100f);
+		}
+
 		Destroy(this.gameObject);
 	}
 }

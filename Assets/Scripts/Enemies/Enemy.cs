@@ -153,15 +153,18 @@ public class Enemy: MonoBehaviour, ISubscriber
 
     public void Notify()
     {
-		switch (CurrentState)
+        if((transform.position - Camera.main.transform.position).magnitude < 50f)
 		{
-            case EnemyState.MOVING:
-                break;
-            case EnemyState.ATTACKING:
-                break;
-            default:
-                NextState = EnemyState.ATTACKING;
-                break;
+            switch (CurrentState)
+            {
+                case EnemyState.MOVING:
+                    break;
+                case EnemyState.ATTACKING:
+                    break;
+                default:
+                    NextState = EnemyState.ATTACKING;
+                    break;
+            }
         }
     }
 }

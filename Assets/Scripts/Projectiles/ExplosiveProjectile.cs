@@ -6,7 +6,7 @@ using UnityEditor.Timeline;
 public class ExplosiveProjectile : Projectile
 {
 	protected GameObject explosion;
-	private float ExplosionRadius = 2f;
+	private readonly float ExplosionRadius = 2f;
 	private const int ExplosionForce = 500;
 
 	public override void Start()
@@ -25,11 +25,12 @@ public class ExplosiveProjectile : Projectile
 
 			float damagefactor = Mathf.Clamp(1f - vector3.magnitude / ExplosionRadius, 0, 1);
 			DamageHitCollider(collider, damagefactor);
-			try
+
+			Rigidbody rigidbody = collider.GetComponent<Rigidbody>();
+			if(rigidbody != null)
 			{
-				collider.GetComponent<Rigidbody>().AddExplosionForce(ExplosionForce, pos, 6);
+				rigidbody.AddExplosionForce(ExplosionForce, pos, 6);
 			}
-			catch (Exception) { }
 		}
 		Destroy(this.gameObject);
 	}
