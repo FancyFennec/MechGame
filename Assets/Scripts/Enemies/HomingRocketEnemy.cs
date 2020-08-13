@@ -15,7 +15,7 @@ public class HomingRocketEnemy : Enemy
         targetDirection = player.position - head.position;
 
         navMeshAgent = GetComponent<NavMeshAgent>();
-        rocket = Resources.Load<GameObject>("HomingRocket");
+        rocket = Resources.Load<GameObject>("Projectiles/HomingRocket");
     }
 
     public override void UpdateState()

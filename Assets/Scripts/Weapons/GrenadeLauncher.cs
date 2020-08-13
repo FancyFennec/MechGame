@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class GrenadeLauncher : Weapon
 {
-	public GrenadeLauncher() : base(WeaponType.AUTOMATIC, "Grenade", 70, 20, 5)
+	public GrenadeLauncher() : base(WeaponType.AUTOMATIC, "Projectiles/Grenade", 70, 20, 5)
 	{
 		CreateRecoilPattern();
 	}

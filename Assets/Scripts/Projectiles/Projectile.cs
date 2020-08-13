@@ -74,7 +74,7 @@ public class Projectile : MonoBehaviour
 
 	private bool DamagePlayer(Collider collider, float damagefactor)
 	{
-		Health health = collider.GetComponentInChildren<Health>();
+		Health health = collider.GetComponent<Health>();
 		if(health == null)
 		{
 			return false;

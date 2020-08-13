@@ -25,8 +25,7 @@ public class PlayerShootingController : MonoBehaviour
 
 	private float standardFov;
 	private float zoomedFov;
-
-	PlayerShotSignal shootSignal = new PlayerShotSignal();
+	readonly PlayerShotSignal shootSignal = new PlayerShotSignal();
     void Start()
 	{
 		SubscribeToShootSignal();
@@ -71,8 +70,10 @@ public class PlayerShootingController : MonoBehaviour
 	{
 		Instantiate(
 				currentWeapon.projectile,
-				transform.position + transform.forward * 1.5f + (AlternateFire() ? -0.5f : 0.5f) * transform.right,
-				Quaternion.LookRotation(transform.forward, transform.up)
+				Camera.main.transform.position + 
+				Camera.main.transform.forward * 1.5f + 
+				Camera.main.transform.right * (AlternateFire() ? -0.5f : 0.5f),
+				Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 				);
 	}
 

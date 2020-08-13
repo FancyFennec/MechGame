@@ -8,7 +8,6 @@ public class PlayerMovementController : MonoBehaviour
     private PlayerMovementSettings movementSettings;
 
     CharacterController characterController;
-    Transform parentTransform;
     private float xClamp = 0f;
     private float yClamp = 0f;
     [System.NonSerialized]
@@ -30,8 +29,7 @@ public class PlayerMovementController : MonoBehaviour
         Application.targetFrameRate = 120;
 
         Cursor.lockState = CursorLockMode.Locked;
-        characterController = GetComponentInParent<CharacterController>();
-        parentTransform = characterController.transform;
+        characterController = GetComponent<CharacterController>();
     }
 
     void Update()
@@ -116,17 +114,17 @@ public class PlayerMovementController : MonoBehaviour
         float mouseX = Input.GetAxis(movementSettings.MouseXInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
         float mouseY = Input.GetAxis(movementSettings.MouseYInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
 
-        Vector3 eulerRotation = transform.eulerAngles;
+        Vector3 cameraRotation = Camera.main.transform.eulerAngles;
         xClamp = Mathf.Clamp(xClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
         float newXRotation = Mathf.Clamp(xClamp + recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
-        eulerRotation.x = -newXRotation;
-        transform.eulerAngles = eulerRotation;
+        cameraRotation.x = -newXRotation;
+        Camera.main.transform.eulerAngles = cameraRotation;
 
-        Vector3 parentEulerRotation = parentTransform.eulerAngles;
+        Vector3 bodyRotation = transform.eulerAngles;
         yClamp += mouseX;
         float newYRotation = yClamp + recoil.y;
-        parentEulerRotation.y = newYRotation;
-        parentTransform.eulerAngles = parentEulerRotation;
+        bodyRotation.y = newYRotation;
+        transform.eulerAngles = bodyRotation;
     }
 
     void MovePlayer()
@@ -136,7 +134,7 @@ public class PlayerMovementController : MonoBehaviour
         float hInput = Input.GetAxisRaw(movementSettings.HorizontalInput);
         float vInput = Input.GetAxisRaw(movementSettings.VerticalInput);
 
-        movementVector += (parentTransform.forward * vInput + parentTransform.right * hInput).normalized;
+        movementVector += (transform.forward * vInput + transform.right * hInput).normalized;
         movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSettings.MovementSpeed;
 
         movementVector += Vector3.up * jumpMomentum;

@@ -108,16 +108,9 @@ public class HitScanningEnemy: Enemy
     {
         if (!isOnCooldown && IsAimingAtPlayer())
 		{
-            try
+            if (UnityEngine.Random.Range(0, 10) > 3)
             {
-                if (UnityEngine.Random.Range(0, 10) > 3)
-                {
-                    player.parent.GetComponentInChildren<Health>().TakeDamage(5);
-                }
-            }
-            catch (Exception)
-            {
-                Debug.Log("Can't cause damage");
+                player.parent.GetComponentInParent<Health>().TakeDamage(5);
             }
             isOnCooldown = true;
             NextState = EnemyState.MOVING;

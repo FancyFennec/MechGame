@@ -17,8 +17,8 @@ public class Health : MonoBehaviour
     {
         CurrentHealth = MaxHealth;
         HealthText.text = CurrentHealth.ToString();
-        PlayerMovementController = transform.parent.GetComponentInChildren<PlayerMovementController>();
-        PlayerShootingController = transform.parent.GetComponentInChildren<PlayerShootingController>();
+        PlayerMovementController = transform.GetComponent<PlayerMovementController>();
+        PlayerShootingController = transform.GetComponent<PlayerShootingController>();
     }
 
     // Update is called once per frame

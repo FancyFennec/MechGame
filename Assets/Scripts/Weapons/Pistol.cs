@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Pistol : Weapon
 {
-	public Pistol() : base(WeaponType.SEMI_AUTOMATIC, "Bullet", 34, 10, 3)
+	public Pistol() : base(WeaponType.SEMI_AUTOMATIC, "Projectiles/Bullet", 34, 10, 3)
 	{
 		CreateRecoilPattern();
 	}
