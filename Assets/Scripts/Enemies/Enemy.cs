@@ -85,6 +85,12 @@ public class Enemy: MonoBehaviour, ISubscriber
     }
 
     public void TakeDamage(float damage) {
+
+		if (CurrentState.Equals(EnemyState.IDLE))
+		{
+            NextState = EnemyState.ATTACKING;
+		}
+
         CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth);
         if(CurrentHealth == 0f)
         {

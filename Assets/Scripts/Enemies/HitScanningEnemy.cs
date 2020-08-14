@@ -7,11 +7,14 @@ using UnityEngine.AI;
 
 public class HitScanningEnemy: Enemy
 {
+
+    GameObject bullet;
     public override void Start()
     {
         base.Start();
         navMeshAgent = GetComponent<NavMeshAgent>();
         targetDirection = player.position - head.position;
+        bullet = Resources.Load<GameObject>("Projectiles/EnemyBullet");
     }
 
     public override void UpdateState()
@@ -106,10 +109,13 @@ public class HitScanningEnemy: Enemy
     {
         if (!isOnCooldown && IsAimingAtPlayer())
 		{
-            if (UnityEngine.Random.Range(0, 10) > 3)
-            {
-                player.parent.GetComponentInParent<Health>().TakeDamage(5);
-            }
+            Vector3 rocketSpawnPosition = transform.position + transform.up + transform.forward * 1.5f;
+            Vector3 rocketDirection = player.position - rocketSpawnPosition;
+            Instantiate(
+            bullet,
+            rocketSpawnPosition,
+            Quaternion.LookRotation(rocketDirection.normalized, transform.up)
+            );
             isOnCooldown = true;
             NextState = EnemyState.MOVING;
         }

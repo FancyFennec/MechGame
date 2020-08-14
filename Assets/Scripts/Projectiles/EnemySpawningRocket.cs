@@ -8,19 +8,20 @@ using System.Linq;
 public class EnemySpawningRocket : ExplosiveProjectile
 {
 
-	System.Collections.Generic.List<UnityEngine.Object> enemies;
+	System.Collections.Generic.List<GameObject> enemies;
 
 	public override void Start()
 	{
 		base.Start();
-		enemies = Resources.LoadAll("Enemies").ToList();
+		enemies = Resources.LoadAll<GameObject>("Enemies").ToList();
 	}
 
 	public void OnCollisionEnter(Collision collision)
 	{
 		ExplodeAt(collision.contacts[0].point);
-		Instantiate(enemies[UnityEngine.Random.Range(0, enemies.Count)], 
+		GameObject spawnedEnemy = Instantiate<GameObject>(enemies[UnityEngine.Random.Range(0, enemies.Count)], 
 			collision.contacts[0].point, 
 			Quaternion.identity);
+		spawnedEnemy.transform.parent = GameObject.Find("Enemies").transform;
 	}
 }

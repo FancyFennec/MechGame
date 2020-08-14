@@ -8,7 +8,7 @@ using UnityEngine.AI;
 public class MeleeEnemy: Enemy
 {
 
-    private List<ParticleSystem> explosions;
+    private GameObject explosion;
     
     private float playerNotSeenSinceTimer = 0f;
 
@@ -16,6 +16,7 @@ public class MeleeEnemy: Enemy
     {
         base.Start();
         navMeshAgent = GetComponent<NavMeshAgent>();
+        explosion = Resources.Load<GameObject>("BigExplosionEffect");
         targetDirection = Vector3.forward;
     }
 
@@ -124,16 +125,9 @@ public class MeleeEnemy: Enemy
 
 	private void DamagePlayer()
 	{
-		try
-		{
-			player.parent.GetComponentInChildren<Health>().TakeDamage(40);
-			explosions.ForEach(expl => expl.Play());
-		}
-		catch (Exception)
-		{
-			Debug.Log("Can't cause damage");
-		}
-		isOnCooldown = true;
+        player.GetComponentInParent<Health>().TakeDamage(40);
+        Destroy(Instantiate(this.explosion, transform.position, Quaternion.identity), 3f);
+        isOnCooldown = true;
 		NextState = EnemyState.MOVING;
 	}
 }
