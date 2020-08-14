@@ -21,12 +21,6 @@ public class Health : MonoBehaviour
         PlayerShootingController = transform.GetComponent<PlayerShootingController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void TakeDamage(float damage)
     {
         PlayerMovementController.recoil += new Vector2(5, 0);

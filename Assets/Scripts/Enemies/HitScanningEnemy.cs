@@ -7,11 +7,9 @@ using UnityEngine.AI;
 
 public class HitScanningEnemy: Enemy
 {
-    public ParticleSystem bulletTrails;
-
-    void Start()
+    public override void Start()
     {
-        bulletTrails = GetComponentInChildren<ParticleSystem>();
+        base.Start();
         navMeshAgent = GetComponent<NavMeshAgent>();
         targetDirection = player.position - head.position;
     }

@@ -12,14 +12,11 @@ public class MeleeEnemy: Enemy
     
     private float playerNotSeenSinceTimer = 0f;
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         navMeshAgent = GetComponent<NavMeshAgent>();
         targetDirection = Vector3.forward;
-        GameObject explosion = Instantiate(Resources.Load<GameObject>("Explosion"), transform);
-        explosion.transform.parent = transform;
-        explosions = explosion.GetComponentsInChildren<ParticleSystem>().ToList();
-        explosions.ForEach(expl => expl.Stop());
     }
 
     public override void UpdateState()

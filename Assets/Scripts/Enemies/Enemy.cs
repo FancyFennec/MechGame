@@ -29,11 +29,8 @@ public class Enemy: MonoBehaviour, ISubscriber
     [Header("Splatter Particle")]
     public GameObject splatter;
 
-    [Header("Ray Casting Input")]
-    [SerializeField]
-    protected Transform player;
-    [SerializeField]
     protected Transform head;
+    protected Transform player;
 
     protected NavMeshAgent navMeshAgent;
     protected Vector3 targetDirection = Vector3.zero;
@@ -49,6 +46,12 @@ public class Enemy: MonoBehaviour, ISubscriber
     public virtual void LookForPlayer() { }
     public virtual void RotateTowardsPlayer() { }
     public virtual void UpdateState() { }
+
+    public virtual void Start()
+    {
+        player = Camera.main.transform;
+        head = transform.Find("Head");
+    }
 
     void Update()
     {

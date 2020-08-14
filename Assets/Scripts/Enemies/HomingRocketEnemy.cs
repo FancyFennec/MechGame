@@ -10,8 +10,9 @@ public class HomingRocketEnemy : Enemy
 
     private GameObject rocket;
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         targetDirection = player.position - head.position;
 
         navMeshAgent = GetComponent<NavMeshAgent>();
