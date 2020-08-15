@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovementController : MonoBehaviour
 {
@@ -21,19 +22,25 @@ public class PlayerMovementController : MonoBehaviour
     private const float boostingThreshold = 2.0f;
     bool isBoostingOnCooldown = false;
     private float boostingCooldownTimer = 0f;
-    private const float boostingCooldown = 2.0f;
+    private const float boostingCooldown = 4.0f;
 
-
+    private Slider boostSlider;
+    private Image boostbadBoarder;
     void Start()
     {
         Application.targetFrameRate = 120;
 
         Cursor.lockState = CursorLockMode.Locked;
         characterController = GetComponent<CharacterController>();
+        boostSlider = GameObject.Find("Healthbar").GetComponent<Slider>();
+        boostbadBoarder = GameObject.Find("healthbar_boarder").GetComponent<Image>();
     }
 
     void Update()
     {
+        boostSlider.value = boostingThreshold - boostingTime;
+        boostbadBoarder.color = isBoostingOnCooldown ? Color.red : Color.white;
+
         if (Input.GetKeyDown(KeyCode.Space) && floatingTime < floatingThreshold)
         {
             isJumping = true;
@@ -62,34 +69,36 @@ public class PlayerMovementController : MonoBehaviour
 		else
 		{
 			floatingTime += Time.deltaTime;
+        }
 
-            if(isBoosting)
-			{
-                boostingTime += Time.deltaTime;
-            } else
-			{
-                boostingTime = Mathf.Clamp(boostingTime - Time.deltaTime * 0.5f, 0f, boostingThreshold);
+        if (isBoosting)
+        {
+            boostingTime += Time.deltaTime;
+        }
+        else
+        {
+            boostingTime = Mathf.Clamp(boostingTime - Time.deltaTime * 0.5f, 0f, boostingThreshold);
+        }
+
+        if (!isBoostingOnCooldown)
+        {
+            if (boostingTime >= boostingThreshold)
+            {
+                isBoostingOnCooldown = true;
             }
-
-			if (!isBoostingOnCooldown)
-			{
-                if (boostingTime >= boostingThreshold)
-                {
-                    isBoostingOnCooldown = true;
-                }
-            } else
-			{
-                boostingCooldownTimer += Time.deltaTime;
-                if (boostingCooldownTimer >= boostingCooldown)
-                {
-                    isBoostingOnCooldown = false;
-                    boostingCooldownTimer = 0f;
-                    boostingTime = 0f;
-                }
+        }
+        else
+        {
+            boostingCooldownTimer += Time.deltaTime;
+            if (boostingCooldownTimer >= boostingCooldown)
+            {
+                isBoostingOnCooldown = false;
+                boostingCooldownTimer = 0f;
+                boostingTime = 0f;
             }
         }
 
-		if (isJumping)
+        if (isJumping)
 		{
 			isJumping = false;
 		}
