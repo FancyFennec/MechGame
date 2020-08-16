@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerMovementController : MonoBehaviour
 {
-	[SerializeField]
+    [SerializeField]
     private PlayerMovementSettings movementSettings;
 
     CharacterController characterController;
@@ -18,29 +18,23 @@ public class PlayerMovementController : MonoBehaviour
     private float floatingTime = 0f;
     private const float floatingThreshold = 0.2f;
     bool isBoosting = false;
-    private float boostingTime = 0f;
-    private const float boostingThreshold = 2.0f;
-    bool isBoostingOnCooldown = false;
+    public float boostingTime { get; private set; } = 0f;
+    public float boostingThreshold { get; } = 2.0f;
+    public bool isBoostingOnCooldown { get; private set; } = false;
     private float boostingCooldownTimer = 0f;
     private const float boostingCooldown = 4.0f;
 
-    private Slider boostSlider;
-    private Image boostbadBoarder;
+    
     void Start()
     {
         Application.targetFrameRate = 120;
 
         Cursor.lockState = CursorLockMode.Locked;
         characterController = GetComponent<CharacterController>();
-        boostSlider = GameObject.Find("Healthbar").GetComponent<Slider>();
-        boostbadBoarder = GameObject.Find("healthbar_boarder").GetComponent<Image>();
     }
 
     void Update()
     {
-        boostSlider.value = boostingThreshold - boostingTime;
-        boostbadBoarder.color = isBoostingOnCooldown ? Color.red : Color.white;
-
         if (Input.GetKeyDown(KeyCode.Space) && floatingTime < floatingThreshold)
         {
             isJumping = true;
