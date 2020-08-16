@@ -23,7 +23,6 @@ public class HomingRocketEnemy : Enemy
     {
         if (CurrentState != NextState)
         {
-            Debug.Log("Changing state to : " + NextState);
             switch (NextState)
             {
                 case EnemyState.DEAD:
