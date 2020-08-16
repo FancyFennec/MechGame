@@ -18,9 +18,9 @@ public class PlayerMovementController : MonoBehaviour
     private float floatingTime = 0f;
     private const float floatingThreshold = 0.2f;
     bool isBoosting = false;
-    public float boostingTime { get; private set; } = 0f;
-    public float boostingThreshold { get; } = 2.0f;
-    public bool isBoostingOnCooldown { get; private set; } = false;
+    public float BoostingTime { get; private set; } = 0f;
+    public float BoostingThreshold { get; } = 2.0f;
+    public bool IsBoostingOnCooldown { get; private set; } = false;
     private float boostingCooldownTimer = 0f;
     private const float boostingCooldown = 4.0f;
 
@@ -41,7 +41,7 @@ public class PlayerMovementController : MonoBehaviour
             jumpMomentum = movementSettings.JumpMomentum;
         }
 
-        isBoosting = Input.GetKey(KeyCode.Space) && !isBoostingOnCooldown && floatingTime > floatingThreshold;
+        isBoosting = Input.GetKey(KeyCode.Space) && !IsBoostingOnCooldown && floatingTime > floatingThreshold;
 
         RotateCamera();
         MovePlayer();
@@ -49,53 +49,9 @@ public class PlayerMovementController : MonoBehaviour
 
     void LateUpdate()
 	{
-		ManageJumpMechanics();
+		ManageJumps();
+		ManageBoosts();
 		ApplyRecoil();
-	}
-
-	private void ManageJumpMechanics()
-	{
-		if (characterController.isGrounded)
-		{
-			floatingTime = 0f;
-			jumpMomentum = -0.1f;
-        }
-		else
-		{
-			floatingTime += Time.deltaTime;
-        }
-
-        if (isBoosting)
-        {
-            boostingTime += Time.deltaTime;
-        }
-        else
-        {
-            boostingTime = Mathf.Clamp(boostingTime - Time.deltaTime * 0.5f, 0f, boostingThreshold);
-        }
-
-        if (!isBoostingOnCooldown)
-        {
-            if (boostingTime >= boostingThreshold)
-            {
-                isBoostingOnCooldown = true;
-            }
-        }
-        else
-        {
-            boostingCooldownTimer += Time.deltaTime;
-            if (boostingCooldownTimer >= boostingCooldown)
-            {
-                isBoostingOnCooldown = false;
-                boostingCooldownTimer = 0f;
-                boostingTime = 0f;
-            }
-        }
-
-        if (isJumping)
-		{
-			isJumping = false;
-		}
 	}
 
 	private void ApplyRecoil()
@@ -149,8 +105,53 @@ public class PlayerMovementController : MonoBehaviour
 		{
             jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
         }
-        
 
         characterController.Move(movementVector * Time.smoothDeltaTime);
+    }
+    private void ManageJumps()
+    {
+        if (characterController.isGrounded)
+        {
+            floatingTime = 0f;
+            jumpMomentum = -0.1f;
+        }
+        else
+        {
+            floatingTime += Time.deltaTime;
+        }
+        if (isJumping)
+        {
+            isJumping = false;
+        }
+    }
+
+    private void ManageBoosts()
+    {
+        if (isBoosting)
+        {
+            BoostingTime += Time.deltaTime;
+        }
+        else
+        {
+            BoostingTime = Mathf.Clamp(BoostingTime - Time.deltaTime * 0.5f, 0f, BoostingThreshold);
+        }
+
+        if (!IsBoostingOnCooldown)
+        {
+            if (BoostingTime >= BoostingThreshold)
+            {
+                IsBoostingOnCooldown = true;
+            }
+        }
+        else
+        {
+            boostingCooldownTimer += Time.deltaTime;
+            if (boostingCooldownTimer >= boostingCooldown)
+            {
+                IsBoostingOnCooldown = false;
+                boostingCooldownTimer = 0f;
+                BoostingTime = 0f;
+            }
+        }
     }
 }

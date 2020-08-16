@@ -17,7 +17,7 @@ public class BoostbarController : MonoBehaviour
 
     void Update()
     {
-        boostSlider.value = movementController.boostingThreshold - movementController.boostingTime;
-        boostbadBoarder.color = movementController.isBoostingOnCooldown ? Color.red : Color.white;
+        boostSlider.value = movementController.BoostingThreshold - movementController.BoostingTime;
+        boostbadBoarder.color = movementController.IsBoostingOnCooldown ? Color.red : Color.white;
     }
 }

@@ -18,9 +18,9 @@ public class AmmoCountTextController : MonoBehaviour
 
     void Update()
     {
-        ammoCountText.text = playerShootingController.currentWeapon.ammo.ToString();
+        ammoCountText.text = playerShootingController.CurrentWeapon.ammo.ToString();
 
-		float value = (float)playerShootingController.currentWeapon.ammo / playerShootingController.currentWeapon.clipSize;
+		float value = (float)playerShootingController.CurrentWeapon.ammo / playerShootingController.CurrentWeapon.clipSize;
 		Color white_orange = Color.Lerp(orange, Color.white, 2 * value - 1f);
 		ammoCountText.color = Color.Lerp(Color.red, white_orange, 2 * value);
     }

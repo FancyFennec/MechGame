@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 
 public class PlayerShootingController : MonoBehaviour
 {
+	private readonly List<String> weaponKeys = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 	private readonly List<Weapon> weapons = new List<Weapon> {
 		new Pistol(),
 		new AssaultRifle(),
@@ -15,38 +16,35 @@ public class PlayerShootingController : MonoBehaviour
 		new AutomaticRocketLauncher(),
 		new GrenadeLauncher()
 	};
-
-	public Weapon currentWeapon { get; private set; }
-
-    private readonly List<String> weaponKeys = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-    public PlayerMovementController movementController;
-
+	private const float zoomFactor = 0.5f;
 	private float standardFov;
 	private float zoomedFov;
-	readonly PlayerShotSignal shootSignal = new PlayerShotSignal();
+	public Weapon CurrentWeapon { get; private set; }
+    private PlayerMovementController movementController;
+	private readonly PlayerShotSignal shootSignal = new PlayerShotSignal();
     void Start()
 	{
 		SubscribeToShootSignal();
-		currentWeapon = weapons[0];
 		movementController = GetComponent<PlayerMovementController>();
-		foreach(Weapon weapon in weapons)
+		CurrentWeapon = weapons[0];
+		foreach (Weapon weapon in weapons)
 		{
 			weapon.projectile = Resources.Load<GameObject>(weapon.projectileAssetName);
 		}
 		standardFov = Camera.main.fieldOfView;
-		zoomedFov = standardFov * 0.5f;
+		zoomedFov = standardFov * zoomFactor;
 	}
 
 	void Update()
     {
-        if (DoesPlayerWantToShoot() && currentWeapon.CanWeaponFire())
+        if (DoesPlayerWantToShoot() && CurrentWeapon.CanWeaponFire())
 		{
 			shootSignal.Emmit();
 			SpawnProjectile();
 			AddRecoil();
 		}
-		currentWeapon.UpdateCooldownTimer(Time.deltaTime);
-		if (typeof(Pistol).IsInstanceOfType(currentWeapon) && Input.GetMouseButton(1))
+		CurrentWeapon.UpdateCooldownTimer(Time.deltaTime);
+		if (typeof(Pistol).IsInstanceOfType(CurrentWeapon) && Input.GetMouseButton(1))
 		{
 			Camera.main.fieldOfView = zoomedFov;
 		} else
@@ -55,36 +53,36 @@ public class PlayerShootingController : MonoBehaviour
 		}
 		if (Input.GetKey(KeyCode.R))
         {
-            currentWeapon.Reload();
+            CurrentWeapon.Reload();
         }
     }
 
 	private void AddRecoil()
 	{
-		movementController.recoil += currentWeapon.Shoot();
+		movementController.recoil += CurrentWeapon.Shoot();
 	}
 
 	private void SpawnProjectile()
 	{
 		Instantiate(
-				currentWeapon.projectile,
+				CurrentWeapon.projectile,
 				Camera.main.transform.position + 
 				Camera.main.transform.forward * 1.5f + 
-				Camera.main.transform.right * (AlternateFire() ? -0.5f : 0.5f),
+				Camera.main.transform.right * (AlternateFire() ? -zoomFactor : zoomFactor),
 				Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 				);
 	}
 
 	private bool AlternateFire()
 	{
-		return currentWeapon.ammo % 2 == 0;
+		return CurrentWeapon.ammo % 2 == 0;
 	}
 
 	public void LateUpdate()
 	{
 		if (movementController.recoil.sqrMagnitude < 0.01f )
 		{
-			currentWeapon.ResetRecoil();
+			CurrentWeapon.ResetRecoil();
 		}
 		ChangeWeaponOnKeyPress();
 	}
@@ -96,27 +94,24 @@ public class PlayerShootingController : MonoBehaviour
 			int index = weaponKeys.IndexOf(i);
 			if (Input.GetKeyDown(i) && index < weapons.Count)
 			{
-				currentWeapon = weapons[index];
+				CurrentWeapon = weapons[index];
 			}
 		});
 	}
 
 	private bool DoesPlayerWantToShoot()
     {
-        switch (currentWeapon.weaponType)
-        {
-            case Weapon.WeaponType.SEMI_AUTOMATIC:
-                return Input.GetMouseButtonDown(0);
-            case Weapon.WeaponType.AUTOMATIC:
-                return Input.GetMouseButton(0);
-            default:
-                return false;
-        }
-    }
+		return CurrentWeapon.weaponType switch
+		{
+			Weapon.WeaponType.SEMI_AUTOMATIC => Input.GetMouseButtonDown(0),
+			Weapon.WeaponType.AUTOMATIC => Input.GetMouseButton(0),
+			_ => false,
+		};
+	}
 
     private void SubscribeToShootSignal()
     {
         FindObjectsOfType<Enemy>().ToList()
-                    .ForEach(enemy => shootSignal.Subscribe(enemy));
+			.ForEach(enemy => shootSignal.Subscribe(enemy));
     }
 }
