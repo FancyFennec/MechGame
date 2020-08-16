@@ -8,17 +8,15 @@ using System.Runtime.CompilerServices;
 
 public class PlayerShootingController : MonoBehaviour
 {
-    public TextMeshProUGUI AmmoCountText;
-
-    private readonly List<Weapon> weapons = new List<Weapon> { 
-        new Pistol(), 
-        new AssaultRifle(),
-        new RocketLauncher(),
-        new AutomaticRocketLauncher(),
+	private readonly List<Weapon> weapons = new List<Weapon> {
+		new Pistol(),
+		new AssaultRifle(),
+		new RocketLauncher(),
+		new AutomaticRocketLauncher(),
 		new GrenadeLauncher()
 	};
 
-    private Weapon currentWeapon;
+	public Weapon currentWeapon { get; private set; }
 
     private readonly List<String> weaponKeys = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9"};
     public PlayerMovementController movementController;
@@ -101,7 +99,6 @@ public class PlayerShootingController : MonoBehaviour
 				currentWeapon = weapons[index];
 			}
 		});
-		AmmoCountText.text = currentWeapon.ammo.ToString();
 	}
 
 	private bool DoesPlayerWantToShoot()
