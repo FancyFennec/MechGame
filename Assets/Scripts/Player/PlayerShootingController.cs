@@ -101,12 +101,15 @@ public class PlayerShootingController : MonoBehaviour
 
 	private bool DoesPlayerWantToShoot()
     {
-		return CurrentWeapon.weaponType switch
+		switch (CurrentWeapon.weaponType)
 		{
-			Weapon.WeaponType.SEMI_AUTOMATIC => Input.GetMouseButtonDown(0),
-			Weapon.WeaponType.AUTOMATIC => Input.GetMouseButton(0),
-			_ => false,
-		};
+			case Weapon.WeaponType.SEMI_AUTOMATIC:
+				return Input.GetMouseButtonDown(0);
+			case Weapon.WeaponType.AUTOMATIC:
+				return Input.GetMouseButton(0);
+			default:
+				return false;
+		}
 	}
 
     private void SubscribeToShootSignal()

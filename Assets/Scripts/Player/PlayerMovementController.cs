@@ -9,8 +9,8 @@ public class PlayerMovementController : MonoBehaviour
     private PlayerMovementSettings movementSettings;
 
     CharacterController characterController;
-    private float xClamp = 0f;
     private float yClamp = 0f;
+    private float xClamp = 0f;
     [System.NonSerialized]
     public Vector2 recoil = Vector2.zero;
     bool isJumping = false;
@@ -70,19 +70,21 @@ public class PlayerMovementController : MonoBehaviour
 
 	void RotateCamera()
     {
+        // mouse x movement rotates around around Y-axis
         float mouseX = Input.GetAxis(movementSettings.MouseXInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
+        // mouse y movement rotates around around X-axis
         float mouseY = Input.GetAxis(movementSettings.MouseYInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
 
         Vector3 cameraRotation = Camera.main.transform.eulerAngles;
-        xClamp = Mathf.Clamp(xClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
-        float newXRotation = Mathf.Clamp(xClamp + recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
-        cameraRotation.x = -newXRotation;
+        yClamp = Mathf.Clamp(yClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
+        float newXAxisRotation = Mathf.Clamp(yClamp + recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
+        cameraRotation.x = -newXAxisRotation;
         Camera.main.transform.eulerAngles = cameraRotation;
 
         Vector3 bodyRotation = transform.eulerAngles;
-        yClamp += mouseX;
-        float newYRotation = yClamp + recoil.y;
-        bodyRotation.y = newYRotation;
+        xClamp += mouseX;
+        float newYAxisRotation = xClamp + recoil.y;
+        bodyRotation.y = newYAxisRotation;
         transform.eulerAngles = bodyRotation;
     }
 
