@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using UnityEditor.Timeline;
-using Boo.Lang;
+using System.Collections.Generic;
 using System.Linq;
 
 public class EnemySpawningRocket : ExplosiveProjectile
 {
 
-	System.Collections.Generic.List<GameObject> enemies;
+	List<GameObject> enemies;
 
 	public override void Start()
 	{

@@ -20,12 +20,12 @@ public class PlayerShootingController : MonoBehaviour
 	private float standardFov;
 	private float zoomedFov;
 	public Weapon CurrentWeapon { get; private set; }
-    private PlayerMovementController movementController;
+	[SerializeField] private PlayerMovementController movementController;
+	[SerializeField] private RecoilController recoilController;
 	private readonly PlayerShotSignal shootSignal = new PlayerShotSignal();
     void Start()
 	{
 		SubscribeToShootSignal();
-		movementController = GetComponent<PlayerMovementController>();
 		CurrentWeapon = weapons[0];
 		foreach (Weapon weapon in weapons)
 		{
@@ -41,7 +41,7 @@ public class PlayerShootingController : MonoBehaviour
 		{
 			shootSignal.Emmit();
 			SpawnProjectile();
-			AddRecoil();
+			recoilController.AddRecoil(CurrentWeapon.Shoot());
 		}
 		CurrentWeapon.UpdateCooldownTimer(Time.deltaTime);
 		if (typeof(Pistol).IsInstanceOfType(CurrentWeapon) && Input.GetMouseButton(1))
@@ -56,11 +56,6 @@ public class PlayerShootingController : MonoBehaviour
             CurrentWeapon.Reload();
         }
     }
-
-	private void AddRecoil()
-	{
-		movementController.recoil += CurrentWeapon.Shoot();
-	}
 
 	private void SpawnProjectile()
 	{
@@ -80,7 +75,7 @@ public class PlayerShootingController : MonoBehaviour
 
 	public void LateUpdate()
 	{
-		if (movementController.recoil.sqrMagnitude < 0.01f )
+		if (recoilController.IsRecoilReset)
 		{
 			CurrentWeapon.ResetRecoil();
 		}

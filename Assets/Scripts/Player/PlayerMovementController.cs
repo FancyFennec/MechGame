@@ -7,12 +7,12 @@ public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField]
     private PlayerMovementSettings movementSettings;
+    [SerializeField]
+    private RecoilController recoilController;
 
     CharacterController characterController;
     private float yClamp = 0f;
     private float xClamp = 0f;
-    [System.NonSerialized]
-    public Vector2 recoil = Vector2.zero;
     bool isJumping = false;
     float jumpMomentum = 0f;
     private float floatingTime = 0f;
@@ -51,21 +51,6 @@ public class PlayerMovementController : MonoBehaviour
 	{
 		ManageJumps();
 		ManageBoosts();
-		ApplyRecoil();
-	}
-
-	private void ApplyRecoil()
-	{
-		Vector2 recoilDirection = recoil.normalized;
-		if (recoil.magnitude < 0.1f && !Input.GetMouseButton(0))
-		{
-			recoil = Vector2.zero;
-		}
-		else
-		{
-			recoil.x = Mathf.Clamp(recoil.x - recoilDirection.x * Time.deltaTime * 20f, -90f, 90f);
-			recoil.y = Mathf.Clamp(recoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f);
-		}
 	}
 
 	void RotateCamera()
@@ -77,13 +62,13 @@ public class PlayerMovementController : MonoBehaviour
 
         Vector3 cameraRotation = Camera.main.transform.eulerAngles;
         yClamp = Mathf.Clamp(yClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
-        float newXAxisRotation = Mathf.Clamp(yClamp + recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
+        float newXAxisRotation = Mathf.Clamp(yClamp + recoilController.recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
         cameraRotation.x = -newXAxisRotation;
         Camera.main.transform.eulerAngles = cameraRotation;
 
         Vector3 bodyRotation = transform.eulerAngles;
         xClamp += mouseX;
-        float newYAxisRotation = xClamp + recoil.y;
+        float newYAxisRotation = xClamp + recoilController.recoil.y;
         bodyRotation.y = newYAxisRotation;
         transform.eulerAngles = bodyRotation;
     }

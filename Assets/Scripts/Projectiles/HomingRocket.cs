@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using UnityEditor.Timeline;
 
 public class HomingRocket: ExplosiveProjectile
 {
@@ -60,7 +59,6 @@ public class HomingRocket: ExplosiveProjectile
 			}
 			else
 			{
-				CooldownTimer = 0f;
 				isOnCooldown = false;
 			}
 		}
