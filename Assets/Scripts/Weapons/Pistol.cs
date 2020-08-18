@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Pistol : Weapon
+public class Sniper : Weapon
 {
-	public Pistol() : base(WeaponType.SEMI_AUTOMATIC, "Projectiles/Bullet", 34, 10, 3)
+	public Sniper() : base(WeaponType.SEMI_AUTOMATIC, "Projectiles/Bullet", 34, 10, 3)
 	{
 		CreateRecoilPattern();
 	}

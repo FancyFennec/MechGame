@@ -14,22 +14,24 @@ public class Weapon
 		AUTOMATIC
 	}
 
-	public WeaponType weaponType { get; private set; }
-	public GameObject projectile { get; set; }
-	public String projectileAssetName { get; private set; }
-	public int damage { get; private set; }
-	public float rps { get; private set; }
-	public int ammo { get; set; }
-	public int clipSize { get; set; }
-	public int clipCount { get; set; }
-	public int maxClipCount { get; private set; }
+	public WeaponType Type { get; private set; }
+	public String ProjectileAssetName { get; private set; }
+	public GameObject Projectile { get; set; }
+	public String AudioClipFolderName { get; private set; }
+	public List<AudioClip> AudioClips { get; } = new List<AudioClip>();
+	public int Damage { get; private set; }
+	public float Rps { get; private set; }
+	public int Ammo { get; set; }
+	public int ClipSize { get; private set; }
+	public int ClipCount { get; private set; }
+	public int MaxClipCount { get; private set; }
 
 	private float weaponTimer = 0f;
-	private float weaponCooldown;
+	private readonly float weaponCooldown;
 	private bool isOnCoolDown = false;
 
 	private float reloadTimer = 0f;
-	private float reloadCooldown = 2f;
+	private readonly float reloadCooldown = 2f;
 	private bool isReloading = false;
 
 	protected List<Vector2> recoilPattern = new List<Vector2>();
@@ -37,13 +39,13 @@ public class Weapon
 
 	public Weapon(WeaponType weaponType, String projectileAssetName, int damage, int clipSize, float rps)
 	{
-		this.damage = damage;
-		this.ammo = clipSize;
-		this.clipSize = clipSize;
-		this.clipCount = 1;
-		this.weaponType = weaponType;
-		this.projectileAssetName = projectileAssetName;
-		this.rps = rps;
+		this.Damage = damage;
+		this.Ammo = clipSize;
+		this.ClipSize = clipSize;
+		this.ClipCount = 1;
+		this.Type = weaponType;
+		this.ProjectileAssetName = projectileAssetName;
+		this.Rps = rps;
 		this.weaponCooldown = 1f / rps;
 	}
 
@@ -54,7 +56,7 @@ public class Weapon
 			reloadTimer = Mathf.Clamp(reloadTimer - delta, 0f, reloadCooldown);
 			if (reloadTimer <= 0f)
 			{
-				ammo = clipSize;
+				Ammo = ClipSize;
 				isReloading = false;
 			}
 		} else if(isOnCoolDown)
@@ -69,14 +71,14 @@ public class Weapon
 
 	public bool CanWeaponFire()
 	{
-		return !(isOnCoolDown || ammo < 1 || isReloading);
+		return !(isOnCoolDown || Ammo < 1 || isReloading);
 	}
 
 	public virtual Vector2 Shoot()
 	{
 		isOnCoolDown = true;
 		weaponTimer = weaponCooldown;
-		ammo--;
+		Ammo--;
 		return recoilPattern[recoilIndex++];
 	}
 

@@ -10,26 +10,28 @@ public class PlayerWeaponController : MonoBehaviour
 {
 	[SerializeField] private RecoilController recoilController;
 
+	public int Ammo { get => CurrentWeapon.Ammo; }
+	public int ClipSize { get => CurrentWeapon.ClipSize; }
+	public Weapon.WeaponType WeaponType { get => CurrentWeapon.Type; }
+	public Boolean CanWeaponZoom { get => typeof(Sniper).IsInstanceOfType(CurrentWeapon); }
+	public Boolean CanWeaponFire { get => CurrentWeapon.CanWeaponFire(); }
+
+	private Weapon CurrentWeapon;
 	private readonly List<String> weaponKeys = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 	private readonly List<Weapon> weapons = new List<Weapon> {
-		new Pistol(),
+		new Sniper(),
 		new AssaultRifle(),
 		new RocketLauncher(),
 		new AutomaticRocketLauncher(),
 		new GrenadeLauncher()
 	};
-	private Weapon CurrentWeapon;
-	public int Ammo { get => CurrentWeapon.ammo; }
-	public int ClipSize { get => CurrentWeapon.clipSize; }
-	public Weapon.WeaponType WeaponType { get => CurrentWeapon.weaponType; }
-	public Boolean CanWeaponZoom { get => typeof(Pistol).IsInstanceOfType(CurrentWeapon); }
-	public Boolean CanWeaponFire { get => CurrentWeapon.CanWeaponFire(); }
+	
 	void Start()
 	{
 		CurrentWeapon = weapons[0];
 		foreach (Weapon weapon in weapons)
 		{
-			weapon.projectile = Resources.Load<GameObject>(weapon.projectileAssetName);
+			weapon.Projectile = Resources.Load<GameObject>(weapon.ProjectileAssetName);
 		}
 	}
 
@@ -43,22 +45,22 @@ public class PlayerWeaponController : MonoBehaviour
 		CurrentWeapon.Reload();
 	}
 
-	public Vector2 FireWeapon()
+	public void FireWeapon()
 	{
 		Instantiate(
-				CurrentWeapon.projectile,
+				CurrentWeapon.Projectile,
 				Camera.main.transform.position + 
 				Camera.main.transform.forward * 1.5f + 
 				Camera.main.transform.right * (AlternateFire() ? -.5f : .5f),
 				Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 				);
 
-		return CurrentWeapon.Shoot();
+		recoilController.AddRecoil(CurrentWeapon.Shoot());
 	}
 
 	private bool AlternateFire()
 	{
-		return CurrentWeapon.ammo % 2 == 0;
+		return CurrentWeapon.Ammo % 2 == 0;
 	}
 
 	public void LateUpdate()
@@ -84,7 +86,7 @@ public class PlayerWeaponController : MonoBehaviour
 
 	public bool DoesPlayerWantToShoot()
     {
-		switch (CurrentWeapon.weaponType)
+		switch (CurrentWeapon.Type)
 		{
 			case Weapon.WeaponType.SEMI_AUTOMATIC:
 				return Input.GetMouseButtonDown(0);
