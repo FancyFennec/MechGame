@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class AmmoCountTextController : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerShootingController playerShootingController;
+    [SerializeField] private PlayerWeaponController playerWeaponController;
+
     private TextMeshProUGUI ammoCountText;
     private Color orange = new Color(1f, 0.5f, 0f);
 
@@ -18,9 +18,9 @@ public class AmmoCountTextController : MonoBehaviour
 
     void Update()
     {
-        ammoCountText.text = playerShootingController.CurrentWeapon.ammo.ToString();
+        ammoCountText.text = playerWeaponController.Ammo.ToString();
 
-		float value = (float)playerShootingController.CurrentWeapon.ammo / playerShootingController.CurrentWeapon.clipSize;
+		float value = (float)playerWeaponController.Ammo / playerWeaponController.ClipSize;
 		Color white_orange = Color.Lerp(orange, Color.white, 2 * value - 1f);
 		ammoCountText.color = Color.Lerp(Color.red, white_orange, 2 * value);
     }

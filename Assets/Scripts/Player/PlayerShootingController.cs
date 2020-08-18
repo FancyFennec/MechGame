@@ -8,43 +8,29 @@ using System.Runtime.CompilerServices;
 
 public class PlayerShootingController : MonoBehaviour
 {
-	private readonly List<String> weaponKeys = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-	private readonly List<Weapon> weapons = new List<Weapon> {
-		new Pistol(),
-		new AssaultRifle(),
-		new RocketLauncher(),
-		new AutomaticRocketLauncher(),
-		new GrenadeLauncher()
-	};
+	[SerializeField] private PlayerMovementController movementController;
+	[SerializeField] private PlayerWeaponController weaponController;
+
 	private const float zoomFactor = 0.5f;
 	private float standardFov;
 	private float zoomedFov;
-	public Weapon CurrentWeapon { get; private set; }
-	[SerializeField] private PlayerMovementController movementController;
-	[SerializeField] private RecoilController recoilController;
+
 	private readonly PlayerShotSignal shootSignal = new PlayerShotSignal();
     void Start()
 	{
 		SubscribeToShootSignal();
-		CurrentWeapon = weapons[0];
-		foreach (Weapon weapon in weapons)
-		{
-			weapon.projectile = Resources.Load<GameObject>(weapon.projectileAssetName);
-		}
 		standardFov = Camera.main.fieldOfView;
 		zoomedFov = standardFov * zoomFactor;
 	}
 
 	void Update()
     {
-        if (DoesPlayerWantToShoot() && CurrentWeapon.CanWeaponFire())
+        if (weaponController.DoesPlayerWantToShoot() && weaponController.CanWeaponFire)
 		{
 			shootSignal.Emmit();
-			SpawnProjectile();
-			recoilController.AddRecoil(CurrentWeapon.Shoot());
+			weaponController.FireWeapon();
 		}
-		CurrentWeapon.UpdateCooldownTimer(Time.deltaTime);
-		if (typeof(Pistol).IsInstanceOfType(CurrentWeapon) && Input.GetMouseButton(1))
+		if (weaponController.CanWeaponZoom && Input.GetMouseButton(1))
 		{
 			Camera.main.fieldOfView = zoomedFov;
 		} else
@@ -53,59 +39,9 @@ public class PlayerShootingController : MonoBehaviour
 		}
 		if (Input.GetKey(KeyCode.R))
         {
-            CurrentWeapon.Reload();
+			weaponController.Reload();
         }
     }
-
-	private void SpawnProjectile()
-	{
-		Instantiate(
-				CurrentWeapon.projectile,
-				Camera.main.transform.position + 
-				Camera.main.transform.forward * 1.5f + 
-				Camera.main.transform.right * (AlternateFire() ? -zoomFactor : zoomFactor),
-				Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
-				);
-	}
-
-	private bool AlternateFire()
-	{
-		return CurrentWeapon.ammo % 2 == 0;
-	}
-
-	public void LateUpdate()
-	{
-		if (recoilController.IsRecoilReset)
-		{
-			CurrentWeapon.ResetRecoil();
-		}
-		ChangeWeaponOnKeyPress();
-	}
-
-	private void ChangeWeaponOnKeyPress()
-	{
-		weaponKeys.ForEach((i) =>
-		{
-			int index = weaponKeys.IndexOf(i);
-			if (Input.GetKeyDown(i) && index < weapons.Count)
-			{
-				CurrentWeapon = weapons[index];
-			}
-		});
-	}
-
-	private bool DoesPlayerWantToShoot()
-    {
-		switch (CurrentWeapon.weaponType)
-		{
-			case Weapon.WeaponType.SEMI_AUTOMATIC:
-				return Input.GetMouseButtonDown(0);
-			case Weapon.WeaponType.AUTOMATIC:
-				return Input.GetMouseButton(0);
-			default:
-				return false;
-		}
-	}
 
     private void SubscribeToShootSignal()
     {
