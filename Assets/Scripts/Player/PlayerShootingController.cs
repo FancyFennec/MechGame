@@ -11,14 +11,21 @@ public class PlayerShootingController : MonoBehaviour
 	[SerializeField] private PlayerMovementController movementController;
 	[SerializeField] private PlayerWeaponController weaponController;
 
+	public static PlayerShootingController instance;
+
 	private const float zoomFactor = 0.5f;
 	private float standardFov;
 	private float zoomedFov;
 
-	private readonly PlayerShotSignal shootSignal = new PlayerShotSignal();
-    void Start()
+	public event Action hasShot;
+
+	private void Awake()
 	{
-		SubscribeToShootSignal();
+		instance = this;
+	}
+
+	void Start()
+	{
 		standardFov = Camera.main.fieldOfView;
 		zoomedFov = standardFov * zoomFactor;
 	}
@@ -27,7 +34,7 @@ public class PlayerShootingController : MonoBehaviour
     {
         if (weaponController.DoesPlayerWantToShoot() && weaponController.CanWeaponFire)
 		{
-			shootSignal.Emmit();
+			hasShot?.Invoke();
 			weaponController.Fire();
 		}
 		if (weaponController.CanWeaponZoom && Input.GetMouseButton(1))
@@ -41,11 +48,5 @@ public class PlayerShootingController : MonoBehaviour
         {
 			weaponController.Reload();
         }
-    }
-
-    private void SubscribeToShootSignal()
-    {
-        FindObjectsOfType<Enemy>().ToList()
-			.ForEach(enemy => shootSignal.Subscribe(enemy));
     }
 }

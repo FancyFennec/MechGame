@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy: MonoBehaviour, ISubscriber
+public class Enemy: MonoBehaviour
 {
     public enum EnemyState
     {
@@ -49,6 +49,7 @@ public class Enemy: MonoBehaviour, ISubscriber
 
     public virtual void Start()
     {
+        PlayerShootingController.instance.hasShot += Notify;
         player = Camera.main.transform;
         head = transform.Find("Head");
     }
@@ -84,7 +85,12 @@ public class Enemy: MonoBehaviour, ISubscriber
         UpdateState();
     }
 
-    public void TakeDamage(float damage) {
+	private void OnDestroy()
+	{
+        PlayerShootingController.instance.hasShot -= Notify;
+    }
+
+	public void TakeDamage(float damage) {
 
 		if (CurrentState.Equals(EnemyState.IDLE))
 		{
@@ -162,7 +168,7 @@ public class Enemy: MonoBehaviour, ISubscriber
 
     public void Notify()
     {
-        if((transform.position - Camera.main.transform.position).magnitude < 50f)
+        if((transform.position - Camera.main.transform.position).magnitude < 10f)
 		{
             switch (CurrentState)
             {

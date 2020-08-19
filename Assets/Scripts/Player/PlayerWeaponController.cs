@@ -5,6 +5,8 @@ using System;
 using System.Linq;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(RecoilController))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerWeaponController : MonoBehaviour
 {
 	[SerializeField] private RecoilController recoilController;
@@ -68,7 +70,7 @@ public class PlayerWeaponController : MonoBehaviour
 						CurrentWeapon.Projectile,
 						Camera.main.transform.position +
 						Camera.main.transform.forward * 1.5f +
-						Camera.main.transform.right * (AlternateFire() ? -.5f : .5f),
+						Camera.main.transform.right * (AlternateFire() ? -.25f : .25f),
 						Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 						);
 	}
