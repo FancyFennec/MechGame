@@ -37,15 +37,20 @@ public class Weapon
 	protected List<Vector2> recoilPattern = new List<Vector2>();
 	private int recoilIndex = 0;
 
-	public Weapon(WeaponType weaponType, String projectileAssetName, int damage, int clipSize, float rps)
+	public Weapon(
+		WeaponType weaponType,
+		String projectileAssetName,
+		String audioClipFolderName,
+		int damage, int clipSize, float rps)
 	{
+		this.Type = weaponType;
+		this.ProjectileAssetName = projectileAssetName;
+		this.AudioClipFolderName = audioClipFolderName;
 		this.Damage = damage;
 		this.Ammo = clipSize;
 		this.ClipSize = clipSize;
-		this.ClipCount = 1;
-		this.Type = weaponType;
-		this.ProjectileAssetName = projectileAssetName;
 		this.Rps = rps;
+		this.ClipCount = 1;
 		this.weaponCooldown = 1f / rps;
 	}
 

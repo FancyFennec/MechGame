@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-using TMPro;
-using System.Runtime.CompilerServices;
+using Random = UnityEngine.Random;
 
 public class PlayerWeaponController : MonoBehaviour
 {
 	[SerializeField] private RecoilController recoilController;
+	[SerializeField] private AudioSource audioSource;
 
 	public int Ammo { get => CurrentWeapon.Ammo; }
 	public int ClipSize { get => CurrentWeapon.ClipSize; }
 	public Weapon.WeaponType WeaponType { get => CurrentWeapon.Type; }
-	public Boolean CanWeaponZoom { get => typeof(Sniper).IsInstanceOfType(CurrentWeapon); }
+	public Boolean CanWeaponZoom { get => typeof(SniperRifle).IsInstanceOfType(CurrentWeapon); }
 	public Boolean CanWeaponFire { get => CurrentWeapon.CanWeaponFire(); }
 
 	private Weapon CurrentWeapon;
 	private readonly List<String> weaponKeys = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 	private readonly List<Weapon> weapons = new List<Weapon> {
-		new Sniper(),
+		new SniperRifle(),
 		new AssaultRifle(),
 		new RocketLauncher(),
 		new AutomaticRocketLauncher(),
@@ -32,35 +32,14 @@ public class PlayerWeaponController : MonoBehaviour
 		foreach (Weapon weapon in weapons)
 		{
 			weapon.Projectile = Resources.Load<GameObject>(weapon.ProjectileAssetName);
+			Resources.LoadAll<AudioClip>(weapon.AudioClipFolderName).ToList().ForEach(
+				audioclip => weapon.AudioClips.Add(audioclip));
 		}
 	}
 
 	void Update()
 	{
 		CurrentWeapon.UpdateCooldownTimer(Time.deltaTime);
-	}
-
-	public void Reload()
-	{
-		CurrentWeapon.Reload();
-	}
-
-	public void FireWeapon()
-	{
-		Instantiate(
-				CurrentWeapon.Projectile,
-				Camera.main.transform.position + 
-				Camera.main.transform.forward * 1.5f + 
-				Camera.main.transform.right * (AlternateFire() ? -.5f : .5f),
-				Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
-				);
-
-		recoilController.AddRecoil(CurrentWeapon.Shoot());
-	}
-
-	private bool AlternateFire()
-	{
-		return CurrentWeapon.Ammo % 2 == 0;
 	}
 
 	public void LateUpdate()
@@ -71,6 +50,30 @@ public class PlayerWeaponController : MonoBehaviour
 		}
 		ChangeWeaponOnKeyPress();
 	}
+
+	public void Reload() => CurrentWeapon.Reload();
+
+	public void Fire()
+	{
+		SpawnProjectile();
+		AddRecoil();
+		audioSource.PlayOneShot(CurrentWeapon.AudioClips[Random.Range(0, CurrentWeapon.AudioClips.Count)]);
+	}
+
+	private void AddRecoil() => recoilController.AddRecoil(CurrentWeapon.Shoot());
+
+	private void SpawnProjectile()
+	{
+		Instantiate(
+						CurrentWeapon.Projectile,
+						Camera.main.transform.position +
+						Camera.main.transform.forward * 1.5f +
+						Camera.main.transform.right * (AlternateFire() ? -.5f : .5f),
+						Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
+						);
+	}
+
+	private bool AlternateFire() => CurrentWeapon.Ammo % 2 == 0;
 
 	private void ChangeWeaponOnKeyPress()
 	{

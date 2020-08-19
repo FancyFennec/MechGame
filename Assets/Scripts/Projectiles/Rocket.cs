@@ -16,8 +16,7 @@ public class Rocket: ExplosiveProjectile
 		base.Start();
 		audioSource = GetComponent<AudioSource>();
 		audioClips = Resources.LoadAll<AudioClip>("Audio/Rocket").ToList();
-		audioSource.clip = audioClips[Random.Range(0, audioClips.Count)];
-		audioSource.Play();
+		audioSource.PlayOneShot(audioClips[Random.Range(0, audioClips.Count)]);
 	}
 
 	public void OnCollisionEnter(Collision collision)

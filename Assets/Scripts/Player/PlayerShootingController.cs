@@ -28,7 +28,7 @@ public class PlayerShootingController : MonoBehaviour
         if (weaponController.DoesPlayerWantToShoot() && weaponController.CanWeaponFire)
 		{
 			shootSignal.Emmit();
-			weaponController.FireWeapon();
+			weaponController.Fire();
 		}
 		if (weaponController.CanWeaponZoom && Input.GetMouseButton(1))
 		{

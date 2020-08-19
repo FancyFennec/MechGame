@@ -8,7 +8,11 @@ using UnityEngine;
 
 public class RocketLauncher : Weapon
 {
-	public RocketLauncher() : base(WeaponType.SEMI_AUTOMATIC, "Projectiles/Rocket", 200, 4, 1)
+	public RocketLauncher() : base(
+		WeaponType.SEMI_AUTOMATIC, 
+		"Projectiles/Rocket",
+		"Audio/Rocket_Shot",
+		200, 4, 1)
 	{
 		CreateRecoilPattern();
 	}
