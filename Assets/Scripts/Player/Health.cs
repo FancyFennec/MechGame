@@ -1,30 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using System;
 
 public class Health : MonoBehaviour
 {
+    public static Health instance;
     public int MaxHealth { get; } = 200;
     public int CurrentHealth { get; private set; } = 100;
 
-    [SerializeField] private PlayerMovementController PlayerMovementController;
-    [SerializeField] private PlayerShootingController PlayerShootingController;
-    [SerializeField] private RecoilController recoilController;
+    public event Action PlayerDiedEvent;
+    public event Action PlayerDamageTakenEvent;
 
-    void Start()
+	private void Awake()
+	{
+        instance = this;
+	}
+	void Start()
     {
         CurrentHealth = MaxHealth;
     }
 
     public void TakeDamage(float damage)
     {
-        recoilController.AddRecoil(new Vector2(5, 0));
+        PlayerDamageTakenEvent.Invoke();
         CurrentHealth = Mathf.FloorToInt(Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth));
         if (CurrentHealth == 0f)
         {
-            PlayerMovementController.enabled = false;
-            PlayerShootingController.enabled = false;
+            PlayerDiedEvent.Invoke();
         }
     }
 }

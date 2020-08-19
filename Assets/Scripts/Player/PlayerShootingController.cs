@@ -6,9 +6,9 @@ using System.Linq;
 using TMPro;
 using System.Runtime.CompilerServices;
 
+[RequireComponent(typeof(PlayerWeaponController))]
 public class PlayerShootingController : MonoBehaviour
 {
-	[SerializeField] private PlayerMovementController movementController;
 	[SerializeField] private PlayerWeaponController weaponController;
 
 	public static PlayerShootingController instance;
@@ -17,11 +17,12 @@ public class PlayerShootingController : MonoBehaviour
 	private float standardFov;
 	private float zoomedFov;
 
-	public event Action hasShot;
+	public event Action ShotEvent;
 
 	private void Awake()
 	{
 		instance = this;
+		Health.instance.PlayerDiedEvent += () => enabled = false;
 	}
 
 	void Start()
@@ -34,7 +35,7 @@ public class PlayerShootingController : MonoBehaviour
     {
         if (weaponController.DoesPlayerWantToShoot() && weaponController.CanWeaponFire)
 		{
-			hasShot?.Invoke();
+			ShotEvent?.Invoke();
 			weaponController.Fire();
 		}
 		if (weaponController.CanWeaponZoom && Input.GetMouseButton(1))

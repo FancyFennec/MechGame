@@ -30,6 +30,9 @@ public class HitScanningEnemy: Enemy
                 case EnemyState.IDLE:
                     navMeshAgent.isStopped = true;
                     break;
+                case EnemyState.STOPPED:
+                    navMeshAgent.isStopped = true;
+                    break;
                 case EnemyState.ATTACKING:
                     navMeshAgent.isStopped = true;
                     break;

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(PlayerMovementSettings))]
+[RequireComponent(typeof(PlayerRecoilController))]
 public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField]
     private PlayerMovementSettings movementSettings;
     [SerializeField]
-    private RecoilController recoilController;
+    private PlayerRecoilController recoilController;
 
     CharacterController characterController;
     private float yClamp = 0f;
@@ -24,8 +26,12 @@ public class PlayerMovementController : MonoBehaviour
     private float boostingCooldownTimer = 0f;
     private const float boostingCooldown = 4.0f;
 
-    
-    void Start()
+
+	private void Awake()
+	{
+        Health.instance.PlayerDiedEvent += () => enabled = false;
+    }
+	void Start()
     {
         Application.targetFrameRate = 120;
 
@@ -62,13 +68,13 @@ public class PlayerMovementController : MonoBehaviour
 
         Vector3 cameraRotation = Camera.main.transform.eulerAngles;
         yClamp = Mathf.Clamp(yClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
-        float newXAxisRotation = Mathf.Clamp(yClamp + recoilController.recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
+        float newXAxisRotation = Mathf.Clamp(yClamp + recoilController.Recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
         cameraRotation.x = -newXAxisRotation;
         Camera.main.transform.eulerAngles = cameraRotation;
 
         Vector3 bodyRotation = transform.eulerAngles;
         xClamp += mouseX;
-        float newYAxisRotation = xClamp + recoilController.recoil.y;
+        float newYAxisRotation = xClamp + recoilController.Recoil.y;
         bodyRotation.y = newYAxisRotation;
         transform.eulerAngles = bodyRotation;
     }

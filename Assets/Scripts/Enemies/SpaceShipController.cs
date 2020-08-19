@@ -10,7 +10,7 @@ public class SpaceShipController : MonoBehaviour
 
     private bool isOnCooldown = false;
     private float cooldownTimer = 0f;
-    private readonly float cooldown = 10f;
+    private readonly float cooldown = 8f;
 
     void Start()
     {
@@ -21,27 +21,39 @@ public class SpaceShipController : MonoBehaviour
     {
 		if (!isOnCooldown)
 		{
-			Canons.ForEach(canon =>
+			StartCoroutine(ShootRockets());
+		}
+	}
+
+	private IEnumerator ShootRockets()
+	{
+		foreach(GameObject canon in Canons)
+		{
+			RaycastHit hit = new RaycastHit();
+
+			while (hit.normal != Vector3.up)
 			{
 				Vector3 randomDirection = new Vector3(
-				Random.Range(-1f, 1f),
-				Random.Range(-1f, -0.5f),
-				Random.Range(-1f, 1f)
-				).normalized;
+			Random.Range(-1f, 1f),
+			Random.Range(-1f, -0.5f),
+			Random.Range(-1f, 1f)
+			).normalized;
 
-				Physics.Raycast(canon.transform.position, randomDirection, out RaycastHit hit);
-				if(hit.normal == Vector3.up)
+				Physics.Raycast(canon.transform.position, randomDirection, out hit);
+				if (hit.normal == Vector3.up)
 				{
 					Instantiate(enemySpawningRocket,
 					canon.transform.position,
 					Quaternion.LookRotation(randomDirection, Vector3.up));
 					isOnCooldown = true;
 				}
-			});
-		}
-    }
+			}
 
-    void LateUpdate()
+		yield return new WaitForSeconds(1f);
+		}
+	}
+
+	void LateUpdate()
 	{
 		UpdateCooldown();
 	}
@@ -55,7 +67,6 @@ public class SpaceShipController : MonoBehaviour
 			{
 				isOnCooldown = false;
 				cooldownTimer = 0f;
-
 			}
 		}
 	}

@@ -5,11 +5,11 @@ using System;
 using System.Linq;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(RecoilController))]
+[RequireComponent(typeof(PlayerRecoilController))]
 [RequireComponent(typeof(AudioSource))]
 public class PlayerWeaponController : MonoBehaviour
 {
-	[SerializeField] private RecoilController recoilController;
+	[SerializeField] private PlayerRecoilController recoilController;
 	[SerializeField] private AudioSource audioSource;
 
 	public int Ammo { get => CurrentWeapon.Ammo; }
@@ -27,7 +27,11 @@ public class PlayerWeaponController : MonoBehaviour
 		new AutomaticRocketLauncher(),
 		new GrenadeLauncher()
 	};
-	
+
+	private void Awake()
+	{
+		Health.instance.PlayerDiedEvent += () => { enabled = false; };
+	}
 	void Start()
 	{
 		CurrentWeapon = weapons[0];

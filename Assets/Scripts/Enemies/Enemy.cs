@@ -49,7 +49,8 @@ public class Enemy: MonoBehaviour
 
     public virtual void Start()
     {
-        PlayerShootingController.instance.hasShot += Notify;
+        Health.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
+        PlayerShootingController.instance.ShotEvent += StartAttacking;
         player = Camera.main.transform;
         head = transform.Find("Head");
     }
@@ -87,7 +88,7 @@ public class Enemy: MonoBehaviour
 
 	private void OnDestroy()
 	{
-        PlayerShootingController.instance.hasShot -= Notify;
+        PlayerShootingController.instance.ShotEvent -= StartAttacking;
     }
 
 	public void TakeDamage(float damage) {
@@ -166,9 +167,9 @@ public class Enemy: MonoBehaviour
                                 && hit.transform.name == "Player";
     }
 
-    public void Notify()
+    public void StartAttacking()
     {
-        if((transform.position - Camera.main.transform.position).magnitude < 10f)
+        if((transform.position - Camera.main.transform.position).magnitude < 50f)
 		{
             switch (CurrentState)
             {
