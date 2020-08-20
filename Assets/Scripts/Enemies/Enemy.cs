@@ -44,10 +44,10 @@ public abstract class Enemy : MonoBehaviour
         cooldownController = GetComponent<EnemyCooldownController>();
 
         PlayerHealth.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
-        PlayerShootingController.instance.ShotEvent += StartAttacking;
+        PlayerShootingController.instance.ShotEvent += StartAttackingIfShotWasHeard;
 
         health.EnemyDiedEvent += () => NextState = EnemyState.DEAD;
-        health.EnemyDamageTakenEvent += TakeDamage;
+        health.EnemyDamageTakenEvent += StartAttacking;
 
         playerTarget = Camera.main.transform;
         head = transform.Find("Head");
@@ -87,15 +87,7 @@ public abstract class Enemy : MonoBehaviour
 
 	private void OnDestroy()
 	{
-        PlayerShootingController.instance.ShotEvent -= StartAttacking;
-    }
-
-	public void TakeDamage() {
-
-		if (CurrentState.Equals(EnemyState.IDLE))
-		{
-            NextState = EnemyState.ATTACKING;
-		}
+        PlayerShootingController.instance.ShotEvent -= StartAttackingIfShotWasHeard;
     }
 
     public void RotateTowardsDestination()
@@ -145,18 +137,23 @@ public abstract class Enemy : MonoBehaviour
 
     public void StartAttacking()
     {
-        if((transform.position - Camera.main.transform.position).magnitude < 50f)
-		{
-            switch (CurrentState)
-            {
-                case EnemyState.MOVING:
-                    break;
-                case EnemyState.ATTACKING:
-                    break;
-                default:
-                    NextState = EnemyState.ATTACKING;
-                    break;
-            }
+        switch (CurrentState)
+        {
+            case EnemyState.MOVING:
+                break;
+            case EnemyState.ATTACKING:
+                break;
+            default:
+                NextState = EnemyState.ATTACKING;
+                break;
+        }
+    }
+
+    public void StartAttackingIfShotWasHeard()
+    {
+        if ((transform.position - Camera.main.transform.position).magnitude < 50f)
+        {
+            StartAttacking();
         }
     }
 }

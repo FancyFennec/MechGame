@@ -12,7 +12,7 @@ public class AutomaticRocketLauncher : Weapon
 		WeaponType.AUTOMATIC, 
 		"Projectiles/Rocket",
 		"Audio/Rocket_Shot",
-		70, 30, 7)
+		30, 7)
 	{
 		CreateRecoilPattern();
 	}

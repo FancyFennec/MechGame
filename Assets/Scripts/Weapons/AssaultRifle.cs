@@ -11,7 +11,7 @@ public class AssaultRifle : Weapon
 		WeaponType.AUTOMATIC, 
 		"Projectiles/Bullet",
 		"Audio/Assault_Rifle",
-		10, 25, 10)
+		25, 10)
 	{
 		CreateRecoilPattern();
 	}

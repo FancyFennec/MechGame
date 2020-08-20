@@ -12,7 +12,7 @@ public class RocketLauncher : Weapon
 		WeaponType.SEMI_AUTOMATIC, 
 		"Projectiles/Rocket",
 		"Audio/Rocket_Shot",
-		200, 4, 1)
+		4, 1)
 	{
 		CreateRecoilPattern();
 	}

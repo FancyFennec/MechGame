@@ -9,9 +9,9 @@ public class SniperRifle : Weapon
 {
 	public SniperRifle() : base(
 		WeaponType.SEMI_AUTOMATIC, 
-		"Projectiles/Bullet",
+		"Projectiles/SniperBullet",
 		"Audio/Sniper_Rifle",
-		34, 10, 3)
+		10, 3)
 	{
 		CreateRecoilPattern();
 	}

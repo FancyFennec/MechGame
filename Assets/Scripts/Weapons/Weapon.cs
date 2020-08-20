@@ -40,13 +40,11 @@ public class Weapon
 	public Weapon(
 		WeaponType weaponType,
 		String projectileAssetName,
-		String audioClipFolderName,
-		int damage, int clipSize, float rps)
+		String audioClipFolderName, int clipSize, float rps)
 	{
 		this.Type = weaponType;
 		this.ProjectileAssetName = projectileAssetName;
 		this.AudioClipFolderName = audioClipFolderName;
-		this.Damage = damage;
 		this.Ammo = clipSize;
 		this.ClipSize = clipSize;
 		this.Rps = rps;

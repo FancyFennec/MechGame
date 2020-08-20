@@ -3,11 +3,12 @@ using System.Collections;
 using System;
 using UnityEditor.Timeline;
 
-public class ExplosiveProjectile : Projectile
+public class ExplosiveProjectile : Projectile, IHealth
 {
 	protected GameObject explosion;
 	private readonly float ExplosionRadius = 2f;
 	private const int ExplosionForce = 500;
+	private Boolean hasExploded = false;
 
 	public override void Start()
 	{
@@ -33,5 +34,15 @@ public class ExplosiveProjectile : Projectile
 			}
 		}
 		Destroy(this.gameObject);
+	}
+
+	public void TakeDamage(float damage)
+	{
+		if (!hasExploded)
+		{
+			hasExploded = true;
+			ExplodeAt(transform.position);
+		}
+		
 	}
 }

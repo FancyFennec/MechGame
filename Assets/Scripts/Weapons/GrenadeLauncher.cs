@@ -12,7 +12,7 @@ public class GrenadeLauncher : Weapon
 		WeaponType.AUTOMATIC, 
 		"Projectiles/Grenade",
 		"Audio/Rocket_Shot",
-		70, 20, 5)
+		20, 5)
 	{
 		CreateRecoilPattern();
 	}

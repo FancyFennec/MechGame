@@ -5,13 +5,6 @@ using UnityEditor.Timeline;
 
 public class Projectile : MonoBehaviour
 {
-	public enum Association
-	{
-		HOSTILE,
-		ALLIED
-	}
-
-	public Association association;
 	public float projectileForce = 100f;
 	public int Damage = 100;
 	public bool useGravity = false;
@@ -52,34 +45,14 @@ public class Projectile : MonoBehaviour
 
 	protected bool DamageHitCollider(Collider collider, float damagefactor)
 	{
-		if (Association.HOSTILE.Equals(association))
+		IHealth health = collider.GetComponent<IHealth>();
+		if(health == null)
 		{
-			return DamagePlayer(collider, damagefactor);
+			return false;
 		} else
 		{
-			return DamageEnemy(collider, damagefactor);
+			health.TakeDamage(damagefactor * Damage);
+			return true;
 		}
-	}
-
-	private bool DamageEnemy(Collider collider, float damagefactor)
-	{
-		EnemyHealth health = collider.GetComponent<EnemyHealth>();
-		if(health == null)
-		{
-			return false;
-		}
-		health.TakeDamage(damagefactor * Damage);
-		return true;
-	}
-
-	private bool DamagePlayer(Collider collider, float damagefactor)
-	{
-		PlayerHealth health = collider.GetComponent<PlayerHealth>();
-		if(health == null)
-		{
-			return false;
-		}
-		health.TakeDamage(damagefactor * Damage);
-		return true;
 	}
 }
