@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(PlayerMovementSettings))]
 [RequireComponent(typeof(PlayerRecoilController))]
 public class PlayerMovementController : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerMovementSettings movementSettings;
+    [SerializeField] private PlayerMovementSettings movementSettings;
     private PlayerRecoilController recoilController;
 
     CharacterController characterController;

@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyHealth))]
 [RequireComponent(typeof(CooldownController))]
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(AudioController))]
 public abstract class Enemy : MonoBehaviour
 {
     public enum EnemyState
@@ -21,7 +21,7 @@ public abstract class Enemy : MonoBehaviour
     }
     private EnemyHealth health;
     private CooldownController cooldownController;
-    private AudioSource audioSource;
+    protected AudioController audioController;
 
     protected Transform head;
     protected Transform playerTarget;
@@ -46,19 +46,19 @@ public abstract class Enemy : MonoBehaviour
 	{
         health = GetComponent<EnemyHealth>();
         cooldownController = GetComponent<CooldownController>();
-        audioSource = GetComponent<AudioSource>();
-
-        PlayerHealth.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
-        PlayerShootingController.instance.ShotEvent += StartAttackingIfShotWasHeard;
-
-        health.EnemyDiedEvent += () => NextState = EnemyState.DEAD;
-        health.EnemyDamageTakenEvent += StartAttacking;
+        audioController = GetComponent<AudioController>();
 
         playerTarget = Camera.main.transform;
         head = transform.Find("Head");
     }
 
-	public virtual void Start() {}
+	public virtual void Start() {
+        PlayerHealth.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
+        PlayerShootingController.instance.ShotEvent += StartAttackingIfShotWasHeard;
+
+        health.EnemyDiedEvent += () => NextState = EnemyState.DEAD;
+        health.EnemyDamageTakenEvent += StartAttacking;
+    }
 
     void Update()
     {

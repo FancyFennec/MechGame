@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using UnityEditor.Timeline;
 
 public class ExplosiveProjectile : Projectile, IHealth
 {

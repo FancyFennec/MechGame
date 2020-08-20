@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using UnityEditor.Timeline;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
+	protected Rigidbody rb;
 	public float projectileForce = 100f;
 	public int Damage = 100;
 	public bool useGravity = false;
@@ -20,9 +20,9 @@ public class Projectile : MonoBehaviour
 	{
 		lastPosition = transform.position;
 
-		Rigidbody rigidbody = GetComponent<Rigidbody>();
-		rigidbody.AddForce(transform.forward * projectileForce);
-		rigidbody.useGravity = useGravity;
+		rb = GetComponent<Rigidbody>();
+		rb.AddForce(transform.forward * projectileForce);
+		rb.useGravity = useGravity;
 
 		Destroy(this.gameObject, lifetime);
 	}

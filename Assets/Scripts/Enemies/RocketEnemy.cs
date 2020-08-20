@@ -7,7 +7,6 @@ using UnityEngine.AI;
 
 public class RocketEnemy : Enemy
 {
-
     private GameObject rocket;
 
     public override void Start()
@@ -119,33 +118,34 @@ public class RocketEnemy : Enemy
     private void ShootAtPlayer()
     {
         if (!IsOnCooldown && IsAimingAtPlayer())
-        {
-            try
-            {
-				Vector3 rocketSpawnPosition = (transform.position + 2 * transform.up + transform.forward * 1.5f);
-				Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
-                Instantiate(
-                rocket,
-                rocketSpawnPosition,
-                Quaternion.LookRotation(rocketDirection.normalized, transform.up)
-                );
-                Instantiate(
-                rocket,
-                rocketSpawnPosition + transform.right * 0.2f,
-                Quaternion.LookRotation(rocketDirection.normalized + transform.right * 0.1f, transform.up)
-                );
-                Instantiate(
-                rocket,
-                rocketSpawnPosition - transform.right * 0.2f,
-                Quaternion.LookRotation(rocketDirection.normalized - transform.right * 0.1f, transform.up)
-                );
-            }
-            catch (Exception)
-            {
-                Debug.Log("Can't shoot");
-            }
-            IsOnCooldown = true;
-            NextState = EnemyState.MOVING;
-        }
-    }
+		{
+            audioController.PlayAudio();
+
+			SpawnRockets();
+
+			IsOnCooldown = true;
+			NextState = EnemyState.MOVING;
+		}
+	}
+
+	private void SpawnRockets()
+	{
+		Vector3 rocketSpawnPosition = (transform.position + 2 * transform.up + transform.forward * 1.5f);
+		Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
+		Instantiate(
+		rocket,
+		rocketSpawnPosition,
+		Quaternion.LookRotation(rocketDirection.normalized, transform.up)
+		);
+		Instantiate(
+		rocket,
+		rocketSpawnPosition + transform.right * 0.2f,
+		Quaternion.LookRotation(rocketDirection.normalized + transform.right * 0.1f, transform.up)
+		);
+		Instantiate(
+		rocket,
+		rocketSpawnPosition - transform.right * 0.2f,
+		Quaternion.LookRotation(rocketDirection.normalized - transform.right * 0.1f, transform.up)
+		);
+	}
 }

@@ -6,7 +6,8 @@ public class ImpactAudioController : MonoBehaviour
 {
     void Start()
     {
-        GetComponent<AudioSource>().PlayDelayed((Camera.main.transform.position - transform.position).magnitude * 0.005f);
+		float delay = (Camera.main.transform.position - transform.position).magnitude * 0.005f;
+		GetComponent<AudioSource>().PlayDelayed(delay);
     }
 
     void Update()

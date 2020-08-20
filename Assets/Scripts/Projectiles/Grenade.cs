@@ -1,13 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using UnityEditor.Timeline;
 
+[RequireComponent(typeof(AudioController))]
 public class Grenade : ExplosiveProjectile
 {
+	AudioController audioController;
+	public override void Start()
+	{
+		base.Start();
+		audioController = GetComponent<AudioController>();
+	}
+
 	public void OnCollisionEnter(Collision collision)
 	{
-		if(collision.collider.gameObject.GetComponent<Enemy>() != null)
+		audioController.PlayAudio();
+		if (collision.collider.gameObject.GetComponent<Enemy>() != null)
 		{
 			ExplodeAt(collision.contacts[0].point);
 		}

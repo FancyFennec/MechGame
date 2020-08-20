@@ -8,8 +8,7 @@ public class HomingRocket: ExplosiveProjectile
 	private CooldownController cooldownController;
 	private Transform target;
 
-	private readonly float CorrectionForce = 2.0f;
-
+	[SerializeField] private float CorrectionForce = 7.0f;
 
 	public override void Start()
 	{
@@ -30,8 +29,11 @@ public class HomingRocket: ExplosiveProjectile
 
 		if (!cooldownController.IsOnCooldown)
 		{
-			Vector3 correctionDirection = ((target.position - transform.position).normalized - transform.forward).normalized;
-			GetComponent<Rigidbody>().AddForce(correctionDirection * CorrectionForce);
+			Vector3 targetDirection = (target.position - transform.position).normalized;
+			Vector3 correctionDirection = (targetDirection - transform.forward).normalized;
+			float correctionFactor = Vector3.Dot(targetDirection, correctionDirection);
+			rb.AddForce(correctionDirection * correctionFactor * CorrectionForce);
+			rb.AddForce(targetDirection);
 		}
 	}
 

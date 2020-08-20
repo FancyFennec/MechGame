@@ -7,7 +7,6 @@ using UnityEngine.AI;
 
 public class HitScanningEnemy: Enemy
 {
-
     GameObject bullet;
     public override void Start()
     {
@@ -112,6 +111,7 @@ public class HitScanningEnemy: Enemy
     {
         if (!IsOnCooldown && IsAimingAtPlayer())
 		{
+            audioController.PlayAudio();
             Vector3 rocketSpawnPosition = transform.position + transform.up + transform.forward * 1.5f;
             Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
             Instantiate(

@@ -7,7 +7,6 @@ using UnityEngine.AI;
 
 public class HomingRocketEnemy : Enemy
 {
-
     private GameObject rocket;
 
     public override void Start()
@@ -118,22 +117,23 @@ public class HomingRocketEnemy : Enemy
     private void ShootAtPlayer()
     {
         if (!IsOnCooldown)
-        {
-            try
-            {
-				Vector3 rocketSpawnPosition = (transform.position + 2 * transform.up);
-                Instantiate(
-                rocket,
-                rocketSpawnPosition,
-                Quaternion.LookRotation(transform.up, transform.forward)
-                );
-			}
-            catch (Exception)
-            {
-                Debug.Log("Can't shoot");
-            }
-            IsOnCooldown = true;
-            NextState = EnemyState.MOVING;
-        }
-    }
+		{
+			audioController.PlayAudio();
+
+			SpawnRocket();
+
+			IsOnCooldown = true;
+			NextState = EnemyState.MOVING;
+		}
+	}
+
+	private void SpawnRocket()
+	{
+		Vector3 rocketSpawnPosition = (transform.position + 2 * transform.up);
+		Instantiate(
+		rocket,
+		rocketSpawnPosition,
+		Quaternion.LookRotation(transform.up, transform.forward)
+		);
+	}
 }
