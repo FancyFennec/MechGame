@@ -15,7 +15,7 @@ public class PlayerRecoilController : MonoBehaviour
 	void LateUpdate()
 	{
 		ManageRecoil();
-		Recoil = Vector2.Lerp(Recoil, TargetRecoil, 20.3f * Time.deltaTime);
+		Recoil = Vector2.Lerp(Recoil, TargetRecoil, 20f * Time.deltaTime);
 	}
 
 	private void ManageRecoil()
@@ -27,9 +27,7 @@ public class PlayerRecoilController : MonoBehaviour
 		}
 		else
 		{
-			TargetRecoil = new Vector2(
-				Mathf.Clamp(TargetRecoil.x - recoilDirection.x * Time.deltaTime * 20f, -90f, 90f),
-				Mathf.Clamp(TargetRecoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f));
+			TargetRecoil =  Vector2.Lerp(TargetRecoil, Vector2.zero, 5f * Time.deltaTime);
 		}
 	}
 
