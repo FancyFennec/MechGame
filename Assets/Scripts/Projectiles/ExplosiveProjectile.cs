@@ -18,31 +18,30 @@ public class ExplosiveProjectile : Projectile, IHealth
 
 	public void ExplodeAt(Vector3 pos)
 	{
-		Destroy(Instantiate(this.explosion, pos, Quaternion.identity), 3f);
-		foreach (Collider collider in Physics.OverlapSphere(pos, ExplosionRadius))
+		if (!hasExploded)
 		{
-			Vector3 vector3 = collider.transform.position - pos;
-			vector3.Scale(new Vector3(1, 0, 1));
-
-			float damagefactor = Mathf.Clamp(1f - vector3.magnitude / ExplosionRadius, 0, 1);
-			DamageHitCollider(collider, damagefactor);
-
-			Rigidbody rigidbody = collider.GetComponent<Rigidbody>();
-			if(rigidbody != null)
+			hasExploded = true;
+			Destroy(Instantiate(this.explosion, pos, Quaternion.identity), 3f);
+			foreach (Collider collider in Physics.OverlapSphere(pos, ExplosionRadius))
 			{
-				rigidbody.AddExplosionForce(ExplosionForce, pos, 6);
+				Vector3 vector3 = collider.transform.position - pos;
+				vector3.Scale(new Vector3(1, 0, 1));
+
+				float damagefactor = Mathf.Clamp(1f - vector3.magnitude / ExplosionRadius, 0, 1);
+				DamageHitCollider(collider, damagefactor);
+
+				Rigidbody rigidbody = collider.GetComponent<Rigidbody>();
+				if (rigidbody != null)
+				{
+					rigidbody.AddExplosionForce(ExplosionForce, pos, 6);
+				}
 			}
+			Destroy(this.gameObject);
 		}
-		Destroy(this.gameObject);
 	}
 
 	public void TakeDamage(float damage)
 	{
-		if (!hasExploded)
-		{
-			hasExploded = true;
-			ExplodeAt(transform.position);
-		}
-		
+		ExplodeAt(transform.position);
 	}
 }

@@ -5,6 +5,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(EnemyHealth))]
+[RequireComponent(typeof(CooldownController))]
+[RequireComponent(typeof(AudioSource))]
 public abstract class Enemy : MonoBehaviour
 {
     public enum EnemyState
@@ -17,7 +20,8 @@ public abstract class Enemy : MonoBehaviour
         ATTACKING
     }
     private EnemyHealth health;
-    private EnemyCooldownController cooldownController;
+    private CooldownController cooldownController;
+    private AudioSource audioSource;
 
     protected Transform head;
     protected Transform playerTarget;
@@ -41,7 +45,8 @@ public abstract class Enemy : MonoBehaviour
 	private void Awake()
 	{
         health = GetComponent<EnemyHealth>();
-        cooldownController = GetComponent<EnemyCooldownController>();
+        cooldownController = GetComponent<CooldownController>();
+        audioSource = GetComponent<AudioSource>();
 
         PlayerHealth.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
         PlayerShootingController.instance.ShotEvent += StartAttackingIfShotWasHeard;

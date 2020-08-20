@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using UnityEditor.Timeline;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
 	public float projectileForce = 100f;
@@ -20,14 +21,8 @@ public class Projectile : MonoBehaviour
 		lastPosition = transform.position;
 
 		Rigidbody rigidbody = GetComponent<Rigidbody>();
-		if(rigidbody != null)
-		{
-			rigidbody.AddForce(transform.forward * projectileForce);
-			GetComponent<Rigidbody>().useGravity = useGravity;
-		} else
-		{
-			Debug.LogError("No Rigidbody attached to Rocket script!");
-		}
+		rigidbody.AddForce(transform.forward * projectileForce);
+		rigidbody.useGravity = useGravity;
 
 		Destroy(this.gameObject, lifetime);
 	}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class EnemyCooldownController : MonoBehaviour
+public class CooldownController : MonoBehaviour
 {
     [Header("Cooldowns")]
     public float Cooldown = 1f;

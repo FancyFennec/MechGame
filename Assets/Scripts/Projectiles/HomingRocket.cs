@@ -2,26 +2,25 @@
 using System.Collections;
 using System;
 
+[RequireComponent(typeof(CooldownController))]
 public class HomingRocket: ExplosiveProjectile
 {
-
+	private CooldownController cooldownController;
 	private Transform target;
 
 	private readonly float CorrectionForce = 2.0f;
 
-	public float Cooldown = 1.5f;
-	public float CooldownTimer = 0f;
-	protected bool isOnCooldown = true;
 
 	public override void Start()
 	{
 		base.Start();
 		target = Camera.main.transform;
+		cooldownController = GetComponent<CooldownController>();
+		cooldownController.IsOnCooldown = true;
 	}
 
 	private void LateUpdate()
 	{
-		UpdateCooldownTimer();
 		RotateTowardsTarget();
 	}
 
@@ -29,7 +28,7 @@ public class HomingRocket: ExplosiveProjectile
 	{
 		base.FixedUpdate();
 
-		if (!isOnCooldown)
+		if (!cooldownController.IsOnCooldown)
 		{
 			Vector3 correctionDirection = ((target.position - transform.position).normalized - transform.forward).normalized;
 			GetComponent<Rigidbody>().AddForce(correctionDirection * CorrectionForce);
@@ -47,20 +46,5 @@ public class HomingRocket: ExplosiveProjectile
 			Quaternion.LookRotation(direction, Vector3.up),
 			transform.rotation,
 			0.95f);
-	}
-
-	protected void UpdateCooldownTimer()
-	{
-		if (isOnCooldown)
-		{
-			if (CooldownTimer < Cooldown)
-			{
-				CooldownTimer = Mathf.Clamp(CooldownTimer + Time.deltaTime, 0f, Cooldown);
-			}
-			else
-			{
-				isOnCooldown = false;
-			}
-		}
 	}
 }
