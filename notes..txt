@@ -1,0 +1,4 @@
+- Projectiles not visible enough
+- Movement when not grounded
+- Sliding
+- Traffic system

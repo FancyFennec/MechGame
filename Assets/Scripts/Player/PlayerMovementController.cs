@@ -1,30 +1,46 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerRecoilController))]
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : MonoBehaviour
 {
+    //TODO: Manage controlls when in air
     [SerializeField] private PlayerMovementSettings movementSettings;
     private PlayerRecoilController recoilController;
+    private CharacterController characterController;
 
-    CharacterController characterController;
     private float yClamp = 0f;
     private float xClamp = 0f;
+
+    Vector3 movementVector = Vector3.zero;
+    private Vector3 slidingDirection = Vector3.zero;
+
     bool isJumping = false;
     float jumpMomentum = 0f;
+
     private float floatingTime = 0f;
-    private const float floatingThreshold = 0.2f;
-    bool isBoosting = false;
+    private readonly float floatingThreshold = 0.2f;
+
+    private bool isBoosting = false;
     public float BoostingTime { get; private set; } = 0f;
     public float BoostingThreshold { get; } = 2.0f;
     public bool IsBoostingOnCooldown { get; private set; } = false;
     private float boostingCooldownTimer = 0f;
-    private const float boostingCooldown = 4.0f;
+    private readonly float boostingCooldown = 4.0f;
+
+    private bool isSliding = false;
+    private float slidingTime = 0f;
+    private readonly float slidingThreshold = 0.15f;
+    private bool isSlidingOnCooldown  = false;
+    private float slidingCooldownTimer = 0f;
+    private readonly float slidingCooldown = 1.5f;
 
 
-	private void Awake()
+    private void Awake()
 	{
         recoilController = GetComponent<PlayerRecoilController>();
         PlayerHealth.instance.PlayerDiedEvent += () => enabled = false;
@@ -38,23 +54,90 @@ public class PlayerMovementController : MonoBehaviour
     }
 
     void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && floatingTime < floatingThreshold)
-        {
-            isJumping = true;
-            jumpMomentum = movementSettings.JumpMomentum;
+	{
+        SetMovementVector();
+
+        if (DoesPlayerWantToJump())
+		{
+			isJumping = true;
+			jumpMomentum = movementSettings.JumpMomentum;
+		}
+
+        if(!isSliding && !isSlidingOnCooldown)
+		{
+            if (DoesPlayerWantToSlide())
+            {
+                slidingDirection = movementVector;
+                isSliding = true;
+            }
         }
 
-        isBoosting = Input.GetKey(KeyCode.Space) && !IsBoostingOnCooldown && floatingTime > floatingThreshold;
+		if (Input.GetKeyDown(KeyCode.Space) && floatingTime < floatingThreshold)
+		{
+			isJumping = true;
+			jumpMomentum = movementSettings.JumpMomentum;
+		}
 
-        RotateCamera();
-        MovePlayer();
-    }
+		isBoosting = Input.GetKey(KeyCode.Space) && !IsBoostingOnCooldown && floatingTime > floatingThreshold;
+
+		RotateCamera();
+		MovePlayer();
+	}
 
     void LateUpdate()
+    {
+        ManageJumps();
+        ManageBoosts();
+        ManageSliding();
+    }
+
+    private bool DoesPlayerWantToSlide()
 	{
-		ManageJumps();
-		ManageBoosts();
+		return movementVector != Vector3.zero && Input.GetKey(KeyCode.LeftShift) && floatingTime < floatingThreshold;
+	}
+
+	private bool DoesPlayerWantToJump()
+	{
+		return Input.GetKeyDown(KeyCode.Space) && floatingTime < floatingThreshold;
+	}
+
+	private void SetMovementVector()
+	{
+		movementVector = Vector3.zero;
+		float hInput = Input.GetAxisRaw(movementSettings.HorizontalInput);
+		float vInput = Input.GetAxisRaw(movementSettings.VerticalInput);
+		movementVector += (transform.forward * vInput + transform.right * hInput).normalized;
+	}
+
+	private void ManageSliding()
+	{
+		if (isSliding)
+		{
+			if (slidingTime < slidingThreshold)
+			{
+				slidingTime += Time.deltaTime;
+			}
+			else
+			{
+                slidingDirection = Vector3.zero;
+                slidingTime = 0f;
+				isSliding = false;
+				isSlidingOnCooldown = true;
+			}
+		}
+		if (isSlidingOnCooldown)
+		{
+			if (slidingCooldownTimer < slidingCooldown)
+			{
+				slidingCooldownTimer += Time.deltaTime;
+
+			}
+			else
+			{
+                slidingCooldownTimer = 0f;
+                isSlidingOnCooldown = false;
+			}
+		}
 	}
 
 	void RotateCamera()
@@ -79,22 +162,23 @@ public class PlayerMovementController : MonoBehaviour
 
     void MovePlayer()
     {
-        Vector3 movementVector = Vector3.zero;
-
-        float hInput = Input.GetAxisRaw(movementSettings.HorizontalInput);
-        float vInput = Input.GetAxisRaw(movementSettings.VerticalInput);
-
-        movementVector += (transform.forward * vInput + transform.right * hInput).normalized;
-        movementVector *= (Input.GetKey(KeyCode.LeftShift) ? 1.5f : 1f) * movementSettings.MovementSpeed;
-
-        movementVector += Vector3.up * jumpMomentum;
-
-        if (isBoosting)
-        {
-            jumpMomentum -= movementSettings.Gravity * 0.2f * Time.smoothDeltaTime;
-        } else
+		if (isSliding)
 		{
-            jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
+            movementVector = slidingDirection * 100f;
+		} else
+		{
+            movementVector *= movementSettings.MovementSpeed;
+
+            movementVector += Vector3.up * jumpMomentum;
+
+            if (isBoosting)
+            {
+                jumpMomentum -= movementSettings.Gravity * 0.2f * Time.smoothDeltaTime;
+            }
+            else
+            {
+                jumpMomentum -= movementSettings.Gravity * Time.smoothDeltaTime;
+            }
         }
 
         characterController.Move(movementVector * Time.smoothDeltaTime);
@@ -108,7 +192,10 @@ public class PlayerMovementController : MonoBehaviour
         }
         else
         {
-            floatingTime += Time.deltaTime;
+			if (!isSliding)// Don't update the flaoting time when sliding, then you can jump after sliding
+			{
+                floatingTime += Time.deltaTime;
+            }
         }
         if (isJumping)
         {

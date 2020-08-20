@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerRecoilController : MonoBehaviour
 {
 	public Vector2 Recoil { get; private set; } = Vector2.zero;
+	private Vector2 TargetRecoil = Vector2.zero;
 
 	private void Awake()
 	{
@@ -14,26 +15,28 @@ public class PlayerRecoilController : MonoBehaviour
 	void LateUpdate()
 	{
 		ManageRecoil();
+		//Recoil = TargetRecoil;
+		Recoil = Vector2.Lerp(Recoil, TargetRecoil, 20.3f * Time.deltaTime);
 	}
 
 	private void ManageRecoil()
 	{
-		Vector2 recoilDirection = Recoil.normalized;
-		if (Recoil.magnitude < 0.1f && !Input.GetMouseButton(0))
+		Vector2 recoilDirection = TargetRecoil.normalized;
+		if (TargetRecoil.magnitude < 0.1f && !Input.GetMouseButton(0))
 		{
-			Recoil = Vector2.zero;
+			TargetRecoil = Vector2.zero;
 		}
 		else
 		{
-			Recoil = new Vector2(
-				Mathf.Clamp(Recoil.x - recoilDirection.x * Time.deltaTime * 20f, -90f, 90f),
-				Mathf.Clamp(Recoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f));
+			TargetRecoil = new Vector2(
+				Mathf.Clamp(TargetRecoil.x - recoilDirection.x * Time.deltaTime * 20f, -90f, 90f),
+				Mathf.Clamp(TargetRecoil.y - recoilDirection.y * Time.deltaTime * 20f, -360f, 360f));
 		}
 	}
 
 	public void AddRecoil(Vector2 recoilVector)
 	{
-		Recoil += recoilVector;
+		TargetRecoil += recoilVector;
 	}
 
 	private void AimPunch()
@@ -41,5 +44,5 @@ public class PlayerRecoilController : MonoBehaviour
 		AddRecoil(new Vector2(5, 0));
 	}
 
-	public bool IsRecoilReset => Recoil == Vector2.zero;
+	public bool IsRecoilReset => TargetRecoil == Vector2.zero;
 }
