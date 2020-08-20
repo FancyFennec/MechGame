@@ -15,7 +15,6 @@ public class PlayerRecoilController : MonoBehaviour
 	void LateUpdate()
 	{
 		ManageRecoil();
-		//Recoil = TargetRecoil;
 		Recoil = Vector2.Lerp(Recoil, TargetRecoil, 20.3f * Time.deltaTime);
 	}
 

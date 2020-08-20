@@ -42,14 +42,8 @@ public class PlayerMovementController : MonoBehaviour
     private void Awake()
 	{
         recoilController = GetComponent<PlayerRecoilController>();
-        PlayerHealth.instance.PlayerDiedEvent += () => enabled = false;
-    }
-	void Start()
-    {
-        Application.targetFrameRate = 120;
-
-        Cursor.lockState = CursorLockMode.Locked;
         characterController = GetComponent<CharacterController>();
+        PlayerHealth.instance.PlayerDiedEvent += () => enabled = false;
     }
 
     void Update()
