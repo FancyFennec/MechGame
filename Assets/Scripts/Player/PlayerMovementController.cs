@@ -8,7 +8,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : MonoBehaviour
 {
-    //TODO: Manage controlls when in air
     [SerializeField] private PlayerMovementSettings movementSettings;
     private PlayerRecoilController recoilController;
     private CharacterController characterController;

@@ -28,11 +28,19 @@ public class Bullet : Projectile
 		}
 
 		Rigidbody rigidbody = collision.gameObject.GetComponent<Rigidbody>();
-		if(rigidbody != null)
+		if (rigidbody != null)
 		{
-			rigidbody.AddForce(direction.normalized * 100f);
+			rigidbody.AddForce((collision.transform.position - transform.position).normalized * 100f);
 		}
 
+		RemoveTrail();
 		Destroy(this.gameObject);
+	}
+
+	private void RemoveTrail()
+	{
+		Transform trail = transform.Find("Trail");
+		trail.parent = transform.parent;
+		Destroy(trail.gameObject, 2f);
 	}
 }

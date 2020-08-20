@@ -1,4 +1,3 @@
-- Projectiles not visible enough
 - Movement when not grounded
-- Sliding
+- Not visible which weapon is selected and what weapons exist
 - Traffic system
