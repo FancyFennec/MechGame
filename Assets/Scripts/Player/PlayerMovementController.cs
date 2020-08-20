@@ -9,7 +9,6 @@ public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField]
     private PlayerMovementSettings movementSettings;
-    [SerializeField]
     private PlayerRecoilController recoilController;
 
     CharacterController characterController;
@@ -29,7 +28,8 @@ public class PlayerMovementController : MonoBehaviour
 
 	private void Awake()
 	{
-        Health.instance.PlayerDiedEvent += () => enabled = false;
+        recoilController = GetComponent<PlayerRecoilController>();
+        PlayerHealth.instance.PlayerDiedEvent += () => enabled = false;
     }
 	void Start()
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Health : MonoBehaviour
+public class PlayerHealth : MonoBehaviour
 {
-    public static Health instance;
+    public static PlayerHealth instance;
     public int MaxHealth { get; } = 200;
     public int CurrentHealth { get; private set; } = 100;
 

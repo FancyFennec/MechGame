@@ -10,7 +10,7 @@ public class PlayerRecoilController : MonoBehaviour
 
 	private void Awake()
 	{
-		Health.instance.PlayerDamageTakenEvent += AimPunch;
+		PlayerHealth.instance.PlayerDamageTakenEvent += AimPunch;
 	}
 
 	void LateUpdate()

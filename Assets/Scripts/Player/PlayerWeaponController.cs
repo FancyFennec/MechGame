@@ -9,8 +9,8 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(AudioSource))]
 public class PlayerWeaponController : MonoBehaviour
 {
-	[SerializeField] private PlayerRecoilController recoilController;
-	[SerializeField] private AudioSource audioSource;
+	private PlayerRecoilController recoilController;
+	private AudioSource audioSource;
 
 	public int Ammo { get => CurrentWeapon.Ammo; }
 	public int ClipSize { get => CurrentWeapon.ClipSize; }
@@ -30,7 +30,9 @@ public class PlayerWeaponController : MonoBehaviour
 
 	private void Awake()
 	{
-		Health.instance.PlayerDiedEvent += () => { enabled = false; };
+		recoilController = GetComponent<PlayerRecoilController>();
+		audioSource = GetComponent<AudioSource>();
+		PlayerHealth.instance.PlayerDiedEvent += () => { enabled = false; };
 	}
 	void Start()
 	{

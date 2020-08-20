@@ -13,7 +13,7 @@ public class HomingRocketEnemy : Enemy
     public override void Start()
     {
         base.Start();
-        targetDirection = player.position - head.position;
+        targetDirection = playerTarget.position - head.position;
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         rocket = Resources.Load<GameObject>("Projectiles/HomingRocket");
@@ -40,12 +40,12 @@ public class HomingRocketEnemy : Enemy
                     break;
                 case EnemyState.MOVING:
                     navMeshAgent.isStopped = false;
-                    Vector3 layerDirection = player.position - transform.position;
+                    Vector3 layerDirection = playerTarget.position - transform.position;
                     navMeshAgent.destination = transform.position + 5f * layerDirection.normalized;
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
-                    navMeshAgent.destination = player.position;
+                    navMeshAgent.destination = playerTarget.position;
                     break;
             }
             CurrentState = NextState;
@@ -100,7 +100,7 @@ public class HomingRocketEnemy : Enemy
 
     public override void Stop()
     {
-        if (!isOnCooldown)
+        if (!IsOnCooldown)
         {
             NextState = EnemyState.ATTACKING;
         }
@@ -117,7 +117,7 @@ public class HomingRocketEnemy : Enemy
 
     private void ShootAtPlayer()
     {
-        if (!isOnCooldown)
+        if (!IsOnCooldown)
         {
             try
             {
@@ -132,7 +132,7 @@ public class HomingRocketEnemy : Enemy
             {
                 Debug.Log("Can't shoot");
             }
-            isOnCooldown = true;
+            IsOnCooldown = true;
             NextState = EnemyState.MOVING;
         }
     }

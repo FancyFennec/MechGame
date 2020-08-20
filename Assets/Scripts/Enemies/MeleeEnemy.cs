@@ -37,13 +37,13 @@ public class MeleeEnemy: Enemy
                     navMeshAgent.isStopped = true;
                     break;
                 case EnemyState.ATTACKING:
-                    isOnCooldown = false;
+                    IsOnCooldown = false;
                     navMeshAgent.isStopped = false;
-                    navMeshAgent.destination = player.position;
+                    navMeshAgent.destination = playerTarget.position;
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
-                    navMeshAgent.destination = player.position;
+                    navMeshAgent.destination = playerTarget.position;
                     break;
                 case EnemyState.MOVING:
                     navMeshAgent.isStopped = false;
@@ -56,8 +56,6 @@ public class MeleeEnemy: Enemy
             }
             CurrentState = NextState;
         }
-
-        if(CooldownTimer != 0f) CooldownTimer = Mathf.Clamp(CooldownTimer - Time.deltaTime, 0f, Cooldown);
         playerNotSeenSinceTimer = IsPlayerVisible() ? 0f : playerNotSeenSinceTimer + Time.deltaTime;
     }
 
@@ -109,14 +107,14 @@ public class MeleeEnemy: Enemy
 
     private void SetPlayerAsNavigationTarget()
     {
-        navMeshAgent.destination = player.position;
+        navMeshAgent.destination = playerTarget.position;
     }
 
 	private void OnTriggerEnter(Collider collision)
 	{
         if (collision.gameObject.name == "Player")
         {
-            if (!isOnCooldown)
+            if (!IsOnCooldown)
             {
                 DamagePlayer();
             }
@@ -125,9 +123,9 @@ public class MeleeEnemy: Enemy
 
 	private void DamagePlayer()
 	{
-        player.GetComponentInParent<Health>().TakeDamage(40);
+        playerTarget.GetComponentInParent<PlayerHealth>().TakeDamage(40);
         Destroy(Instantiate(this.explosion, transform.position, Quaternion.identity), 3f);
-        isOnCooldown = true;
+        IsOnCooldown = true;
 		NextState = EnemyState.MOVING;
 	}
 }

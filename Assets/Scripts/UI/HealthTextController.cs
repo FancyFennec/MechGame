@@ -6,7 +6,7 @@ using UnityEngine;
 public class HealthTextController : MonoBehaviour
 {
     [SerializeField]
-    private Health health;
+    private PlayerHealth health;
     private TextMeshProUGUI healthText;
     private Color orange = new Color(1f, 0.5f, 0f);
     void Start()

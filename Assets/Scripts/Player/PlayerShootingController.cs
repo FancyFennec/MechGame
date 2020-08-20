@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 [RequireComponent(typeof(PlayerWeaponController))]
 public class PlayerShootingController : MonoBehaviour
 {
-	[SerializeField] private PlayerWeaponController weaponController;
+	private PlayerWeaponController weaponController;
 
 	public static PlayerShootingController instance;
 
@@ -22,7 +22,8 @@ public class PlayerShootingController : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
-		Health.instance.PlayerDiedEvent += () => enabled = false;
+		weaponController = GetComponent<PlayerWeaponController>();
+		PlayerHealth.instance.PlayerDiedEvent += () => enabled = false;
 	}
 
 	void Start()

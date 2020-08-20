@@ -13,7 +13,7 @@ public class HitScanningEnemy: Enemy
     {
         base.Start();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        targetDirection = player.position - head.position;
+        targetDirection = playerTarget.position - head.position;
         bullet = Resources.Load<GameObject>("Projectiles/EnemyBullet");
     }
 
@@ -46,7 +46,7 @@ public class HitScanningEnemy: Enemy
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
-                    navMeshAgent.destination = player.position;
+                    navMeshAgent.destination = playerTarget.position;
                     break;
             }
             CurrentState = NextState;
@@ -110,16 +110,16 @@ public class HitScanningEnemy: Enemy
 
     private void ShootAtPlayer()
     {
-        if (!isOnCooldown && IsAimingAtPlayer())
+        if (!IsOnCooldown && IsAimingAtPlayer())
 		{
             Vector3 rocketSpawnPosition = transform.position + transform.up + transform.forward * 1.5f;
-            Vector3 rocketDirection = player.position - rocketSpawnPosition;
+            Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
             Instantiate(
             bullet,
             rocketSpawnPosition,
             Quaternion.LookRotation(rocketDirection.normalized, transform.up)
             );
-            isOnCooldown = true;
+            IsOnCooldown = true;
             NextState = EnemyState.MOVING;
         }
     }

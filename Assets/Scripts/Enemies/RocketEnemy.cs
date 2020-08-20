@@ -13,7 +13,7 @@ public class RocketEnemy : Enemy
     public override void Start()
     {
         base.Start();
-        targetDirection = player.position - head.position;
+        targetDirection = playerTarget.position - head.position;
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         rocket = Resources.Load<GameObject>("Projectiles/EnemyRocket");
@@ -41,12 +41,12 @@ public class RocketEnemy : Enemy
                     break;
                 case EnemyState.MOVING:
                     navMeshAgent.isStopped = false;
-                    Vector3 layerDirection = player.position - transform.position;
+                    Vector3 layerDirection = playerTarget.position - transform.position;
                     navMeshAgent.destination = transform.position + 5f * layerDirection.normalized;
                     break;
                 case EnemyState.SEARCHING:
                     navMeshAgent.isStopped = false;
-                    navMeshAgent.destination = player.position;
+                    navMeshAgent.destination = playerTarget.position;
                     break;
             }
             CurrentState = NextState;
@@ -101,7 +101,7 @@ public class RocketEnemy : Enemy
 
     public override void Stop()
     {
-        if (!isOnCooldown)
+        if (!IsOnCooldown)
         {
             NextState = EnemyState.ATTACKING;
         }
@@ -118,12 +118,12 @@ public class RocketEnemy : Enemy
 
     private void ShootAtPlayer()
     {
-        if (!isOnCooldown && IsAimingAtPlayer())
+        if (!IsOnCooldown && IsAimingAtPlayer())
         {
             try
             {
 				Vector3 rocketSpawnPosition = (transform.position + 2 * transform.up + transform.forward * 1.5f);
-				Vector3 rocketDirection = player.position - rocketSpawnPosition;
+				Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
                 Instantiate(
                 rocket,
                 rocketSpawnPosition,
@@ -144,7 +144,7 @@ public class RocketEnemy : Enemy
             {
                 Debug.Log("Can't shoot");
             }
-            isOnCooldown = true;
+            IsOnCooldown = true;
             NextState = EnemyState.MOVING;
         }
     }

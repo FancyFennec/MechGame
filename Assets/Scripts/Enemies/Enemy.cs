@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy: MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
     public enum EnemyState
     {
@@ -15,28 +16,18 @@ public class Enemy: MonoBehaviour
         SEARCHING,
         ATTACKING
     }
-    [Header("Health")]
-    public int MaxHealth = 100;
-    [System.NonSerialized]
-    public float CurrentHealth = 100;
-
-    [Header("Cooldowns")]
-    public float Cooldown = 1f;
-    [System.NonSerialized]
-    public float CooldownTimer = 0f;
-    protected bool isOnCooldown = false;
-
-    [Header("Splatter Particle")]
-    public GameObject splatter;
+    private EnemyHealth health;
+    private EnemyCooldownController cooldownController;
 
     protected Transform head;
-    protected Transform player;
+    protected Transform playerTarget;
 
     protected NavMeshAgent navMeshAgent;
     protected Vector3 targetDirection = Vector3.zero;
 
     public EnemyState NextState { get; set; } = EnemyState.IDLE;
     public EnemyState CurrentState { get; set; } = EnemyState.IDLE;
+    public Boolean IsOnCooldown { get => cooldownController.IsOnCooldown; set => cooldownController.IsOnCooldown = value;}
 
     public virtual void AttackPlayer() { }
     public virtual void SearchPlayer() { }
@@ -47,13 +38,22 @@ public class Enemy: MonoBehaviour
     public virtual void RotateTowardsPlayer() { }
     public virtual void UpdateState() { }
 
-    public virtual void Start()
-    {
-        Health.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
+	private void Awake()
+	{
+        health = GetComponent<EnemyHealth>();
+        cooldownController = GetComponent<EnemyCooldownController>();
+
+        PlayerHealth.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
         PlayerShootingController.instance.ShotEvent += StartAttacking;
-        player = Camera.main.transform;
+
+        health.EnemyDiedEvent += () => NextState = EnemyState.DEAD;
+        health.EnemyDamageTakenEvent += TakeDamage;
+
+        playerTarget = Camera.main.transform;
         head = transform.Find("Head");
     }
+
+	public virtual void Start() {}
 
     void Update()
     {
@@ -78,7 +78,6 @@ public class Enemy: MonoBehaviour
                 SearchPlayer();
                 break;
         }
-        UpdateCooldownTimer();
     }
 
     private void LateUpdate()
@@ -91,19 +90,12 @@ public class Enemy: MonoBehaviour
         PlayerShootingController.instance.ShotEvent -= StartAttacking;
     }
 
-	public void TakeDamage(float damage) {
+	public void TakeDamage() {
 
 		if (CurrentState.Equals(EnemyState.IDLE))
 		{
             NextState = EnemyState.ATTACKING;
 		}
-
-        CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0f, MaxHealth);
-        if(CurrentHealth == 0f)
-        {
-            NextState = EnemyState.DEAD;
-            Destroy(Instantiate(splatter, transform.position, Quaternion.LookRotation(Vector3.up)), 2f);
-        }
     }
 
     public void RotateTowardsDestination()
@@ -115,27 +107,11 @@ public class Enemy: MonoBehaviour
             0.95f);
     }
 
-    protected void UpdateCooldownTimer()
-    {
-        if (isOnCooldown)
-        {
-            if (CooldownTimer < Cooldown)
-            {
-                CooldownTimer = Mathf.Clamp(CooldownTimer + Time.deltaTime, 0f, Cooldown);
-            }
-            else
-            {
-                CooldownTimer = 0f;
-                isOnCooldown = false;
-            }
-        }
-    }
-
     protected void UpdateTargetDirection()
     {
         if (CurrentState.Equals(EnemyState.ATTACKING))
         {
-            targetDirection = (player.position - head.position);
+            targetDirection = (playerTarget.position - head.position);
             targetDirection.Scale(new Vector3(1, 0, 1));
             targetDirection = targetDirection.normalized;
         } else
@@ -153,7 +129,7 @@ public class Enemy: MonoBehaviour
 
     protected bool IsPlayerVisible()
     {
-        Vector3 playerDirection = (player.position - head.position).normalized;
+        Vector3 playerDirection = (playerTarget.position - head.position).normalized;
         return Vector3.Dot(playerDirection, transform.forward) > -0.3f &&
                                 Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";
@@ -161,7 +137,7 @@ public class Enemy: MonoBehaviour
 
     protected bool IsAimingAtPlayer()
     {
-        Vector3 playerDirection = (player.position - head.position).normalized;
+        Vector3 playerDirection = (playerTarget.position - head.position).normalized;
         return Vector3.Dot(playerDirection, transform.forward) > 0.99f &&
                                 Physics.Raycast(head.position, playerDirection, out RaycastHit hit)
                                 && hit.transform.name == "Player";

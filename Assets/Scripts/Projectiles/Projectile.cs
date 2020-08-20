@@ -63,18 +63,18 @@ public class Projectile : MonoBehaviour
 
 	private bool DamageEnemy(Collider collider, float damagefactor)
 	{
-		Enemy enemy = collider.GetComponent<Enemy>();
-		if(enemy == null)
+		EnemyHealth health = collider.GetComponent<EnemyHealth>();
+		if(health == null)
 		{
 			return false;
 		}
-		enemy.TakeDamage(damagefactor * Damage);
+		health.TakeDamage(damagefactor * Damage);
 		return true;
 	}
 
 	private bool DamagePlayer(Collider collider, float damagefactor)
 	{
-		Health health = collider.GetComponent<Health>();
+		PlayerHealth health = collider.GetComponent<PlayerHealth>();
 		if(health == null)
 		{
 			return false;
