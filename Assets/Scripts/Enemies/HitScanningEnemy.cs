@@ -111,7 +111,7 @@ public class HitScanningEnemy: Enemy
     {
         if (!IsOnCooldown && IsAimingAtPlayer())
 		{
-            audioController.PlayAudio();
+            /*audioController.PlayAudio();
             Vector3 rocketSpawnPosition = transform.position + transform.up + transform.forward * 1.5f;
             Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
             Instantiate(
@@ -120,7 +120,28 @@ public class HitScanningEnemy: Enemy
             Quaternion.LookRotation(rocketDirection.normalized, transform.up)
             );
             IsOnCooldown = true;
-            NextState = EnemyState.MOVING;
+            NextState = EnemyState.MOVING;*/
+            StartCoroutine(ShootThreeTimes());
         }
+    }
+
+    private IEnumerator ShootThreeTimes()
+	{
+        IsOnCooldown = true;
+        for (int i = 0; i < 3; i++)
+		{
+            
+            audioController.PlayAudio();
+            Vector3 rocketSpawnPosition = transform.position + transform.up + transform.forward * 1.5f;
+            Vector3 rocketDirection = playerTarget.position - rocketSpawnPosition;
+            Instantiate(
+            bullet,
+            rocketSpawnPosition,
+            Quaternion.LookRotation(rocketDirection.normalized, transform.up)
+            );
+
+            yield return new WaitForSeconds(1f);
+        }
+        NextState = EnemyState.MOVING;
     }
 }

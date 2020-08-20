@@ -92,7 +92,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool DoesPlayerWantToSlide()
 	{
-		return movementVector != Vector3.zero && Input.GetKey(KeyCode.LeftShift) && floatingTime < floatingThreshold;
+		return movementVector != Vector3.zero && Input.GetKeyDown(KeyCode.LeftShift) && floatingTime < floatingThreshold;
 	}
 
 	private bool DoesPlayerWantToJump()
