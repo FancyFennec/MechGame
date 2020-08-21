@@ -1,3 +1,5 @@
 - Movement when not grounded
 - Not visible which weapon is selected and what weapons exist
-- Traffic system
+- Traffic system 
+- Menu for Settings
+- Respawn Mechanic

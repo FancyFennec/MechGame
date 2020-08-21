@@ -41,7 +41,8 @@ public class Projectile : MonoBehaviour
 	protected bool DamageHitCollider(Collider collider, float damagefactor)
 	{
 		IHealth health = collider.GetComponent<IHealth>();
-		if(health == null)
+		if (health == null) health = collider.GetComponentInParent<IHealth>();
+		if (health == null)
 		{
 			return false;
 		} else

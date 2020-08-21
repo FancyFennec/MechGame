@@ -40,7 +40,10 @@ public class Bullet : Projectile
 	private void RemoveTrail()
 	{
 		Transform trail = transform.Find("Trail");
-		trail.parent = transform.parent;
-		Destroy(trail.gameObject, 2f);
+		if(trail != null)
+		{
+			trail.parent = null;
+			Destroy(trail.gameObject, 2f);
+		}
 	}
 }

@@ -5,7 +5,7 @@ using System;
 public class ExplosiveProjectile : Projectile, IHealth
 {
 	protected GameObject explosion;
-	private readonly float ExplosionRadius = 2f;
+	private readonly float ExplosionRadius = 3f;
 	private const int ExplosionForce = 500;
 	private Boolean hasExploded = false;
 
