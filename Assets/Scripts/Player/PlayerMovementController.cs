@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,17 +28,45 @@ public class PlayerMovementController : MonoBehaviour
     private bool isBoosting = false;
     public float BoostingTime { get; private set; } = 0f;
     public float BoostingThreshold { get; } = 2.0f;
-    public bool IsBoostingOnCooldown { get; private set; } = false;
-    private float boostingCooldownTimer = 0f;
+    public bool isBoostingOnCooldown = false;
     private readonly float boostingCooldown = 4.0f;
+    public bool IsBoostingOnCooldown
+    {
+        get { return isBoostingOnCooldown; }
+        set
+        {
+            isBoostingOnCooldown = value;
+            if (value)
+            {
+                StartCoroutine(RunAfterCooldown(boostingCooldown, () => isBoostingOnCooldown = false));
+            }
+        }
+    }
 
     private bool isSliding = false;
     private float slidingTime = 0f;
     private readonly float slidingThreshold = 0.15f;
     private bool isSlidingOnCooldown  = false;
-    private float slidingCooldownTimer = 0f;
     private readonly float slidingCooldown = 1.5f;
 
+    public bool IsSlidingOnCooldown
+    {
+        get { return isSlidingOnCooldown; }
+        set
+        {
+            isSlidingOnCooldown = value;
+            if (value)
+            {
+                StartCoroutine(RunAfterCooldown(slidingCooldown, () => isSlidingOnCooldown = false));
+            }
+        }
+    }
+
+    private IEnumerator RunAfterCooldown(float cooldown, Func<bool> fun)
+	{
+        yield return new WaitForSeconds(cooldown);
+        fun();
+    }
 
     private void Awake()
 	{
@@ -56,7 +85,7 @@ public class PlayerMovementController : MonoBehaviour
 			jumpMomentum = movementSettings.JumpMomentum;
 		}
 
-        if(!isSliding && !isSlidingOnCooldown)
+        if(!isSliding && !IsSlidingOnCooldown)
 		{
             if (DoesPlayerWantToSlide())
             {
@@ -115,20 +144,7 @@ public class PlayerMovementController : MonoBehaviour
                 slidingDirection = Vector3.zero;
                 slidingTime = 0f;
 				isSliding = false;
-				isSlidingOnCooldown = true;
-			}
-		}
-		if (isSlidingOnCooldown)
-		{
-			if (slidingCooldownTimer < slidingCooldown)
-			{
-				slidingCooldownTimer += Time.deltaTime;
-
-			}
-			else
-			{
-                slidingCooldownTimer = 0f;
-                isSlidingOnCooldown = false;
+				IsSlidingOnCooldown = true;
 			}
 		}
 	}
@@ -185,7 +201,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else
         {
-			if (!isSliding)// Don't update the flaoting time when sliding, then you can jump after sliding
+			if (!isSliding)// Don't update the floating time when sliding, then you can jump after sliding
 			{
                 floatingTime += Time.deltaTime;
             }
@@ -212,16 +228,6 @@ public class PlayerMovementController : MonoBehaviour
             if (BoostingTime >= BoostingThreshold)
             {
                 IsBoostingOnCooldown = true;
-            }
-        }
-        else
-        {
-            boostingCooldownTimer += Time.deltaTime;
-            if (boostingCooldownTimer >= boostingCooldown)
-            {
-                IsBoostingOnCooldown = false;
-                boostingCooldownTimer = 0f;
-                BoostingTime = 0f;
             }
         }
     }
