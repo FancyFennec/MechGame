@@ -15,7 +15,7 @@ public class PlayerMovementSettings : ScriptableObject
     [SerializeField] private string verticalInput = "Vertical";
 
     [Header("Camera Settings")]
-    [SerializeField] private readonly Vector2 minMaxAngles = new Vector2(-90, 90);
+    [SerializeField] private readonly Vector2 minMaxAngles = new Vector2(-89, 89);
 
     [Header("Movement Settings")]
     [SerializeField] private float mouseSensitivity = 200f;

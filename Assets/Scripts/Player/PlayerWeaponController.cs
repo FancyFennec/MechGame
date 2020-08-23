@@ -12,13 +12,20 @@ public class PlayerWeaponController : MonoBehaviour
 	private PlayerRecoilController recoilController;
 	private AudioSource audioSource;
 
-	public int Ammo { get => CurrentWeapon.Ammo; }
-	public int ClipSize { get => CurrentWeapon.ClipSize; }
-	public Weapon.WeaponType WeaponType { get => CurrentWeapon.Type; }
-	public Boolean CanWeaponZoom { get => typeof(SniperRifle).IsInstanceOfType(CurrentWeapon); }
-	public Boolean CanWeaponFire { get => CurrentWeapon.CanWeaponFire(); }
+	private Weapon PrimaryWeapon;
+	private Weapon SecondaryWeapon;
 
-	private Weapon CurrentWeapon;
+	public int PrimaryAmmo { get => PrimaryWeapon.Ammo; }
+	public int SecondaryAmmo { get => SecondaryWeapon.Ammo; }
+	public int PrimaryClipSize { get => PrimaryWeapon.ClipSize; }
+	public int SecondaryClipSize { get => SecondaryWeapon.ClipSize; }
+	public Weapon.WeaponType PrimaryWeaponType { get => PrimaryWeapon.Type; }
+	public Weapon.WeaponType SecondaryWeaponType { get => SecondaryWeapon.Type; }
+	public Boolean CanPrimaryZoom { get => typeof(SniperRifle).IsInstanceOfType(PrimaryWeapon); }
+	public Boolean CanSecondaryZoom { get => typeof(SniperRifle).IsInstanceOfType(SecondaryWeapon); }
+	public Boolean CanPrimaryFire { get => PrimaryWeapon.CanWeaponFire(); }
+	public Boolean CanSecondaryFire { get => SecondaryWeapon.CanWeaponFire(); }
+
 	private readonly List<String> weaponKeys = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 	private readonly List<Weapon> weapons = new List<Weapon> {
 		new SniperRifle(),
@@ -36,7 +43,8 @@ public class PlayerWeaponController : MonoBehaviour
 	}
 	void Start()
 	{
-		CurrentWeapon = weapons[0];
+		PrimaryWeapon = weapons[0];
+		SecondaryWeapon = weapons[1];
 		foreach (Weapon weapon in weapons)
 		{
 			weapon.Projectile = Resources.Load<GameObject>(weapon.ProjectileAssetName);
@@ -45,43 +53,62 @@ public class PlayerWeaponController : MonoBehaviour
 		}
 	}
 
-	void Update()
-	{
-		CurrentWeapon.UpdateCooldownTimer(Time.deltaTime);
-	}
-
 	public void LateUpdate()
 	{
+		PrimaryWeapon.UpdateCooldownTimer(Time.deltaTime);
+		SecondaryWeapon.UpdateCooldownTimer(Time.deltaTime);
+
 		if (recoilController.IsRecoilReset)
 		{
-			CurrentWeapon.ResetRecoil();
+			PrimaryWeapon.ResetRecoil();
+			SecondaryWeapon.ResetRecoil();
 		}
 		ChangeWeaponOnKeyPress();
 	}
 
-	public void Reload() => CurrentWeapon.Reload();
-
-	public void Fire()
-	{
-		SpawnProjectile();
-		AddRecoil();
-		audioSource.PlayOneShot(CurrentWeapon.AudioClips[Random.Range(0, CurrentWeapon.AudioClips.Count)]);
+	public void Reload() {
+		PrimaryWeapon.Reload();
+		SecondaryWeapon.Reload();
 	}
 
-	private void AddRecoil() => recoilController.AddRecoil(CurrentWeapon.Shoot());
+	public void FirePrimary()
+	{
+		SpawnPrimaryProjectile();
+		AddPrimaryRecoil();
+		audioSource.PlayOneShot(PrimaryWeapon.AudioClips[Random.Range(0, PrimaryWeapon.AudioClips.Count)]);
+	}
 
-	private void SpawnProjectile()
+	public void FireSecondary()
+	{
+		SpawnSecondaryProjectile();
+		AddSecondaryRecoil();
+		audioSource.PlayOneShot(SecondaryWeapon.AudioClips[Random.Range(0, SecondaryWeapon.AudioClips.Count)]);
+	}
+
+	private void AddPrimaryRecoil() => recoilController.AddRecoil(PrimaryWeapon.Shoot());
+	private void AddSecondaryRecoil() => recoilController.AddRecoil(SecondaryWeapon.Shoot());
+
+	private void SpawnPrimaryProjectile()
 	{
 		Instantiate(
-						CurrentWeapon.Projectile,
-						Camera.main.transform.position +
-						Camera.main.transform.forward * 1.5f +
-						Camera.main.transform.right * (AlternateFire() ? -.25f : .25f),
+						PrimaryWeapon.Projectile,
+						transform.Find("Weapons").GetChild(0).position +
+						Camera.main.transform.right * 0.75f +
+						Camera.main.transform.forward,
 						Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 						);
 	}
 
-	private bool AlternateFire() => CurrentWeapon.Ammo % 2 == 0;
+	private void SpawnSecondaryProjectile()
+	{
+		Instantiate(
+						SecondaryWeapon.Projectile,
+						transform.Find("Weapons").GetChild(1).position +
+						Camera.main.transform.right * (-1.5f) +
+						Camera.main.transform.forward,
+						Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
+						);
+	}
 
 	private void ChangeWeaponOnKeyPress()
 	{
@@ -90,19 +117,32 @@ public class PlayerWeaponController : MonoBehaviour
 			int index = weaponKeys.IndexOf(i);
 			if (Input.GetKeyDown(i) && index < weapons.Count)
 			{
-				CurrentWeapon = weapons[index];
+				PrimaryWeapon = weapons[index];
 			}
 		});
 	}
 
-	public bool DoesPlayerWantToShoot()
+	public bool DoesPlayerWantToShootPrimary()
     {
-		switch (CurrentWeapon.Type)
+		switch (PrimaryWeapon.Type)
 		{
 			case Weapon.WeaponType.SEMI_AUTOMATIC:
 				return Input.GetMouseButtonDown(0);
 			case Weapon.WeaponType.AUTOMATIC:
 				return Input.GetMouseButton(0);
+			default:
+				return false;
+		}
+	}
+
+	public bool DoesPlayerWantToShootSecondary()
+	{
+		switch (SecondaryWeapon.Type)
+		{
+			case Weapon.WeaponType.SEMI_AUTOMATIC:
+				return Input.GetMouseButtonDown(1);
+			case Weapon.WeaponType.AUTOMATIC:
+				return Input.GetMouseButton(1);
 			default:
 				return false;
 		}

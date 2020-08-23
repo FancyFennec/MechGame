@@ -13,6 +13,8 @@ public class PlayerMovementController : MonoBehaviour
     private PlayerRecoilController recoilController;
     private CharacterController characterController;
 
+    private Transform cameraTransform;
+
     private float yClamp = 0f;
     private float xClamp = 0f;
 
@@ -62,14 +64,9 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    private IEnumerator RunAfterCooldown(float cooldown, Func<bool> fun)
-	{
-        yield return new WaitForSeconds(cooldown);
-        fun();
-    }
-
     private void Awake()
 	{
+        cameraTransform = Camera.main.transform;
         recoilController = GetComponent<PlayerRecoilController>();
         characterController = GetComponent<CharacterController>();
         PlayerHealth.instance.PlayerDiedEvent += () => enabled = false;
@@ -115,7 +112,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool DoesPlayerWantToSlide()
 	{
-		return movementVector != Vector3.zero && Input.GetKeyDown(KeyCode.LeftShift) && floatingTime < floatingThreshold;
+		return movementVector != Vector3.zero && Input.GetKeyDown(KeyCode.LeftShift);
 	}
 
 	private bool DoesPlayerWantToJump()
@@ -138,7 +135,8 @@ public class PlayerMovementController : MonoBehaviour
 			if (slidingTime < slidingThreshold)
 			{
 				slidingTime += Time.deltaTime;
-			}
+                floatingTime = 0f;
+            }
 			else
 			{
                 slidingDirection = Vector3.zero;
@@ -156,11 +154,11 @@ public class PlayerMovementController : MonoBehaviour
         // mouse y movement rotates around around X-axis
         float mouseY = Input.GetAxis(movementSettings.MouseYInput) * (movementSettings.MouseSensitivity * Time.smoothDeltaTime);
 
-        Vector3 cameraRotation = Camera.main.transform.eulerAngles;
+		Vector3 cameraRotation = cameraTransform.eulerAngles;
         yClamp = Mathf.Clamp(yClamp + mouseY, movementSettings.MinAngle, movementSettings.MaxAngle);
         float newXAxisRotation = Mathf.Clamp(yClamp + recoilController.Recoil.x, movementSettings.MinAngle, movementSettings.MaxAngle);
         cameraRotation.x = -newXAxisRotation;
-        Camera.main.transform.eulerAngles = cameraRotation;
+		cameraTransform.eulerAngles = cameraRotation;
 
         Vector3 bodyRotation = transform.eulerAngles;
         xClamp += mouseX;
@@ -230,5 +228,11 @@ public class PlayerMovementController : MonoBehaviour
                 IsBoostingOnCooldown = true;
             }
         }
+    }
+
+    private IEnumerator RunAfterCooldown(float cooldown, Func<bool> fun)
+    {
+        yield return new WaitForSeconds(cooldown);
+        fun();
     }
 }

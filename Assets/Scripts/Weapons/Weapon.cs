@@ -92,7 +92,7 @@ public class Weapon
 
 	public void Reload()
 	{
-		if (!isReloading)
+		if (!isReloading && Ammo != ClipSize)
 		{
 			isReloading = true;
 			reloadTimer = reloadCooldown;
