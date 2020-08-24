@@ -35,6 +35,11 @@ public class PlayerWeaponController : MonoBehaviour
 		new GrenadeLauncher()
 	};
 
+	public void ChangePrimaryWeapon(int index)
+	{
+		PrimaryWeapon = weapons[index];
+	}
+
 	private void Awake()
 	{
 		recoilController = GetComponent<PlayerRecoilController>();
