@@ -15,6 +15,8 @@ public class PlayerWeaponController : MonoBehaviour
 	private Weapon PrimaryWeapon;
 	private Weapon SecondaryWeapon;
 
+	public int PrimaryIndex { get => primaries.ToList().IndexOf(PrimaryWeapon); }
+	public int SecondaryIndex { get => secondaries.ToList().IndexOf(SecondaryWeapon); }
 	public int PrimaryAmmo { get => PrimaryWeapon.Ammo; }
 	public int SecondaryAmmo { get => SecondaryWeapon.Ammo; }
 	public int PrimaryClipSize { get => PrimaryWeapon.ClipSize; }
@@ -27,7 +29,7 @@ public class PlayerWeaponController : MonoBehaviour
 	public Boolean CanSecondaryFire { get => SecondaryWeapon.CanWeaponFire(); }
 
 	private readonly List<String> weaponKeys = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-	private readonly List<Weapon> weapons = new List<Weapon> {
+	private readonly List<Weapon> primaries = new List<Weapon> {
 		new SniperRifle(),
 		new AssaultRifle(),
 		new RocketLauncher(),
@@ -35,9 +37,21 @@ public class PlayerWeaponController : MonoBehaviour
 		new GrenadeLauncher()
 	};
 
-	public void ChangePrimaryWeapon(int index)
+	private readonly List<Weapon> secondaries = new List<Weapon> {
+		new SniperRifle(),
+		new AssaultRifle(),
+		new RocketLauncher(),
+		new AutomaticRocketLauncher(),
+		new GrenadeLauncher()
+	};
+
+	public void SwitchPrimaryWeapon(int index)
 	{
-		PrimaryWeapon = weapons[index];
+		PrimaryWeapon = primaries[index];
+	}
+	public void SwitchSecondaryWeapon(int index)
+	{
+		SecondaryWeapon = secondaries[index];
 	}
 
 	private void Awake()
@@ -48,14 +62,11 @@ public class PlayerWeaponController : MonoBehaviour
 	}
 	void Start()
 	{
-		PrimaryWeapon = weapons[0];
-		SecondaryWeapon = weapons[1];
-		foreach (Weapon weapon in weapons)
-		{
-			weapon.Projectile = Resources.Load<GameObject>(weapon.ProjectileAssetName);
-			Resources.LoadAll<AudioClip>(weapon.AudioClipFolderName).ToList().ForEach(
-				audioclip => weapon.AudioClips.Add(audioclip));
-		}
+		PrimaryWeapon = primaries[0];
+		SecondaryWeapon = secondaries[1];
+
+		LoadAudioClips(primaries);
+		LoadAudioClips(secondaries);
 	}
 
 	public void LateUpdate()
@@ -120,9 +131,9 @@ public class PlayerWeaponController : MonoBehaviour
 		weaponKeys.ForEach((i) =>
 		{
 			int index = weaponKeys.IndexOf(i);
-			if (Input.GetKeyDown(i) && index < weapons.Count)
+			if (Input.GetKeyDown(i) && index < primaries.Count)
 			{
-				PrimaryWeapon = weapons[index];
+				PrimaryWeapon = primaries[index];
 			}
 		});
 	}
@@ -150,6 +161,16 @@ public class PlayerWeaponController : MonoBehaviour
 				return Input.GetMouseButton(1);
 			default:
 				return false;
+		}
+	}
+
+	private void LoadAudioClips(List<Weapon> weapons)
+	{
+		foreach (Weapon weapon in weapons)
+		{
+			weapon.Projectile = Resources.Load<GameObject>(weapon.ProjectileAssetName);
+			Resources.LoadAll<AudioClip>(weapon.AudioClipFolderName).ToList().ForEach(
+				audioclip => weapon.AudioClips.Add(audioclip));
 		}
 	}
 }

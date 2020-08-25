@@ -13,4 +13,16 @@ public class GameController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 	}
+
+	private void Update()
+	{
+		if (!CursorLockMode.Locked.Equals(Cursor.lockState))
+		{
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+		if (Cursor.visible)
+		{
+			Cursor.visible = false;
+		}
+	}
 }
