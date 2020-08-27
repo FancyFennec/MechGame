@@ -54,7 +54,7 @@ public abstract class Enemy : MonoBehaviour
 
 	public virtual void Start() {
         PlayerHealth.instance.PlayerDiedEvent += () => NextState = EnemyState.STOPPED;
-        PlayerShootingController.instance.PrimaryShotEvent += StartAttackingIfShotWasHeard;
+        PlayerShootingController.instance.ShotEvent += StartAttackingIfShotWasHeard;
 
         health.EnemyDiedEvent += () => NextState = EnemyState.DEAD;
         health.EnemyDamageTakenEvent += StartAttacking;
@@ -92,7 +92,7 @@ public abstract class Enemy : MonoBehaviour
 
 	private void OnDestroy()
 	{
-        PlayerShootingController.instance.PrimaryShotEvent -= StartAttackingIfShotWasHeard;
+        PlayerShootingController.instance.ShotEvent -= StartAttackingIfShotWasHeard;
     }
 
     public void RotateTowardsDestination()

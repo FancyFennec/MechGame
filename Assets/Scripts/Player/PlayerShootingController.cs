@@ -17,7 +17,7 @@ public class PlayerShootingController : MonoBehaviour
 	private float standardFov;
 	private float zoomedFov;
 
-	public event Action PrimaryShotEvent;
+	public event Action ShotEvent;
 
 	private void Awake()
 	{
@@ -36,15 +36,15 @@ public class PlayerShootingController : MonoBehaviour
     {
         if (weaponController.DoesPlayerWantToShootPrimary() && weaponController.CanPrimaryFire)
 		{
-			PrimaryShotEvent?.Invoke();
+			ShotEvent?.Invoke();
 			weaponController.FirePrimary();
 		}
 		if (weaponController.DoesPlayerWantToShootSecondary() && weaponController.CanSecondaryFire)
 		{
-			//PrimaryShotEvent?.Invoke();
+			ShotEvent?.Invoke();
 			weaponController.FireSecondary();
 		}
-		if (weaponController.CanPrimaryZoom && Input.GetMouseButton(2))
+		if (weaponController.CanZoom && Input.GetMouseButton(2))
 		{
 			Camera.main.fieldOfView = zoomedFov;
 		} else

@@ -23,7 +23,7 @@ public class PlayerWeaponController : MonoBehaviour
 	public int SecondaryClipSize { get => SecondaryWeapon.ClipSize; }
 	public Weapon.WeaponType PrimaryWeaponType { get => PrimaryWeapon.Type; }
 	public Weapon.WeaponType SecondaryWeaponType { get => SecondaryWeapon.Type; }
-	public Boolean CanPrimaryZoom { get => typeof(SniperRifle).IsInstanceOfType(PrimaryWeapon); }
+	public Boolean CanZoom { get => typeof(SniperRifle).IsInstanceOfType(PrimaryWeapon) || typeof(SniperRifle).IsInstanceOfType(SecondaryWeapon); }
 	public Boolean CanSecondaryZoom { get => typeof(SniperRifle).IsInstanceOfType(SecondaryWeapon); }
 	public Boolean CanPrimaryFire { get => PrimaryWeapon.CanWeaponFire(); }
 	public Boolean CanSecondaryFire { get => SecondaryWeapon.CanWeaponFire(); }
@@ -108,8 +108,8 @@ public class PlayerWeaponController : MonoBehaviour
 	{
 		Instantiate(
 						PrimaryWeapon.Projectile,
-						transform.Find("Weapons").GetChild(0).position +
-						Camera.main.transform.right * 0.75f +
+						transform.Find("PrimaryWeapons").position +
+						Camera.main.transform.right * (-0.5f) +
 						Camera.main.transform.forward,
 						Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 						);
@@ -119,8 +119,8 @@ public class PlayerWeaponController : MonoBehaviour
 	{
 		Instantiate(
 						SecondaryWeapon.Projectile,
-						transform.Find("Weapons").GetChild(1).position +
-						Camera.main.transform.right * (-1.5f) +
+						transform.Find("SecondaryWeapons").position +
+						Camera.main.transform.right * (0.5f) +
 						Camera.main.transform.forward,
 						Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up)
 						);
@@ -150,7 +150,6 @@ public class PlayerWeaponController : MonoBehaviour
 				return false;
 		}
 	}
-
 	public bool DoesPlayerWantToShootSecondary()
 	{
 		switch (SecondaryWeapon.Type)

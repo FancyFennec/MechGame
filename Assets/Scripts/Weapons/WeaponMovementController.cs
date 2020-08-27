@@ -10,7 +10,6 @@ public class WeaponMovementController : MonoBehaviour
         cameraTransform = Camera.main.transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(cameraTransform.forward), 10f * Time.deltaTime);
