@@ -1,0 +1,432 @@
+fileFormatVersion: 2
+guid: f38cf1759e29f894497d95a9ebc454eb
+ModelImporter:
+  serializedVersion: 19301
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.001_Cylinder.016_camoMat
+    second: {fileID: 2100000, guid: 867129de14bf64842a297adeb9a0ce03, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.002_Cylinder.017_camoMat
+    second: {fileID: 2100000, guid: bbf8da0a3b6bbda48bfdb69d1b5c1ff8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.003_Cylinder.018_camoMat
+    second: {fileID: 2100000, guid: 620d5683d94d0354da7262ae4b252e64, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.004_Cylinder.019_camoMat
+    second: {fileID: 2100000, guid: 44173628a3f581b459b6724c8ccf78bf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.005_Cylinder.020_camoMat
+    second: {fileID: 2100000, guid: 25b1457e0f202c240902e282c41a8c81, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.007_Cylinder.021_camoMat
+    second: {fileID: 2100000, guid: 27f0ac0d1c6c2f94f8b4b4a1fa2be3a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.008_Cylinder.022_camoMat
+    second: {fileID: 2100000, guid: 552a89222ed91784e95c843cd9d5b5bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cylinder.010_Cylinder.023_camoMat
+    second: {fileID: 2100000, guid: 870c70b4c85648e4aa8fdd542ed96ffa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.001_Cube.005_camoMat
+    second: {fileID: 2100000, guid: 499e8ba9e4522de42bb41d7b2d9887a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.002_Cube.007_camoMat
+    second: {fileID: 2100000, guid: c1f23c13d1fc86a4fabd327dfa900982, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.003_Cube.008_camoMat
+    second: {fileID: 2100000, guid: 2d6a010bfea06cb4698d684647051dca, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.004_Cube.006_camoMat
+    second: {fileID: 2100000, guid: edb6125ee5292d645b72627aad066baf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.005_Cube.013_camoMat
+    second: {fileID: 2100000, guid: 06ea0550fbbbdf940b6bc0bc0d2e8abe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.006_Cube.016_camoMat
+    second: {fileID: 2100000, guid: a6ef1fc99240055458e08ab25503839f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.007_Cube.018_camoMat
+    second: {fileID: 2100000, guid: df836110b3fe8684eaceb79b9066a3a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.008_Cube.019_camoMat
+    second: {fileID: 2100000, guid: 722ca49642802154a82fc674428ac27b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.009_Cube.020_camoMat
+    second: {fileID: 2100000, guid: 703f9339f06f95a4996a2555f0688f87, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.010_Cube.009_camoMat
+    second: {fileID: 2100000, guid: d80e2819001ad364c9142996b3c7c55a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.011_Cube.010_camoMat
+    second: {fileID: 2100000, guid: 58ea239192276fd45a617f4398949857, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cube.013_Cube.023_camoMat
+    second: {fileID: 2100000, guid: 76c3854ca2b555545b42fda3c4791927, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cylinder.001_Cylinder.006_camoMat
+    second: {fileID: 2100000, guid: b417da5eaf17e7a4daeaf2a3a0417a56, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: basic_cylinder.002_Cylinder.007_camoMat
+    second: {fileID: 2100000, guid: 2b7b029077227f74a8394448d3549e73, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: beveled_vube.001_Cube.011_camoMat
+    second: {fileID: 2100000, guid: e7c616f2c7db627498dc5a5ff110764e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: beveled_vube.002_Cube.015_camoMat
+    second: {fileID: 2100000, guid: fe2c50dafcdda804a9a553501b1a976e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: beveled_vube.003_Cube.021_camoMat
+    second: {fileID: 2100000, guid: bbbb1af644e39a54db85a321d89e95e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bottom_Cube.017_camoMat
+    second: {fileID: 2100000, guid: a4ce35e929d3fad4e8b8dc65648b11b7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cables
+    second: {fileID: 2100000, guid: ed5ebfd3b1db74849a77ad7c1cab740f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: camo
+    second: {fileID: 2100000, guid: f414d12e8dc290541aa6624c9a19427e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: electric_motor_e.001_Cylinder.002_camoMat
+    second: {fileID: 2100000, guid: 8bbe57c79129e204d9bcfbff8cd91024, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: electric_motor_e.003_Cylinder.004_camoMat
+    second: {fileID: 2100000, guid: 58f2581a81656954db3d01bbecc9b681, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: electric_motor_e.004_Cylinder.013_camoMat
+    second: {fileID: 2100000, guid: 673f89d903b80f448b84de8cd12d0d3d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: gas_pump_e.001_Cylinder.008_camoMat
+    second: {fileID: 2100000, guid: a481e1d17a32e1940be6d3169bf9c072, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: gas_pump_e.002_Cylinder.009_camoMat
+    second: {fileID: 2100000, guid: cc7569eb981801446ae051cfe8281186, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: gas_pump_e.003_Cylinder.010_camoMat
+    second: {fileID: 2100000, guid: 32a2e0a311b93644ca2bb6d17ebd5c1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: generator_e.001_Cube.002_camoMat
+    second: {fileID: 2100000, guid: ea0fbc3c1c94a0342a7f2b291e3cb705, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.001_BezierCurve.001_cablesMat
+    second: {fileID: 2100000, guid: 8d8ed43c702427c4ebefdd4960cdd8db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.002_BezierCurve.002_cablesMat
+    second: {fileID: 2100000, guid: 4ce060950688fc943aac4d668eb91ef4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.003_BezierCurve.003_cablesMat
+    second: {fileID: 2100000, guid: 7a94c9a2196292d48b6eea553f843266, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.004_BezierCurve.004_cablesMat
+    second: {fileID: 2100000, guid: 716cd01f8eecb9444801cf37c312d2b7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.005_BezierCurve.005_cablesMat
+    second: {fileID: 2100000, guid: e03afcb8b7acbaa41abb740e3ced0016, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.006_BezierCurve.006_cablesMat
+    second: {fileID: 2100000, guid: 65b1012b25d00ce4cbde060c1a4e9c6f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.007_BezierCurve.007_cablesMat
+    second: {fileID: 2100000, guid: 25eb39c967e38fa428275b339b0d7ee1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.008_BezierCurve.008_cablesMat
+    second: {fileID: 2100000, guid: fc22325870f031149acfaeee2e52ccea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.009_BezierCurve.009_cablesMat
+    second: {fileID: 2100000, guid: 14daca0cd74eb49408a547239adfdaf2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.010_BezierCurve.011_cablesMat
+    second: {fileID: 2100000, guid: 4692c466acf77bc40a3995807607ef84, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.011_BezierCurve.012_cablesMat
+    second: {fileID: 2100000, guid: a7aa27fd8b00dd144878ed161b0fbead, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.012_BezierCurve.013_cablesMat
+    second: {fileID: 2100000, guid: 6d6205049754df949b932742e1e1ae85, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.013_BezierCurve.014_cablesMat
+    second: {fileID: 2100000, guid: 63796fa5831299b4fad70b87ae7d6f66, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.014_BezierCurve.015_cablesMat
+    second: {fileID: 2100000, guid: ae8a6d0e244487d4497486ac1a330f8c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.015_BezierCurve.016_cablesMat
+    second: {fileID: 2100000, guid: db0dfab7515994a4d8b39b55bf5bb74f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.016_BezierCurve.017_cablesMat
+    second: {fileID: 2100000, guid: c159898c72169804eb74710c2309b5e7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.017_BezierCurve.018_cablesMat
+    second: {fileID: 2100000, guid: ebda03a41cad5914da0cd12ef4da26c9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.018_BezierCurve.010_camoMat
+    second: {fileID: 2100000, guid: d23b6d2361752fd42b3a564d1cb36967, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.019_BezierCurve.019_camoMat
+    second: {fileID: 2100000, guid: 140460e5ea960cb4097ad75adf7cd985, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.020_BezierCurve.020_cablesMat
+    second: {fileID: 2100000, guid: eb3ab6a96759af64cbf0167e6cb559be, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.021_BezierCurve.021_cablesMat
+    second: {fileID: 2100000, guid: 722782d00c469154897202bb604a9e0d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.022_BezierCurve.022_cablesMat
+    second: {fileID: 2100000, guid: 55f38f22ded06274a8710e9d7152aaf5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.023_BezierCurve.023_cablesMat
+    second: {fileID: 2100000, guid: 56731614e44f8a54c883a971ba9db024, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.024_BezierCurve.024_cablesMat
+    second: {fileID: 2100000, guid: 59bfef24b1525d043b620ecb9b8fc58b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.025_BezierCurve.025_cablesMat
+    second: {fileID: 2100000, guid: 113b6bffcab7bc349a36a9a891d7a3ee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.026_BezierCurve.026_camoMat
+    second: {fileID: 2100000, guid: d2065ab1a13cf59499da9a221e273947, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.027_BezierCurve.027_cablesMat
+    second: {fileID: 2100000, guid: 69da30ee9c2b42b48a15415257fc1685, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pipe.028_BezierCurve.028_cablesMat
+    second: {fileID: 2100000, guid: b3e270b414692654d996bbac1f20691b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: radar_01.001_Sphere.001_camoMat
+    second: {fileID: 2100000, guid: 6da922ef09cab9046ad29a404cb19441, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: sniper_e_Cylinder.011_camoMat
+    second: {fileID: 2100000, guid: 1317656bfc496ca42861be7f2c9c27a9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: thruster.001_Sphere.002_camoMat
+    second: {fileID: 2100000, guid: 1534b5a0c90d917408a1a911f92455d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: top_Cylinder.003_camoMat
+    second: {fileID: 2100000, guid: 5a61af0da596c2044aa94490f10457e5, type: 2}
+  materials:
+    materialImportMode: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
