@@ -81,10 +81,10 @@ public class CarMovementController : MonoBehaviour
         Crossing crossing = points[targetIndex].GetComponent<Crossing>();
 		if (crossing != null)
 		{
-			Transform nextPoint = crossing.points[UnityEngine.Random.Range(0, crossing.points.Count)];
+			Transform nextPoint = crossing.points[Random.Range(0, crossing.points.Count)];
 			while (nextPoint == points[lastIndex])
 			{
-                nextPoint = crossing.points[UnityEngine.Random.Range(0, crossing.points.Count)];
+                nextPoint = crossing.points[Random.Range(0, crossing.points.Count)];
             }
             nextIndex = points.IndexOf(nextPoint);
         } else
