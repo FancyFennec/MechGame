@@ -7,14 +7,10 @@ using UnityEditor;
 [CanEditMultipleObjects]
 public class CrossingEditor : Editor
 {
-	private void OnSceneGUI()
-	{
-	}
-
  	public override void OnInspectorGUI()
 	{
 
-		//base.OnInspectorGUI();
+		base.OnInspectorGUI();
 
 		if (GUILayout.Button("Add Crossing Connections"))
 		{

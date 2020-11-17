@@ -76,20 +76,33 @@ public class CarMovementController : MonoBehaviour
 
     private void updateIndeces()
 	{
+
         lastIndex = targetIndex;
         targetIndex = nextIndex;
         Crossing crossing = points[targetIndex].GetComponent<Crossing>();
 		if (crossing != null)
 		{
-			Transform nextPoint = crossing.points[Random.Range(0, crossing.points.Count)];
-			while (nextPoint == points[lastIndex])
+            if(crossing.points.Count <= 1) // Otherise we get an infinite loop
 			{
-                nextPoint = crossing.points[Random.Range(0, crossing.points.Count)];
+                if(nextIndex != lastIndex)
+				{
+                    nextIndex = lastIndex;
+                } else
+				{
+                    nextIndex = points.IndexOf(crossing.points[0]);
+				}
+                
+            } else
+			{
+                Transform nextPoint = crossing.points[Random.Range(0, crossing.points.Count)];
+                while (nextPoint == points[lastIndex])
+                {
+                    nextPoint = crossing.points[Random.Range(0, crossing.points.Count)];
+                }
+                nextIndex = points.IndexOf(nextPoint);
             }
-            nextIndex = points.IndexOf(nextPoint);
         } else
 		{
-
             nextIndex = (targetIndex + points.Count + (clockwise ? 1 : -1)) % points.Count;
         }
 	}
