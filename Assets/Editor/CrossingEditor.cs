@@ -7,17 +7,18 @@ using UnityEditor;
 [CanEditMultipleObjects]
 public class CrossingEditor : Editor
 {
-	public override void OnInspectorGUI()
+	private void OnSceneGUI()
+	{
+	}
+
+ 	public override void OnInspectorGUI()
 	{
 
-		base.OnInspectorGUI();
-		if (GUILayout.Button("Make Line Connections"))
-		{
-			MakeLineConnections();
-		}
+		//base.OnInspectorGUI();
 
-		if (GUILayout.Button("Make Crossing Connections"))
+		if (GUILayout.Button("Add Crossing Connections"))
 		{
+			ClearLines();
 			MakeCrossingConnections();
 			AddLines();
 		}
@@ -64,26 +65,16 @@ public class CrossingEditor : Editor
 		});
 	}
 
-	private static void MakeLineConnections()
-	{
-		Crossing lastCrossing = null;
-		foreach (Object obj in Selection.gameObjects)
-		{
-			if (lastCrossing != null)
-			{
-				Crossing crossing = (Crossing)obj;
-				lastCrossing.points.Add(crossing.transform);
-				crossing.points.Add(lastCrossing.transform);
-			}
-			lastCrossing = (Crossing)obj;
-		}
-	}
-
 	private void ClearConections()
 	{
 		foreach (Object obj in targets)
 		{
 			Crossing crossing = (Crossing)obj;
+			foreach(Transform point in crossing.points)
+			{
+				Crossing neighbourCrossing = point.GetComponent<Crossing>();
+				neighbourCrossing.points.Remove(crossing.transform);
+			}
 			crossing.points.Clear();
 		}
 	}
@@ -102,35 +93,53 @@ public class CrossingEditor : Editor
 
 	private void AddLines()
 	{
-		foreach (Object obj in targets)
-		{
-			Crossing crossing = (Crossing)obj;
-			if(crossing.gameObject.GetComponent<LineRenderer>() == null)
-			{
-				LineRenderer lineRenderer = crossing.gameObject.AddComponent<LineRenderer>();
-				lineRenderer.startWidth = 0.2f;
-				lineRenderer.endWidth = 0.2f;
-				lineRenderer.material = Resources.Load<Material>("Materials/GreenLine");
-				
-				List<Transform> pointsToDraw = new List<Transform>();
- 				foreach (Transform point in crossing.points)
-				{
-					foreach(Object blub in targets){
-						if (((Crossing) blub).transform == point )
-						{
-							pointsToDraw.Add(point);
-						}
-					}
-				}
-				lineRenderer.positionCount = 2 * pointsToDraw.Count;
+		GameObject targetGO = (GameObject)Selection.activeObject;
+		Crossing[] allCrossings = targetGO.transform.parent.GetComponentsInChildren<Crossing>();
 
-				foreach (Transform point in pointsToDraw)
-				{
-					int index = pointsToDraw.IndexOf(point);
-					lineRenderer.SetPosition(2 * index, crossing.transform.position + 0.2f * Vector3.up);
-					lineRenderer.SetPosition(2 * index + 1, point.position + 0.2f * Vector3.up);
-				}
+		foreach(Crossing crossing in allCrossings)
+		{
+			LineRenderer lineRenderer = getLineRenderer(crossing);
+			List<Transform> pointsToDraw = getPointsToDraw(allCrossings, crossing);
+			lineRenderer.positionCount = 2 * pointsToDraw.Count;
+
+			foreach (Transform point in pointsToDraw)
+			{
+				int index = pointsToDraw.IndexOf(point);
+				lineRenderer.SetPosition(2 * index, crossing.transform.position + 0.2f * Vector3.up);
+				lineRenderer.SetPosition(2 * index + 1, point.position + 0.2f * Vector3.up);
 			}
 		}
+	}
+
+	private static List<Transform> getPointsToDraw(Crossing[] allCrossings, Crossing cross1)
+	{
+		List<Transform> pointsToDraw = new List<Transform>();
+		foreach (Crossing cross2 in allCrossings)
+		{
+			if (cross2.points.Contains(cross1.transform))
+			{
+				pointsToDraw.Add(cross2.transform);
+			}
+		}
+
+		return pointsToDraw;
+	}
+
+	private static LineRenderer getLineRenderer(Crossing crossing)
+	{
+		LineRenderer lineRenderer;
+		if (crossing.gameObject.GetComponent<LineRenderer>() == null)
+		{
+			lineRenderer = crossing.gameObject.AddComponent<LineRenderer>();
+			lineRenderer.startWidth = 0.2f;
+			lineRenderer.endWidth = 0.2f;
+			lineRenderer.material = Resources.Load<Material>("Materials/GreenLine");
+		}
+		else
+		{
+			lineRenderer = crossing.gameObject.GetComponent<LineRenderer>();
+		}
+
+		return lineRenderer;
 	}
 }
